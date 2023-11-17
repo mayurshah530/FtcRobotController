@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.common.ScoringElementLocation;
+import org.firstinspires.ftc.teamcode.common.Utils;
 import org.firstinspires.ftc.teamcode.mechanisms.RevStarterRobotHardware;
 import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -13,6 +15,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
+
+import org.firstinspires.ftc.teamcode.common.Alliance;
+import org.firstinspires.ftc.teamcode.common.FieldPosition;
 
 /*
  * RevBot Autonomous code
@@ -90,15 +95,15 @@ public class RevBotAuto extends OpMode {
    */
   @Override
   public void init_loop() {
-    // Determine blue vs. red alliance
+    // Step 1: Determine blue vs. red alliance
     if (alliance == Alliance.UNKNOWN){
-      alliance = getAllianceFromKeyEntry();
+      alliance = Utils.GetAllianceFromKeyEntry(gamepad1);
     }
     telemetry.addData("Alliance", alliance.toString());
-    // Determine near or far position from the scoring board
-    fieldPosition = getFieldPositionFromKeyEntry();
+
+    // Step 2: Determine near or far position from the scoring board
     if (fieldPosition == FieldPosition.UNKNOWN){
-      fieldPosition = getFieldPositionFromKeyEntry();
+      fieldPosition = Utils.GetFieldPositionFromKeyEntry(gamepad1);
     }
     telemetry.addData( "FieldPosition" , fieldPosition.toString());
 
@@ -170,7 +175,7 @@ public class RevBotAuto extends OpMode {
 
         break;
       case MOVE_TO_SCOREBOARD: {
-        desiredTagId = getDesiredTagId(alliance, selectedSide);
+        desiredTagId = Utils.GetDesiredTagId(alliance, selectedSide);
         telemetry.addData("desiredTagId ", desiredTagId);
         visionPortal.setProcessorEnabled(aprilTag, true);
         // TODO: Step 1: Move based on approximation - time/ encoder / gyro.
@@ -242,58 +247,6 @@ public class RevBotAuto extends OpMode {
     visionPortal.setProcessorEnabled(aprilTag, false);
     visionPortal.setProcessorEnabled(visionProcessor, true);
   }
-
-  private int getDesiredTagId(Alliance alliance, ScoringElementLocation selectedSide){
-    if (alliance == Alliance.UNKNOWN || selectedSide == ScoringElementLocation.UNKNOWN){
-      return -1;
-    }
-    if (alliance == Alliance.BLUE) {
-      if (selectedSide == ScoringElementLocation.LEFT) {
-        return 1;
-      } else if (selectedSide == ScoringElementLocation.CENTER) {
-        return 2;
-      } else if (selectedSide == ScoringElementLocation.RIGHT) {
-        return 3;
-      }
-    }
-    if (alliance == Alliance.RED){
-      if (selectedSide == ScoringElementLocation.LEFT){
-        return 4;
-      } else if (selectedSide == ScoringElementLocation.CENTER) {
-        return 5;
-      } else if (selectedSide == ScoringElementLocation.RIGHT){
-        return 6;
-      }
-    }
-
-    return -1;
-  }
-
-  private Alliance getAllianceFromKeyEntry(){
-    // red button
-    if(gamepad1.b){
-      return Alliance.RED;
-    }
-    if(gamepad1.x) {
-      // blue button
-      return Alliance.BLUE;
-    }
-
-    return Alliance.UNKNOWN;
-  }
-
-
-  private FieldPosition getFieldPositionFromKeyEntry(){
-    // green button
-    if(gamepad1.a){
-      return FieldPosition.NEAR;
-    }
-    if(gamepad1.y){
-      return FieldPosition.FAR;
-    }
-    return FieldPosition.UNKNOWN;
-  }
-
 
   boolean findDesiredAprilTag(int desiredTagId){
     boolean targetFound = false;
