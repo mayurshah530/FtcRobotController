@@ -95,7 +95,6 @@ public class RevBotAuto extends OpMode {
     }
     telemetry.addData("Alliance", alliance.toString());
     // Determine near or far position from the scoring board
-    fieldPosition = getFieldPositionFromKeyEntry();
     if (fieldPosition == FieldPosition.UNKNOWN){
       fieldPosition = getFieldPositionFromKeyEntry();
     }
