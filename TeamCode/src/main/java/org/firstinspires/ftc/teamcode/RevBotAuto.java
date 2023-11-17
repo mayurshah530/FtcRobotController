@@ -48,6 +48,8 @@ public class RevBotAuto extends OpMode {
 
   private int desiredTagId;
 
+  private boolean aprilTagTargetFound = false;
+
   final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
   //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
   //  applied to the drive motors to correct the error.
@@ -68,8 +70,8 @@ public class RevBotAuto extends OpMode {
     IDENTIFY_SPIKE,
     // Drive the robot to drag the pixel with it to be placed on the correct spike mark (red/blue tape)
     PLACE_PIXEL_ON_SPIKE,
-    // Move the robot towards scoreboard
-    MOVE_TO_SCOREBOARD,
+    // Move the robot towards backdrop (for scoring)
+    MOVE_TOWARDS_BACKDROP,
     //
     SCORE_PIXEL,
     //
@@ -169,22 +171,26 @@ public class RevBotAuto extends OpMode {
         //  Move back a little so that we don't drag the pixel away from the desired location.
 
 
-        state = State.MOVE_TO_SCOREBOARD;
+        state = State.MOVE_TOWARDS_BACKDROP;
         lastTime = getRuntime();
       }
 
         break;
-      case MOVE_TO_SCOREBOARD: {
+      case MOVE_TOWARDS_BACKDROP: {
         desiredTagId = Utils.GetDesiredTagId(alliance, selectedSide);
         telemetry.addData("desiredTagId ", desiredTagId);
         visionPortal.setProcessorEnabled(aprilTag, true);
         // TODO: Step 1: Move based on approximation - time/ encoder / gyro.
         // Determine which direction to turn. Plan trajectory based on initial location and the goal location.
         // Keep looking for the desired aprilTag
-        boolean targetFound = findDesiredAprilTag(desiredTagId);
+        boolean moveSuccess = false;
+        if (!aprilTagTargetFound){
+          moveSuccess = moveTowardsBackdrop(alliance, selectedSide);
+        }
+        aprilTagTargetFound = findDesiredAprilTag(desiredTagId);
 
         // Step 2: Move based on AprilTag location once it is found.
-        if (!targetFound) {
+        if (!aprilTagTargetFound) {
           break;
         }
         boolean targetReached = driveToAprilTagTarget(desiredTag);
@@ -302,6 +308,33 @@ public class RevBotAuto extends OpMode {
       return true;
     }
 
+    return false;
+  }
+
+
+  // TODO: Implement this
+  private boolean moveTowardsBackdrop(Alliance alliance, ScoringElementLocation selectedSide) {
+
+    return false;
+  }
+
+  // TODO: Implement this
+  private boolean moveBlueNearToBackdrop(){
+    return false;
+  }
+
+  // TODO: Implement this
+  private boolean moveBlueFarToBackdrop(){
+    return false;
+  }
+
+  // TODO: Implement this
+  private boolean moveRedNearToBackdrop(){
+    return false;
+  }
+
+  // TODO: Implement this
+  private boolean moveRedFarToBackdrop(){
     return false;
   }
 
