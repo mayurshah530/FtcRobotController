@@ -153,6 +153,8 @@ public class RevBotAuto extends OpMode {
       }
         break;
       case PLACE_PIXEL_ON_SPIKE: {
+        telemetry.addData("selectedSide: ", selectedSide.toString());
+
         // TODO: Depending on selectedSide, move left, straight, right.
         //  Since we are dragging the pixel there is nothing to drop.
         boolean targetReached = false;
