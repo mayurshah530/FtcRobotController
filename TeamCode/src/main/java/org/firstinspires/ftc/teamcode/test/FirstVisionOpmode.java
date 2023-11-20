@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
+import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessorV0;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Autonomous()
 public class FirstVisionOpmode extends OpMode {
-    private FirstVisionProcessor visionProcessor;
+    private FirstVisionProcessorV0 visionProcessor;
     private VisionPortal visionPortal;
 
     /**
@@ -19,7 +20,7 @@ public class FirstVisionOpmode extends OpMode {
      */
     @Override
     public void init() {
-        visionProcessor = new FirstVisionProcessor();
+        visionProcessor = new FirstVisionProcessorV0();
         visionPortal = VisionPortal.easyCreateWithDefaults(
                 hardwareMap.get(WebcamName.class, "Webcam 1"), visionProcessor);
     }

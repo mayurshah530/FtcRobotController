@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.common.ScoringElementLocation;
 import org.firstinspires.ftc.teamcode.common.Utils;
 import org.firstinspires.ftc.teamcode.mechanisms.RevStarterRobotHardware;
 import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
+import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessorV0;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -28,7 +29,7 @@ public class RevBotAuto extends OpMode {
   RevStarterRobotHardware robot = new RevStarterRobotHardware(this);
 
   private ElapsedTime runtime = new ElapsedTime();
-  private FirstVisionProcessor visionProcessor;
+  private FirstVisionProcessorV0 visionProcessor;
   private AprilTagProcessor aprilTag;
 
   // Used to hold the data for a detected AprilTag
@@ -243,7 +244,7 @@ public class RevBotAuto extends OpMode {
    * Init vision portal. AprilTag and VisionProcessor
    */
   private void initVisionPortal() {
-    visionProcessor = new FirstVisionProcessor();
+    visionProcessor = new FirstVisionProcessorV0();
     // Create the AprilTag processor by using a builder.
     aprilTag = new AprilTagProcessor.Builder().build();
     aprilTag.setDecimation(1);
