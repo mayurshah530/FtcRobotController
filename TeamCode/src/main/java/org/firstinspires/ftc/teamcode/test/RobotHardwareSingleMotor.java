@@ -56,14 +56,14 @@ public class RobotHardwareSingleMotor {
     /* Declare OpMode members. */
     private OpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
-    private DcMotor armMotor = null;
+    private DcMotor intakeMotor = null;
 
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
 
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double INTAKE_IN_POWER =  1.0 ;
+    public static final double INTAKE_OUT_POWER = -1.0 ;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotHardwareSingleMotor(OpMode opmode) {
@@ -79,7 +79,7 @@ public class RobotHardwareSingleMotor {
     public void init()    {
 
 
-        armMotor   = myOpMode.hardwareMap.get(DcMotor.class, "arm");
+        intakeMotor   = myOpMode.hardwareMap.get(DcMotor.class, "intake");
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -93,7 +93,7 @@ public class RobotHardwareSingleMotor {
      * @param power driving power (-1.0 to 1.0)
      */
     public void setArmPower(double power) {
-        armMotor.setPower(power);
+        intakeMotor.setPower(power);
     }
 
 

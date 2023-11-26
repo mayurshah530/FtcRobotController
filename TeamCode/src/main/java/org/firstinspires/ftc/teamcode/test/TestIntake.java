@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.test;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -63,9 +62,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *  Also add another new file named RobotHardware.java, select the sample with that name, and select Not an OpMode.
  */
 
-@TeleOp(name="Concept: Robot Hardware Class", group="Robot")
-@Disabled
-public class TestSingleArmClass extends LinearOpMode {
+@TeleOp(name="Test: Intake", group="Robot")
+public class TestIntake extends LinearOpMode {
 
     // Create a RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
@@ -73,7 +71,7 @@ public class TestSingleArmClass extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double arm          = 0;
+        double intake = 0;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -85,22 +83,22 @@ public class TestSingleArmClass extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // Use gamepad buttons to move arm up (Y) and down (A)
+            // Use gamepad buttons to move intake up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
-            if (gamepad1.y)
-                arm = robot.INTAKE_IN_POWER;
-            else if (gamepad1.a)
-                arm = robot.INTAKE_OUT_POWER;
+            if (gamepad1.left_bumper)
+                intake = robot.INTAKE_IN_POWER;
+            else if (gamepad1.right_bumper)
+                intake = robot.INTAKE_OUT_POWER;
             else
-                arm = 0;
+                intake = 0;
 
-            robot.setArmPower(arm);
+            robot.setArmPower(intake);
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Arm Up/Down", "Y & A Buttons");
             telemetry.addData("-", "-------");
 
-            telemetry.addData("Arm Power",  "%.2f", arm);
+            telemetry.addData("Arm Power",  "%.2f", intake);
             telemetry.update();
 
             // Pace this loop so hands move at a reasonable speed.

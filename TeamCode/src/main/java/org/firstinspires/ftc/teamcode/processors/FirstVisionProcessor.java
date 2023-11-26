@@ -58,7 +58,7 @@ public class FirstVisionProcessor implements VisionProcessor {
         }
 
         // Convert the image to HSV format
-        Imgproc.cvtColor(frame, hsvImage, Imgproc.COLOR_BGR2HSV);
+        Imgproc.cvtColor(frame, hsvImage, Imgproc.COLOR_RGB2HSV);
 
         // Create a mask to extract red-colored pixels
         Core.inRange(hsvImage, lowerHsv, upperHsv, mask);
