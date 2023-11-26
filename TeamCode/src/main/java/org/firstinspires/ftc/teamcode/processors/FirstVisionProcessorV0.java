@@ -19,9 +19,9 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
     ScoringElementLocation selection = ScoringElementLocation.UNKNOWN;
 
     // Define lower and upper HSV values for the red and blue color ranges
-    public Scalar lowerRed = new Scalar(0, 50, 50);
-    public Scalar upperRed = new Scalar(50, 255, 255);
-    public Scalar lowerBlue = new Scalar(100, 50, 50);
+    public Scalar lowerRed = new Scalar(0, 100, 100);
+    public Scalar upperRed = new Scalar(10, 255, 255);
+    public Scalar lowerBlue = new Scalar(100, 100, 100);
     public Scalar upperBlue = new Scalar(140, 255, 255);
 
     private Mat hsvImage;
@@ -115,6 +115,7 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
         canvas.drawRect(drawRectangleLeft, nonSelectedPaint);
         canvas.drawRect(drawRectangleMiddle, nonSelectedPaint);
         canvas.drawRect(drawRectangleRight, nonSelectedPaint);
+
     }
 
     public ScoringElementLocation getSelection() { return selection;
@@ -132,6 +133,7 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
         int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
         int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
         int right = left + Math.round(rect.width * scaleBmpPxToCanvasPx); int bottom = top + Math.round(rect.height * scaleBmpPxToCanvasPx);
-        return new android.graphics.Rect(left, top, right, bottom); }
+        return new android.graphics.Rect(left, top, right, bottom); 
+    }
 
 }

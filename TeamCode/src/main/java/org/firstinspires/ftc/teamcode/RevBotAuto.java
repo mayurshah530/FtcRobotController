@@ -74,7 +74,7 @@ public class RevBotAuto extends OpMode {
     // Move the robot towards backdrop (for scoring)
     MOVE_TOWARDS_BACKDROP,
     //
-            n    ,
+    SCORE_PIXEL,
     //
     PARK,
     //
