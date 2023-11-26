@@ -88,9 +88,9 @@ public class TestSingleArmClass extends LinearOpMode {
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
             if (gamepad1.y)
-                arm = robot.ARM_UP_POWER;
+                arm = robot.INTAKE_IN_POWER;
             else if (gamepad1.a)
-                arm = robot.ARM_DOWN_POWER;
+                arm = robot.INTAKE_OUT_POWER;
             else
                 arm = 0;
 
