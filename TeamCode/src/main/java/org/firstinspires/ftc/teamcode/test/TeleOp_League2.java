@@ -76,6 +76,7 @@ public class TeleOp_League2 extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor viper_slide = null;
     private DcMotor intake = null;
+    private DcMotor fingers = null;
     private Servo plane_launcher= null;
 
     @Override
@@ -89,7 +90,10 @@ public class TeleOp_League2 extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         viper_slide = hardwareMap.get(DcMotor.class, "viper_slide");
         intake = hardwareMap.get(DcMotor.class,"intake");
+        fingers = hardwareMap.get(DcMotor.class, "fingers");
         plane_launcher = hardwareMap.get(Servo.class,"plane_launcher");
+
+
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -107,6 +111,7 @@ public class TeleOp_League2 extends LinearOpMode {
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         viper_slide.setDirection(DcMotorSimple.Direction.FORWARD);
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        fingers.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -176,6 +181,13 @@ public class TeleOp_League2 extends LinearOpMode {
             }
             if (gamepad1.left_bumper) {
                 intake.setPower(-1);
+                fingers.setPower(-1);
+            } else {
+                intake.setPower(0);
+                fingers.setPower(0);
+            }
+            if (gamepad1.left_trigger>0.5) {
+                intake.setPower(1);
             } else {
                 intake.setPower(0);
             }
