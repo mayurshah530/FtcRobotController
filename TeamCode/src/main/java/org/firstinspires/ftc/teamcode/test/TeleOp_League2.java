@@ -87,8 +87,10 @@ public class TeleOp_League2 extends LinearOpMode {
     public double FOREARM_LIFT_POSITION = 0.5;
     public double FOREARM_DROP_POSITION = 0.0;
 
-    public double WRIST_REST_POSITION = 0.0;
+    public double WRIST_INTAKE_POSITION = 1.0;
     public double WRIST_DROP_POSITION = 0.5;
+    public double WRIST_LIFT_POSITION = 0.5;
+
     @Override
     public void runOpMode() {
 
@@ -117,10 +119,10 @@ public class TeleOp_League2 extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         viper_slide.setDirection(DcMotorSimple.Direction.FORWARD);
         intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
         intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -194,12 +196,15 @@ public class TeleOp_League2 extends LinearOpMode {
             // Gamepad 2 controls
             // =======================
 
-            if (gamepad2.y){
+            if (gamepad2.a){
                 forearm.setPosition(FOREARM_INTAKE_POSITION);
-            } else if (gamepad2.a){
+//                wrist.setPosition(WRIST_INTAKE_POSITION);
+            } else if (gamepad2.b){
                 forearm.setPosition(FOREARM_LIFT_POSITION);
-            } else if (gamepad2.b) {
+//                wrist.setPosition(WRIST_LIFT_POSITION);
+            } else if (gamepad2.y) {
                 forearm.setPosition(FOREARM_DROP_POSITION);
+//                wrist.setPosition(WRIST_DROP_POSITION);
             }
 
             // Right trigger to move viper slide up, left trigger to move it down.
@@ -208,7 +213,7 @@ public class TeleOp_League2 extends LinearOpMode {
 
             // WRIST POSITION
             if (gamepad2.left_bumper){
-                wrist.setPosition(WRIST_REST_POSITION);
+                wrist.setPosition(WRIST_INTAKE_POSITION);
             } else if (gamepad2.right_bumper){
                 wrist.setPosition(WRIST_DROP_POSITION);
             }
