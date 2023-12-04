@@ -99,7 +99,7 @@ public class TeleOp_League2 extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         viper_slide = hardwareMap.get(DcMotor.class, "viper_slide");
-        intake_front = hardwareMap.get(DcMotor.class,"intake");
+        intake_front = hardwareMap.get(DcMotor.class,"intake_front");
         intake_back = hardwareMap.get(DcMotor.class,"intake_back");
         plane_launcher = hardwareMap.get(Servo.class,"plane_launcher");
         forearm = hardwareMap.get(Servo.class,"forearm");
