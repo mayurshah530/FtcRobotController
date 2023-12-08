@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.TankDrive;
 
-public final class TurnRightTest1 extends LinearOpMode {
+public final class TurnLeftTest1 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
@@ -18,10 +18,10 @@ public final class TurnRightTest1 extends LinearOpMode {
 
             Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-//                        .splineTo(new Vector2d(30.7, -1), -Math.PI / 2.0)
+//                        .splineTo(new Vector2d(30.7, 1), Math.PI / 2.0)
                         .lineToX(30.1)
-                        .turn(-Math.PI/2.0)
-                        .lineToY(-1)
+                        .turn(Math.PI/2.0)
+                        .lineToY(1)
                         .build());
         } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));

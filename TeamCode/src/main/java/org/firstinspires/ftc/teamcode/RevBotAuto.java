@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -16,6 +17,7 @@ import java.util.List;
 /*
  * RevBot Autonomous code
  */
+@Disabled
 @Autonomous(name = "RevBot Autonomous", group = "Auto")
 public class RevBotAuto extends OpMode {
 

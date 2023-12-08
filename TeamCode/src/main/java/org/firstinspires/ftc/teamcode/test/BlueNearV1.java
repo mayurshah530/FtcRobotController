@@ -63,6 +63,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.RobotHardware;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
+@Disabled
 @Autonomous(name="BlueNearV1: Auto Drive By Encoder", group="Robot")
 public class BlueNearV1 extends LinearOpMode {
 
