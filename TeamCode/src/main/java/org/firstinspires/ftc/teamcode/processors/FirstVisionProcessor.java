@@ -96,6 +96,6 @@ public class FirstVisionProcessor implements VisionProcessor {
     }
 
 
-    private Alliance _alliance = Alliance.UNKNOWN;
+    private Alliance _alliance = Alliance.BLUE;
 
 }
