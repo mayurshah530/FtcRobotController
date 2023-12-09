@@ -88,8 +88,8 @@ public class TeleOp_League2 extends LinearOpMode {
     public double FOREARM_DROP_POSITION = 0.0;
 
     public double WRIST_INTAKE_POSITION = 1.0;
-    public double WRIST_DROP_POSITION = 0.5;
     public double WRIST_LIFT_POSITION = 0.5;
+    public double WRIST_DROP_POSITION = 0.0;
 
     @Override
     public void runOpMode() {
@@ -215,6 +215,8 @@ public class TeleOp_League2 extends LinearOpMode {
             if (gamepad2.left_bumper){
                 wrist.setPosition(WRIST_INTAKE_POSITION);
             } else if (gamepad2.right_bumper){
+                wrist.setPosition(WRIST_LIFT_POSITION);
+            } else if (gamepad2.x){
                 wrist.setPosition(WRIST_DROP_POSITION);
             }
 

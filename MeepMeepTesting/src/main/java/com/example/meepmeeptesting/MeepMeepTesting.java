@@ -25,7 +25,7 @@ public class MeepMeepTesting {
         Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
         Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
 
-        Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-9), Math.PI/2.0);
+        Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
         Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -56, 0);
 
         Action TrajectoryBlueNearToLeftPark = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
@@ -48,9 +48,8 @@ public class MeepMeepTesting {
                 .setReversed(false)
                 .splineToLinearHeading(BLUE_BOARD_CENTER_TAG, 0)
                 .waitSeconds(2)
-//                .strafeToLinearHeading(BLUE_LEFT_PARK.position, Math.toRadians(-135))
                 .strafeTo(BLUE_LEFT_PARK.position)
-//                .turn(-Math.toRadians(135)) // Optional: Turn so that you are ready to grab pixels in manual mode.
+                .turn(Math.toRadians(-135)) // Optional: Turn so that you are ready to grab pixels in manual mode.
                 .waitSeconds(2)
                 .build();
 
@@ -66,7 +65,8 @@ public class MeepMeepTesting {
                 .lineToY(BLUE_FAR_CENTER_SPIKE.position.y + 6)
                 .setReversed(false)
                 .strafeTo(new Vector2d(-48, BLUE_FAR_CENTER_SPIKE.position.y + 6))
-                .splineToLinearHeading(new Pose2d(-48, 12, 0), 0)
+                .strafeTo(new Vector2d(-48, 12))
+                .turnTo(0)
                 .lineToX(BLUE_BOARD_CENTER_TAG.position.x)
                 .strafeTo(BLUE_BOARD_CENTER_TAG.position)
                 .waitSeconds(2)
@@ -74,10 +74,11 @@ public class MeepMeepTesting {
                 .turn(Math.PI +1e-6)
                 .build();
 
-        myBot.runAction(TrajectoryBlueNearGeCenter);
+        // This is what gets shown on the ui
+        myBot.runAction(TrajectoryBlueFarGeCenter);
 
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_OFFICIAL)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
