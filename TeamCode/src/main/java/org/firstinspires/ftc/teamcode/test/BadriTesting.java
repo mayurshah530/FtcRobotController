@@ -33,8 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -65,8 +63,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp_Leauge2", group="Linear OpMode")
-public class TeleOp_League2 extends LinearOpMode {
+@TeleOp(name="BadriTesting", group="Linear OpMode")
+public class BadriTesting extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -74,22 +72,6 @@ public class TeleOp_League2 extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor viper_slide = null;
-
-    private DcMotor intake_front = null;
-    private DcMotor intake_back = null;
-    private Servo forearm = null;
-    private Servo wrist = null;
-    private Servo plane_launcher= null;
-
-    public double INTAKE_MOTOR_POWER = 1.0;
-    public double FOREARM_INTAKE_POSITION = 1.0;
-    public double FOREARM_LIFT_POSITION = 0.5;
-    public double FOREARM_DROP_POSITION = 0.0;
-
-    public double WRIST_INTAKE_POSITION = 1.0;
-    public double WRIST_LIFT_POSITION = 0.5;
-    public double WRIST_DROP_POSITION = 0.0;
 
     @Override
     public void runOpMode() {
@@ -100,14 +82,6 @@ public class TeleOp_League2 extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        viper_slide = hardwareMap.get(DcMotor.class, "viper_slide");
-        intake_front = hardwareMap.get(DcMotor.class,"intake_front");
-        intake_back = hardwareMap.get(DcMotor.class,"intake_back");
-        plane_launcher = hardwareMap.get(Servo.class,"plane_launcher");
-        forearm = hardwareMap.get(Servo.class,"forearm");
-        wrist = hardwareMap.get(Servo.class,"wrist");
-
-
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -121,11 +95,8 @@ public class TeleOp_League2 extends LinearOpMode {
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        viper_slide.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -138,40 +109,17 @@ public class TeleOp_League2 extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            // =======================
-            // Gamepad 1 controls
-            // =======================
-
-            // Intake motor
-            if (gamepad1.left_bumper) {
-                intake_front.setPower(-INTAKE_MOTOR_POWER);
-                intake_back.setPower(-INTAKE_MOTOR_POWER);
-            } else if (gamepad1.right_bumper) {
-                intake_front.setPower(INTAKE_MOTOR_POWER);
-                intake_back.setPower(INTAKE_MOTOR_POWER);
-            } else {
-                intake_back.setPower(0);
-                intake_front.setPower(0);
-            }
-
-            // Plane launcher
-            if (gamepad1.dpad_up){
-                plane_launcher.setPosition(1);
-            } else{
-                plane_launcher.setPosition(0.5);
-            }
-
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x/2;
-            double yaw     =  gamepad1.right_stick_x/2;
+            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  gamepad1.left_stick_x;
+            double yaw     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = (axial + lateral + yaw);
-            double rightFrontPower = (axial - lateral - yaw);
-            double leftBackPower   = (axial - lateral + yaw);
-            double rightBackPower  = (axial + lateral - yaw);
+            double leftFrontPower  = (axial + lateral + yaw)/2;
+            double rightFrontPower = (axial - lateral - yaw)/2;
+            double leftBackPower   = (axial - lateral + yaw)/2;
+            double rightBackPower  = (axial + lateral - yaw)/2;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -179,12 +127,29 @@ public class TeleOp_League2 extends LinearOpMode {
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
-            if (max > 0.5) {
+            if (max > 1.0) {
                 leftFrontPower  /= max;
                 rightFrontPower /= max;
                 leftBackPower   /= max;
                 rightBackPower  /= max;
             }
+
+            // This is test code:
+            //
+            // Uncomment the following code to test your motor directions.
+            // Each button should make the corresponding motor run FORWARD.
+            //   1) First get all the motors to take to correct positions on the robot
+            //      by adjusting your Robot Configuration if necessary.
+            //   2) Then make sure they run in the correct direction by modifying the
+            //      the setDirection() calls above.
+            // Once the correct motors move in the correct direction re-comment this code.
+
+            /*
+            leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
+            leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
+            rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
+            rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
+            */
 
             // Send calculated power to wheels
             leftFrontDrive.setPower(leftFrontPower);
@@ -192,42 +157,10 @@ public class TeleOp_League2 extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
 
-            // =======================
-            // Gamepad 2 controls
-            // =======================
-
-            if (gamepad2.a){
-                forearm.setPosition(FOREARM_INTAKE_POSITION);
-//                wrist.setPosition(WRIST_INTAKE_POSITION);
-            } else if (gamepad2.b){
-                forearm.setPosition(FOREARM_LIFT_POSITION);
-//                wrist.setPosition(WRIST_LIFT_POSITION);
-            } else if (gamepad2.y) {
-                forearm.setPosition(FOREARM_DROP_POSITION);
-//                wrist.setPosition(WRIST_DROP_POSITION);
-            }
-
-            // Right trigger to move viper slide up, left trigger to move it down.
-            double viperSlidePower = gamepad2.right_trigger - gamepad2.left_trigger;
-            viper_slide.setPower(viperSlidePower);
-
-            // WRIST POSITION
-            if (gamepad2.left_bumper){
-                wrist.setPosition(WRIST_INTAKE_POSITION);
-            } else if (gamepad2.right_bumper){
-                wrist.setPosition(WRIST_LIFT_POSITION);
-            } else if (gamepad2.x){
-                wrist.setPosition(WRIST_DROP_POSITION);
-            }
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front Wheel left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  Wheel left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.addData("Viper slide power", "%4.2f", viperSlidePower );
-            telemetry.addData("Intake motor power Front/Back", "%4.2f, %4.2f", intake_front.getPower(), intake_back.getPower());
-            telemetry.addData("Forearm servo position", "%4.2f", forearm.getPosition());
-            telemetry.addData("Wrist servo position", "%4.2f", wrist.getPosition());
+            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.update();
         }
     }}
