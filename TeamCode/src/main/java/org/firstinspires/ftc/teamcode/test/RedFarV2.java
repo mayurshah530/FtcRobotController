@@ -28,11 +28,9 @@ public class RedFarV2 extends LinearOpMode {
     double HALF_ROBO_WIDTH = 9;
     double OUTTAKE_TIME = 0.3;
 
-    // Start position blue far; GE: Center
+    // Start position red far; GE: Center
     Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
     Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
-    Pose2d BLUE_CENTER_PARK = new Pose2d(58 - HALF_ROBO_LEN, 2 + HALF_ROBO_LEN , 0);
-    Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
 
     private FirstVisionProcessor visionProcessor;
     private VisionPortal visionPortal;
@@ -49,31 +47,25 @@ public class RedFarV2 extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, RED_FAR_START_POSE);
 
-
         initVisionPortal();
-        visionProcessor.SetAlliance(Alliance.BLUE);
+        visionProcessor.SetAlliance(Alliance.RED);
 
-
-        // 1. Start position: blue far; Game Element location: Center.
-        Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
-
-
-        Action TrajectoryBlueNearGeCenter = drive.actionBuilder(drive.pose)
+        Action TrajectoryRedNearGeCenter = drive.actionBuilder(drive.pose)
                 .lineToY(RED_FAR_CENTER_SPIKE.position.y-5)
                 .waitSeconds(1)
 //                .setReversed(true)
-//                .splineToLinearHeading(BLUE_LEFT_PARK_REVERSE, 0)
+//                .splineToLinearHeading(RED_LEFT_PARK_REVERSE, 0)
                 .build();
 
-        Action TrajectoryBlueNearGeLeft = drive.actionBuilder(drive.pose)
+        Action TrajectoryRedNearGeLeft = drive.actionBuilder(drive.pose)
                 .lineToY(RED_FAR_CENTER_SPIKE.position.y)
                 .turn(Math.PI/2)
-//                .strafeTo(new Vector2d(BLUE_NEAR_START_POSE.position.x, 60))
+//                .strafeTo(new Vector2d(RED_NEAR_START_POSE.position.x, 60))
 //                .strafeTo(new Vector2d(48, 60))
 //                .waitSeconds(2)
                 .build();
 
-        Action TrajectoryBlueNearGeRight = drive.actionBuilder(drive.pose)
+        Action TrajectoryRedNearGeRight = drive.actionBuilder(drive.pose)
                 .lineToY(RED_FAR_CENTER_SPIKE.position.y)
                 .turn(-Math.PI/2)
 //                .setReversed(true)
@@ -96,16 +88,16 @@ public class RedFarV2 extends LinearOpMode {
         telemetry.update();
 
 
-        Action trajectoryToRun = TrajectoryBlueNearGeCenter;
+        Action trajectoryToRun = TrajectoryRedNearGeCenter;
         switch (selectedSide){
             case LEFT:
-                trajectoryToRun = TrajectoryBlueNearGeLeft;
+                trajectoryToRun = TrajectoryRedNearGeLeft;
                 break;
             case CENTER:
-                trajectoryToRun = TrajectoryBlueNearGeCenter;
+                trajectoryToRun = TrajectoryRedNearGeCenter;
                 break;
             case RIGHT:
-                trajectoryToRun = TrajectoryBlueNearGeRight;
+                trajectoryToRun = TrajectoryRedNearGeRight;
                 break;
         }
 
