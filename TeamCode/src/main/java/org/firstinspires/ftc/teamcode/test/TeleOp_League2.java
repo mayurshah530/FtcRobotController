@@ -121,7 +121,7 @@ public class TeleOp_League2 extends LinearOpMode {
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         viper_slide.setDirection(DcMotorSimple.Direction.FORWARD);
         intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -155,21 +155,21 @@ public class TeleOp_League2 extends LinearOpMode {
             }
 
             // Plane launcher
-            if (gamepad1.right_bumper){
-                plane_launcher.setPosition(0.5);
-            } else{
+            if (gamepad1.dpad_up){
                 plane_launcher.setPosition(1);
+            } else{
+                plane_launcher.setPosition(0.5);
             }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
+            double lateral =  gamepad1.left_stick_x/2;
+            double yaw     =  gamepad1.right_stick_x/2;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = (axial + lateral + yaw)/2;
-            double rightFrontPower = (axial - lateral - yaw)/2;
+            double leftFrontPower  = (axial + lateral + yaw);
+            double rightFrontPower = (axial - lateral - yaw);
             double leftBackPower   = (axial - lateral + yaw);
             double rightBackPower  = (axial + lateral - yaw);
 
