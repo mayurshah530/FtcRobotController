@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -24,6 +25,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive.FollowTrajectoryAction;
 //import org.firstinspires.ftc.teamcode.modules.drive.MecanumDrive;
 
 @Config
+@Disabled
 @Autonomous(name = "Template Autoop", group = "16481-Example")
 public class TemplateAutoop extends LinearOpMode {
 

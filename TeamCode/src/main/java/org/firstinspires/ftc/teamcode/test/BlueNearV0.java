@@ -56,7 +56,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.RobotHardware;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="BlueNearV0", group="Robot")
+@Autonomous(name="Blue Or Red Near V0", group="Robot")
 public class BlueNearV0 extends LinearOpMode {
 
     RobotHardware robot = new RobotHardware(this);
@@ -84,7 +84,7 @@ public class BlueNearV0 extends LinearOpMode {
         // Step 1:  Drive forward for 3 seconds
         robot.driveRobot(FORWARD_SPEED,0,0);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.5)) {
+        while (opModeIsActive() && (runtime.seconds() < 1.8)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
