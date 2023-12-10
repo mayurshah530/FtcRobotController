@@ -118,7 +118,6 @@ public class BlueNearV2 extends LinearOpMode {
                 trajectoryToRun = TrajectoryBlueNearGeRight;
                 break;
         }
-        trajectoryToRun = TrajectoryBlueNearGeRight;
 
         // General plan
         // Identify game element location (left/center/right)
