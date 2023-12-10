@@ -84,7 +84,7 @@ public class BlueNearV0 extends LinearOpMode {
         // Step 1:  Drive forward for 3 seconds
         robot.driveRobot(FORWARD_SPEED,0,0);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+        while (opModeIsActive() && (runtime.seconds() < 1.8)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
