@@ -144,27 +144,27 @@ public class TeleOp_League2 extends LinearOpMode {
 
             // Intake motor
             if (gamepad1.left_bumper) {
-                intake_front.setPower(INTAKE_MOTOR_POWER);
-                intake_back.setPower(INTAKE_MOTOR_POWER);
-            } else if (gamepad1.right_bumper) {
                 intake_front.setPower(-INTAKE_MOTOR_POWER);
                 intake_back.setPower(-INTAKE_MOTOR_POWER);
+            } else if (gamepad1.right_bumper) {
+                intake_front.setPower(INTAKE_MOTOR_POWER);
+                intake_back.setPower(INTAKE_MOTOR_POWER);
             } else {
                 intake_back.setPower(0);
                 intake_front.setPower(0);
             }
 
             // Plane launcher
-            if (gamepad1.right_bumper){
-                plane_launcher.setPosition(0.5);
-            } else{
+            if (gamepad1.dpad_up){
                 plane_launcher.setPosition(1);
+            } else{
+                plane_launcher.setPosition(0.5);
             }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x/2;
-            double yaw     =  gamepad1.right_stick_x/4;
+            double yaw     =  gamepad1.right_stick_x/2;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -198,13 +198,13 @@ public class TeleOp_League2 extends LinearOpMode {
 
             if (gamepad2.a){
                 forearm.setPosition(FOREARM_INTAKE_POSITION);
-                wrist.setPosition(WRIST_INTAKE_POSITION);
+//                wrist.setPosition(WRIST_INTAKE_POSITION);
             } else if (gamepad2.b){
                 forearm.setPosition(FOREARM_LIFT_POSITION);
-                wrist.setPosition(WRIST_LIFT_POSITION);
+//                wrist.setPosition(WRIST_LIFT_POSITION);
             } else if (gamepad2.y) {
                 forearm.setPosition(FOREARM_DROP_POSITION);
-                wrist.setPosition(WRIST_DROP_POSITION);
+//                wrist.setPosition(WRIST_DROP_POSITION);
             }
 
             // Right trigger to move viper slide up, left trigger to move it down.
