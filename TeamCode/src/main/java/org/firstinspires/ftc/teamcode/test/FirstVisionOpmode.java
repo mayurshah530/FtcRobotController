@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 @Autonomous()
 public class FirstVisionOpmode extends OpMode {
-    private FirstVisionProcessor visionProcessor;
+    private FirstVisionProcessorV0 visionProcessor;
     private VisionPortal visionPortal;
 
     /**
@@ -26,7 +26,7 @@ public class FirstVisionOpmode extends OpMode {
      */
     @Override
     public void init() {
-        visionProcessor = new FirstVisionProcessor();
+        visionProcessor = new FirstVisionProcessorV0();
         visionPortal = VisionPortal.easyCreateWithDefaults(
                 hardwareMap.get(WebcamName.class, "Webcam 1"), visionProcessor);
 
@@ -45,7 +45,7 @@ public class FirstVisionOpmode extends OpMode {
      */
     @Override
     public void loop() {
-        telemetry.addData("Identified", visionProcessor.getSelection().toString());
+        telemetry.addData("Identified", visionProcessor.getTelemetry());
     }
 
     /*

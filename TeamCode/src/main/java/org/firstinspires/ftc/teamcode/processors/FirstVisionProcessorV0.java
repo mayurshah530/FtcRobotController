@@ -50,13 +50,9 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
         Mat hsvImage = new Mat();
         Imgproc.cvtColor(frame, hsvImage, Imgproc.COLOR_RGB2HSV);
 
-        // Define lower and upper HSV values for the red color range
-        Scalar lowerRed = new Scalar(0, 100, 100);
-        Scalar upperRed = new Scalar(10 , 255, 255);
-
         // Create a mask to extract red-colored pixels
 //        Mat redMask = new Mat();
-        Core.inRange(hsvImage, lowerRed, upperRed, frame);
+        Core.inRange(hsvImage, lowerBlue, upperBlue, frame);
 
 //        Scalar lowerRed2 = new Scalar(150, 100, 100);
 //        Scalar upperRed2 = new Scalar(180, 255, 255);
@@ -126,7 +122,7 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
     }
 
     public String getTelemetry(){ return telemetry;}
-    private Alliance _alliance = Alliance.UNKNOWN;
+    private Alliance _alliance = Alliance.RED;
 
 
     private android.graphics.Rect makeGraphicsRect(Rect rect, float  scaleBmpPxToCanvasPx) {
