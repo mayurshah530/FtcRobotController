@@ -170,8 +170,8 @@ public class TeleOp_League2 extends LinearOpMode {
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = (axial + lateral + yaw)/2;
             double rightFrontPower = (axial - lateral - yaw)/2;
-            double leftBackPower   = (axial - lateral + yaw)/2;
-            double rightBackPower  = (axial + lateral - yaw)/2;
+            double leftBackPower   = (axial - lateral + yaw);
+            double rightBackPower  = (axial + lateral - yaw);
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
