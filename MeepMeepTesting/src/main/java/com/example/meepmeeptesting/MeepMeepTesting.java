@@ -25,6 +25,8 @@ public class MeepMeepTesting {
         Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
         Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
 
+        Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
+
         Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
         Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -56, 0);
 
@@ -38,9 +40,11 @@ public class MeepMeepTesting {
 
         // 1. Start position: blue near; Game Element location: Center.
         Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
+        Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
+
         Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
 
-        Action TrajectoryBlueNearGeCenter = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
+        Action TrajectoryBlueNearGeCenterWithScoring = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
                 .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
                 .waitSeconds(1)
                 .setReversed(true)
@@ -58,14 +62,13 @@ public class MeepMeepTesting {
         Pose2d BLUE_FAR_CENTER_SPIKE = new Pose2d(-36, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
         Pose2d BLUE_CENTER_PARK = new Pose2d(58 - HALF_ROBO_LEN, 2 + HALF_ROBO_LEN , 0);
 
-        Action TrajectoryBlueFarGeCenter = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
+        Action TrajectoryBlueFarGeCenterWithScoring = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
                 .lineToY(BLUE_FAR_CENTER_SPIKE.position.y)
                 .waitSeconds(1)
                 .setReversed(true)
                 .lineToY(BLUE_FAR_CENTER_SPIKE.position.y + 6)
                 .setReversed(false)
                 .strafeTo(new Vector2d(-48, BLUE_FAR_CENTER_SPIKE.position.y + 6))
-                .strafeTo(new Vector2d(-48, 12))
                 .turnTo(0)
                 .lineToX(BLUE_BOARD_CENTER_TAG.position.x)
                 .strafeTo(BLUE_BOARD_CENTER_TAG.position)
@@ -74,8 +77,38 @@ public class MeepMeepTesting {
                 .turn(Math.PI +1e-6)
                 .build();
 
-        // This is what gets shown on the ui
-        myBot.runAction(TrajectoryBlueFarGeCenter);
+        //Start Position blue near; GE: Center
+        Action TrajectoryBlueNearGeCenter = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
+                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
+                .waitSeconds(1)
+                .setReversed(true)
+                .splineToLinearHeading(BLUE_LEFT_PARK_REVERSE, 0)
+                .waitSeconds(2)
+                .build();
+
+        //Start Position blue near; GE: Left
+        Action TrajectoryBlueNearGeLeft = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
+                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
+                .turn(Math.PI/2)
+                .strafeTo(new Vector2d(BLUE_NEAR_START_POSE.position.x, 60))
+                .strafeTo(new Vector2d(48, 60))
+                .waitSeconds(2)
+                .build();
+
+        //Start Position blue near; GE: right
+        Action TrajectoryBlueNearGeRight = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
+                .strafeTo(new Vector2d(14, BLUE_NEAR_CENTER_SPIKE.position.y))
+//                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
+                .turn(-Math.PI/2)
+                .lineToX(2+HALF_ROBO_LEN)
+                .waitSeconds(1)
+                .setReversed(true)
+                .strafeTo(new Vector2d(48, 60))
+                .waitSeconds(2)
+                .build();
+
+        // This is what gets shown on the UI
+        myBot.runAction(TrajectoryBlueNearGeRight);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)

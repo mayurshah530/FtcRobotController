@@ -34,6 +34,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -59,29 +60,33 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         // drive model parameters
-        public double inPerTick = 100.0/33822.0;
-//        public double lateralInPerTick = 82.64231498074504;
-        public double lateralInPerTick = 100.0/33822.0;
-        public double trackWidthTicks = 4881.468494725864;
+
+         public double inPerTick = 100.0/33822.0; //100.0/33822.0 = 0.00295665543
+        // As per goBuilda specs
+//        public double inPerTick = 0.02224460305;
+        //        public double lateralInPerTick = 82.64231498074504;new bot: 73.145566367
+        public double lateralInPerTick = inPerTick;
+        public double trackWidthTicks = 5228.703; // was 4881.468494725864;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.8184513706832748;
-        public double kV = 0.0005887885510354017;
-        public double kA = 0;
+        public double kS =  1.17778765033946; // was 0.8184513706832748;
+        public double kV = 0.0005718607372084072; // was 0.0005887885510354017;
+        public double kA = 0.000055;
 
+        public double SCALE_FACTOR_TO_MAX = 1.0;
         // path profile parameters (in inches)
-        public double maxWheelVel = 50;
-        public double minProfileAccel = -30;
-        public double maxProfileAccel = 50;
+        public double maxWheelVel = 40 * SCALE_FACTOR_TO_MAX;
+        public double minProfileAccel = -15 * SCALE_FACTOR_TO_MAX;
+        public double maxProfileAccel = 20 * SCALE_FACTOR_TO_MAX;
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI; // shared with path
-        public double maxAngAccel = Math.PI;
+        public double maxAngVel = Math.PI * SCALE_FACTOR_TO_MAX; // shared with path
+        public double maxAngAccel = Math.PI * SCALE_FACTOR_TO_MAX;
 
         // path controller gains
-        public double axialGain = 8.0;
-        public double lateralGain = 8.0;
-        public double headingGain = 8.0; // shared with turn
+        public double axialGain = 0.5;
+        public double lateralGain = 0.5;
+        public double headingGain = 10.0; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -104,6 +109,10 @@ public final class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
+
+
+    private DcMotor intake_front = null;
+    private DcMotor intake_back = null;
 
     public final VoltageSensor voltageSensor;
 
@@ -199,8 +208,14 @@ public final class MecanumDrive {
         rightBack = hardwareMap.get(DcMotorEx.class, "right_back_drive");
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
+        intake_front = hardwareMap.get(DcMotor.class,"intake_front");
+        intake_back = hardwareMap.get(DcMotor.class,"intake_back");
+
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -265,7 +280,14 @@ public final class MecanumDrive {
                 t = Actions.now() - beginTs;
             }
 
-            if (t >= timeTrajectory.duration) {
+            Pose2dDual<Time> txWorldTarget = timeTrajectory.get(t);
+            targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
+            PoseVelocity2d robotVelRobot = updatePoseEstimate();
+            Pose2d error = txWorldTarget.value().minusExp(pose);
+
+            if ((t >= timeTrajectory.duration && error.position.norm() < 2
+                    && robotVelRobot.linearVel.norm() < 0.5)
+                    || t + 1 >= timeTrajectory.duration) {
                 leftFront.setPower(0);
                 leftBack.setPower(0);
                 rightBack.setPower(0);
@@ -274,10 +296,6 @@ public final class MecanumDrive {
                 return false;
             }
 
-            Pose2dDual<Time> txWorldTarget = timeTrajectory.get(t);
-            targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
-
-            PoseVelocity2d robotVelRobot = updatePoseEstimate();
 
             PoseVelocity2dDual<Time> command = new HolonomicController(
                     PARAMS.axialGain, PARAMS.lateralGain, PARAMS.headingGain,
@@ -308,7 +326,6 @@ public final class MecanumDrive {
             p.put("y", pose.position.y);
             p.put("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
 
-            Pose2d error = txWorldTarget.value().minusExp(pose);
             p.put("xError", error.position.x);
             p.put("yError", error.position.y);
             p.put("headingError (deg)", Math.toDegrees(error.heading.toDouble()));
@@ -365,7 +382,6 @@ public final class MecanumDrive {
 
                 return false;
             }
-
             Pose2dDual<Time> txWorldTarget = turn.get(t);
             targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
 

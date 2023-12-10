@@ -1,19 +1,16 @@
 package org.firstinspires.ftc.teamcode.test;
 
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -24,22 +21,17 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Config
-@Autonomous(name = "Blue Near V2", group = "RoadRunner 1.0")
-public class BlueNearV2 extends LinearOpMode {
+@Autonomous(name = "Red Far V2", group = "RoadRunner 1.0")
+public class RedFarV2 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;
     double HALF_ROBO_WIDTH = 9;
+    double OUTTAKE_TIME = 0.3;
 
-
-    // Blue near start pose
-    Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
-    Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
-    Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 50, -Math.PI);
-
-    Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-
-    Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
-
+    // Start position blue far; GE: Center
+    Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
+    Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
+    Pose2d BLUE_CENTER_PARK = new Pose2d(58 - HALF_ROBO_LEN, 2 + HALF_ROBO_LEN , 0);
     Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
 
     private FirstVisionProcessor visionProcessor;
@@ -47,49 +39,45 @@ public class BlueNearV2 extends LinearOpMode {
     private AprilTagProcessor aprilTag;
     private ScoringElementLocation selectedSide = ScoringElementLocation.UNKNOWN;
 
+    private DcMotor intake_front = null;
+    private ElapsedTime runtime = new ElapsedTime();
+
     @Override
     public void runOpMode() {
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, BLUE_NEAR_START_POSE);
+        intake_front = hardwareMap.get(DcMotor.class,"intake_front");
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_FAR_START_POSE);
+
 
         initVisionPortal();
         visionProcessor.SetAlliance(Alliance.BLUE);
 
-        // 1. Start position: blue near; Game Element location: Center.
-        // Declare trajectory
-        Action TrajectoryBlueNearGeCenterWithScoring = drive.actionBuilder(drive.pose)
-                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
+
+        // 1. Start position: blue far; Game Element location: Center.
+        Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
+
+
+        Action TrajectoryBlueNearGeCenter = drive.actionBuilder(drive.pose)
+                .lineToY(RED_FAR_CENTER_SPIKE.position.y-5)
                 .waitSeconds(1)
-                .setReversed(true)
-                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y + 18)
-                .setReversed(false)
-                .splineToLinearHeading(BLUE_BOARD_CENTER_TAG, 0)
-                .waitSeconds(2)
-                .strafeTo(BLUE_LEFT_PARK.position)
-                .turn(Math.toRadians(-135)) // Optional: Turn so that you are ready to grab pixels in manual mode.
-                .waitSeconds(2)
+//                .setReversed(true)
+//                .splineToLinearHeading(BLUE_LEFT_PARK_REVERSE, 0)
                 .build();
 
-        Action TrajectoryBlueNearGeCenter = drive.actionBuilder(BLUE_NEAR_START_POSE)
-                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y-5)
-                .waitSeconds(1)
-                .setReversed(true)
-                .splineToLinearHeading(BLUE_LEFT_PARK_REVERSE, 0)
-                .build();
-
-        Action TrajectoryBlueNearGeLeft = drive.actionBuilder(BLUE_NEAR_START_POSE)
-                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
+        Action TrajectoryBlueNearGeLeft = drive.actionBuilder(drive.pose)
+                .lineToY(RED_FAR_CENTER_SPIKE.position.y)
                 .turn(Math.PI/2)
-                .strafeTo(new Vector2d(BLUE_NEAR_START_POSE.position.x, 60))
-                .strafeTo(new Vector2d(48, 60))
-                .waitSeconds(2)
+//                .strafeTo(new Vector2d(BLUE_NEAR_START_POSE.position.x, 60))
+//                .strafeTo(new Vector2d(48, 60))
+//                .waitSeconds(2)
                 .build();
 
-        Action TrajectoryBlueNearGeRight = drive.actionBuilder(BLUE_NEAR_START_POSE)
-                .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
+        Action TrajectoryBlueNearGeRight = drive.actionBuilder(drive.pose)
+                .lineToY(RED_FAR_CENTER_SPIKE.position.y)
                 .turn(-Math.PI/2)
-                .setReversed(true)
-                .strafeTo(new Vector2d(48, 60))
+//                .setReversed(true)
+//                .strafeTo(new Vector2d(48, 60))
                 .build();
 
         while(!isStopRequested() && !opModeIsActive()) {
@@ -98,13 +86,15 @@ public class BlueNearV2 extends LinearOpMode {
 
         waitForStart();
 
+        if (isStopRequested()) return;
+
+
         selectedSide = visionProcessor.getSelection();
         visionPortal.stopStreaming();
         visionPortal.setProcessorEnabled(visionProcessor, false);
         telemetry.addData("selectedSide: ", selectedSide.toString());
         telemetry.update();
 
-        if (isStopRequested()) return;
 
         Action trajectoryToRun = TrajectoryBlueNearGeCenter;
         switch (selectedSide){
@@ -118,21 +108,11 @@ public class BlueNearV2 extends LinearOpMode {
                 trajectoryToRun = TrajectoryBlueNearGeRight;
                 break;
         }
-        trajectoryToRun = TrajectoryBlueNearGeRight;
-
-        // General plan
-        // Identify game element location (left/center/right)
-        // Go place pixel
-        // [later] Go towards scoring position
-        // [later] Enable AprilTag processor to find absolute location
-        // [later] Move to precise scoring position
-        // [later] Score
-        // Park
 
         Actions.runBlocking(
                 new SequentialAction(
-                        trajectoryToRun, 
-                        // This action uses a Lambda expression to reduce complexity
+                        trajectoryToRun, // Example of a drive action
+                        // Only that this action uses a Lambda expression to reduce complexity
                         (telemetryPacket) -> {
                             telemetry.addData("x", drive.pose.position.x);
                             telemetry.addData("y", drive.pose.position.y);
@@ -142,6 +122,15 @@ public class BlueNearV2 extends LinearOpMode {
                         }
                 )
         );
+
+        intake_front.setPower(-0.2);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < OUTTAKE_TIME)) {
+        }
+        intake_front.setPower(0.0);
+
+
+
     }
 
     private void initVisionPortal() {
