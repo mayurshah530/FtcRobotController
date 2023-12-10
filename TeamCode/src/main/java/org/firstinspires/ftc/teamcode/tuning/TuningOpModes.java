@@ -160,6 +160,8 @@ public final class TuningOpModes {
         manager.register(metaForClass(ManualFeedbackTuner.class), ManualFeedbackTuner.class);
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
         manager.register(metaForClass(TurnRightTest1.class), TurnRightTest1.class);
+        manager.register(metaForClass(TurnLeftTest1.class), TurnLeftTest1.class);
+        manager.register(metaForClass(GoStraightTest1.class), GoStraightTest1.class);
         manager.register(metaForClass(LocalizationTest.class), LocalizationTest.class);
 
         FtcDashboard.getInstance().withConfigRoot(configRoot -> {
