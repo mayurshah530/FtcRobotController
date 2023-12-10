@@ -88,8 +88,8 @@ public class TeleOp_League2 extends LinearOpMode {
     public double FOREARM_DROP_POSITION = 0.0;
 
     public double WRIST_INTAKE_POSITION = 1.0;
+    public double WRIST_DROP_POSITION = 0.5;
     public double WRIST_LIFT_POSITION = 0.5;
-    public double WRIST_DROP_POSITION = 0.0;
 
     @Override
     public void runOpMode() {
@@ -121,7 +121,7 @@ public class TeleOp_League2 extends LinearOpMode {
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         viper_slide.setDirection(DcMotorSimple.Direction.FORWARD);
         intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -144,11 +144,11 @@ public class TeleOp_League2 extends LinearOpMode {
 
             // Intake motor
             if (gamepad1.left_bumper) {
-                intake_front.setPower(INTAKE_MOTOR_POWER);
-                intake_back.setPower(INTAKE_MOTOR_POWER);
-            } else if (gamepad1.right_bumper) {
                 intake_front.setPower(-INTAKE_MOTOR_POWER);
                 intake_back.setPower(-INTAKE_MOTOR_POWER);
+            } else if (gamepad1.right_bumper) {
+                intake_front.setPower(INTAKE_MOTOR_POWER);
+                intake_back.setPower(INTAKE_MOTOR_POWER);
             } else {
                 intake_back.setPower(0);
                 intake_front.setPower(0);
@@ -162,14 +162,14 @@ public class TeleOp_League2 extends LinearOpMode {
             }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x/2;
-            double yaw     =  gamepad1.right_stick_x/4;
+            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  gamepad1.left_stick_x;
+            double yaw     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = (axial + lateral + yaw);
-            double rightFrontPower = (axial - lateral - yaw);
+            double leftFrontPower  = (axial + lateral + yaw)/2;
+            double rightFrontPower = (axial - lateral - yaw)/2;
             double leftBackPower   = (axial - lateral + yaw);
             double rightBackPower  = (axial + lateral - yaw);
 
@@ -198,13 +198,13 @@ public class TeleOp_League2 extends LinearOpMode {
 
             if (gamepad2.a){
                 forearm.setPosition(FOREARM_INTAKE_POSITION);
-                wrist.setPosition(WRIST_INTAKE_POSITION);
+//                wrist.setPosition(WRIST_INTAKE_POSITION);
             } else if (gamepad2.b){
                 forearm.setPosition(FOREARM_LIFT_POSITION);
-                wrist.setPosition(WRIST_LIFT_POSITION);
+//                wrist.setPosition(WRIST_LIFT_POSITION);
             } else if (gamepad2.y) {
                 forearm.setPosition(FOREARM_DROP_POSITION);
-                wrist.setPosition(WRIST_DROP_POSITION);
+//                wrist.setPosition(WRIST_DROP_POSITION);
             }
 
             // Right trigger to move viper slide up, left trigger to move it down.
@@ -215,8 +215,6 @@ public class TeleOp_League2 extends LinearOpMode {
             if (gamepad2.left_bumper){
                 wrist.setPosition(WRIST_INTAKE_POSITION);
             } else if (gamepad2.right_bumper){
-                wrist.setPosition(WRIST_LIFT_POSITION);
-            } else if (gamepad2.x){
                 wrist.setPosition(WRIST_DROP_POSITION);
             }
 
