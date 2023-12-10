@@ -60,7 +60,10 @@ public class MeepMeepTesting {
         // Start position blue far; GE: Center
         Pose2d BLUE_FAR_START_POSE = new Pose2d(-36, 72-HALF_ROBO_LEN, -Math.PI/2.0);
         Pose2d BLUE_FAR_CENTER_SPIKE = new Pose2d(-36, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-        Pose2d BLUE_CENTER_PARK = new Pose2d(58 - HALF_ROBO_LEN, 2 + HALF_ROBO_LEN , 0);
+        Pose2d BLUE_CENTER_PARK = new Pose2d(56, 12 , 0);
+
+        Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
+        Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
 
         Action TrajectoryBlueFarGeCenterWithScoring = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
                 .lineToY(BLUE_FAR_CENTER_SPIKE.position.y)
@@ -107,8 +110,21 @@ public class MeepMeepTesting {
                 .waitSeconds(2)
                 .build();
 
+        Action TrajectoryBlueFarToPark = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
+                .strafeTo(new Vector2d(-36, 12))
+                .turn(Math.PI/2)
+                .strafeTo(BLUE_CENTER_PARK.position)
+                .build();
+
+
+        Action TrajectoryRedFarToPark = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .strafeTo(new Vector2d(-36, -12))
+                .turn(-Math.PI/2)
+                .strafeTo(RED_CENTER_PARK.position)
+                .build();
+
         // This is what gets shown on the UI
-        myBot.runAction(TrajectoryBlueNearGeRight);
+        myBot.runAction(TrajectoryRedFarToPark);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
