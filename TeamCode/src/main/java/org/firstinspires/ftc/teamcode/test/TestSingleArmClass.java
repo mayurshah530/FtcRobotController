@@ -63,8 +63,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *  Also add another new file named RobotHardware.java, select the sample with that name, and select Not an OpMode.
  */
 
-@TeleOp(name="Concept: Robot Hardware Class", group="Robot")
 @Disabled
+@TeleOp(name="Concept: Robot Hardware Class", group="Robot")
 public class TestSingleArmClass extends LinearOpMode {
 
     // Create a RobotHardware object to be used to access robot hardware.
