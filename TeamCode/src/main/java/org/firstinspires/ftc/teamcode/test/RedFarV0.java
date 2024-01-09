@@ -21,7 +21,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Config
-@Autonomous(name = "Red Far V2", group = "RoadRunner 1.0")
+@Autonomous(name = "Red Far V0", group = "RoadRunner 1.0")
 public class RedFarV0 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;

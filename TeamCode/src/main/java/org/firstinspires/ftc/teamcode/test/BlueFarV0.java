@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "Red Far V2", group = "RoadRunner 1.0")
+@Autonomous(name = "Blue Far V0", group = "RoadRunner 1.0")
 public class BlueFarV0 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;
