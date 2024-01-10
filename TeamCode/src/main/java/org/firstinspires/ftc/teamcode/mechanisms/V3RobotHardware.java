@@ -61,30 +61,33 @@ public class V3RobotHardware {
     private OpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
+//    private DcMotor leftFrontDrive = null;
+//    private DcMotor leftBackDrive = null;
+//    private DcMotor rightFrontDrive = null;
+//    private DcMotor rightBackDrive = null;
 
     private DcMotor linearActLeft = null;
     private DcMotor linearActRight = null;
 
-    private DcMotor intake_front = null;
-    private DcMotor intake_back = null;
+//    private DcMotor intake = null;
+//    private DcMotor intake_back = null;
     private CRServo liftLeft = null;
     private CRServo liftRight = null;
 
-    private CRServo wrist = null;
+//    private CRServo wrist = null;
 
-    private Servo plane_launcher= null;
+//    private Servo plane_launcher= null;
+//    private Servo boxLever = null;
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
-    public static final double LIFT_UP_POWER = 0.6;
+    public static final double LIFT_UP_POWER = 0.9;
 
-    public static final double LIFT_DOWN_POWER = 0.4;
-    public static final double TICKS_PER_REV = 537.6;
-    public static final double MAX_RPM = 312;
+    public static final double LIFT_DOWN_POWER = -0.5 ;
+    public static final double LIFT_ZERO_POWER = 0.5;
+
+//    public static final double TICKS_PER_REV = 537.6;
+//    public static final double MAX_RPM = 312;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -92,12 +95,12 @@ public class V3RobotHardware {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-
-    public static double WHEEL_RADIUS = 1.88976; // in
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    static final double     COUNTS_PER_INCH         = (TICKS_PER_REV * GEAR_RATIO) /
-            (WHEEL_RADIUS * 2 * Math.PI);
-
+//
+//    public static double WHEEL_RADIUS = 1.88976; // in
+//    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
+//    static final double     COUNTS_PER_INCH         = (TICKS_PER_REV * GEAR_RATIO) /
+//            (WHEEL_RADIUS * 2 * Math.PI);
+//
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public V3RobotHardware(OpMode opmode) {
@@ -114,34 +117,35 @@ public class V3RobotHardware {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
+//        leftFrontDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_front_drive");
+//        leftBackDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
+//        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
+//        rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
 
-        linearActLeft = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_left");
-        linearActRight = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_right");
-        intake_front = myOpMode.hardwareMap.get(DcMotor.class,"intake_front");
-        intake_back = myOpMode.hardwareMap.get(DcMotor.class,"intake_back");
+        linearActLeft   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_left");
+        linearActRight   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_right");
 
-        plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
+        //        intake = myOpMode.hardwareMap.get(DcMotor.class,"intake");
+      //  intake_back = myOpMode.hardwareMap.get(DcMotor.class,"intake_back");
+
+//        plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
 
         liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
         liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
-        wrist = myOpMode.hardwareMap.get(CRServo.class,"wrist");
+      // wrist = myOpMode.hardwareMap.get(CRServo.class,"wrist");
+//        boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
 
         // Set directions for drive motors
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
+//        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+//        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+//
+//        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+//        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+//
+//        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+//        linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+//        linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -163,9 +167,13 @@ public class V3RobotHardware {
         setLinearActuatorPower(-0.5);
     }
 
+    public void actuatorStop(){
+        setLinearActuatorPower(0.0);
+    }
+
     public void setIntakePower(double power){
-        intake_front.setPower(power);
-        intake_back.setPower(power);
+//        intake.setPower(power);
+//        intake_back.setPower(power);
     }
     public void setLinearActuatorPower(double power){
         linearActLeft.setPower(power);
@@ -177,9 +185,9 @@ public class V3RobotHardware {
         liftRight.setPower(power);
     }
 
-    public void setPlaneLauncherPosition(double position){
-        plane_launcher.setPosition(position);
-    }
+//    public void setPlaneLauncherPosition(double position){
+//        plane_launcher.setPosition(position);
+//    }
 
     /**
      * Calculates the power required for each of the 4 wheels' motor to accomplish the required axial, lateral and yaw motions.
@@ -229,102 +237,10 @@ public class V3RobotHardware {
      */
     public void setDrivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower) {
         // Send calculated power to wheels
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
+//        leftFrontDrive.setPower(leftFrontPower);
+//        rightFrontDrive.setPower(rightFrontPower);
+//        leftBackDrive.setPower(leftBackPower);
+//        rightBackDrive.setPower(rightBackPower);
     }
-
-    public void initEncoders(){
-
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        myOpMode.telemetry.addData("Starting at", "%7d :%7d",
-                leftFrontDrive.getCurrentPosition(),
-                leftBackDrive.getCurrentPosition(),
-                rightFrontDrive.getCurrentPosition(),
-                rightBackDrive.getCurrentPosition());
-        myOpMode.telemetry.update();
-    }
-
-
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the OpMode running.
-     */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
-
-        ElapsedTime runtime = new ElapsedTime();
-
-
-        // Ensure that the OpMode is still active
-
-        // Determine new target position, and pass to motor controller
-        newLeftTarget = leftFrontDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-        newLeftTarget = leftBackDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-        newRightTarget = rightFrontDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-        newRightTarget = rightBackDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-
-        leftFrontDrive.setTargetPosition(newLeftTarget);
-        leftBackDrive.setTargetPosition(newLeftTarget);
-        rightFrontDrive.setTargetPosition(newRightTarget);
-        rightBackDrive.setTargetPosition(newRightTarget);
-
-        // Turn On RUN_TO_POSITION
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // reset the timeout time and start motion.
-        runtime.reset();
-        leftFrontDrive.setPower(Math.abs(speed));
-        leftBackDrive.setPower(Math.abs(speed));
-        rightFrontDrive.setPower(Math.abs(speed));
-        rightBackDrive.setPower(Math.abs(speed));
-
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while ((runtime.seconds() < timeoutS) &&
-                (leftFrontDrive.isBusy() && leftBackDrive.isBusy() && rightFrontDrive.isBusy() && rightBackDrive.isBusy())) {
-
-            // Display it for the driver.
-            myOpMode.telemetry.addData("Running to", " %7d :%7d", newLeftTarget, newRightTarget);
-            myOpMode.telemetry.addData("Currently at", " at %7d :%7d",
-                    leftFrontDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition());
-            myOpMode.telemetry.update();
-        }
-
-        // Stop all motion;
-        stop();
-        // Turn off RUN_TO_POSITION
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // sleep(250);   // optional pause after each move.
-    }
-
 
 }

@@ -53,10 +53,14 @@ public class TeleOp_League3 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+
+        // initialize all the hardware, using the hardware class. See how clean and simple this is?
+        robot.init();
+
+
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
         waitForStart();
         runtime.reset();
 
@@ -64,25 +68,17 @@ public class TeleOp_League3 extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            // =======================
-            // Gamepad 1 controls
-            // =======================
+//             =======================
+//             Gamepad 1 controls
+//             =======================
 
-            // Intake motor
-            if (gamepad1.left_bumper) {
-                robot.setIntakePower(-INTAKE_MOTOR_POWER);
-            } else if (gamepad1.right_bumper) {
-                robot.setIntakePower(INTAKE_MOTOR_POWER);
-            } else {
-                robot.setIntakePower(0.0);
-            }
 
             // Plane launcher
-            if (gamepad1.dpad_up){
-                robot.setPlaneLauncherPosition(0.0);
-            } else{
-                robot.setPlaneLauncherPosition(1.0);
-            }
+//            if (gamepad1.dpad_up){
+//                robot.setPlaneLauncherPosition(0.0);
+//            } else{
+//                robot.setPlaneLauncherPosition(1.0);
+//            }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
@@ -90,18 +86,30 @@ public class TeleOp_League3 extends LinearOpMode {
             double yaw     =  gamepad1.right_stick_x/2;
             robot.driveRobot(axial, lateral, yaw);
 
+
             // =======================
             // Gamepad 2 controls
             // =======================
-            if (gamepad2.y){
+
+            // Move linear actuator
+            if (gamepad2.left_bumper){
                 robot.actuatorExpand();
-            } else if (gamepad2.a){
+            } else if (gamepad2.right_bumper){
                 robot.actuatorRetract();
-            } else if (gamepad2.x){
-                robot.liftUp();
-            } else if (gamepad2.b){
-                robot.liftDown();
+            } else {
+                robot.actuatorStop();
             }
+
+            // Tilt up/down
+            if (gamepad2.dpad_up){
+                robot.setCRServoPower(robot.LIFT_UP_POWER);
+            } else if (gamepad2.dpad_down) {
+                robot.setCRServoPower(robot.LIFT_DOWN_POWER);
+            } 
+
+
+
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
