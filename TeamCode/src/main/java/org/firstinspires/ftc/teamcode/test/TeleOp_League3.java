@@ -92,7 +92,7 @@ public class TeleOp_League3 extends LinearOpMode {
             // =======================
 
             // Move linear actuator
-            if (gamepad2.left_bumper){
+            if (gamepad2.left_bumper) {
                 robot.actuatorExpand();
             } else if (gamepad2.right_bumper){
                 robot.actuatorRetract();
@@ -105,7 +105,14 @@ public class TeleOp_League3 extends LinearOpMode {
                 robot.setCRServoPower(robot.LIFT_UP_POWER);
             } else if (gamepad2.dpad_down) {
                 robot.setCRServoPower(robot.LIFT_DOWN_POWER);
-            } 
+            } else {
+                robot.setCRServoPower(0.0);
+            }
+
+            // Tilt up/down
+            // Right trigger to move viper slide up, left trigger to move it down.
+          //  double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
+            //robot.setCRServoPower(servoLiftPower);
 
 
 
