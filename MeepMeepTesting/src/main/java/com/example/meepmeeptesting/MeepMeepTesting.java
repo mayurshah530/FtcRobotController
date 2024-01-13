@@ -123,8 +123,29 @@ public class MeepMeepTesting {
                 .strafeTo(RED_CENTER_PARK.position)
                 .build();
 
+        Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
+        Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
+
+        Action v3RedNearGeCenerPark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+                .strafeTo(RED_NEAR_CENTER_SPIKE.position)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(12, -40))
+                .turn(Math.toRadians(-120))
+                .strafeTo(RED_RIGHT_PARK.position)
+                .build();
+
+
+        Action v3RedNearGeRightPark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
+                .strafeTo(new Vector2d(RED_NEAR_RIGHT_SPIKE.position.x - 3, RED_NEAR_RIGHT_SPIKE.position.y))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(12, -48))
+//                .turn(Math.toRadians(-120))
+                .strafeTo(RED_RIGHT_PARK.position)
+                .build();
+
         // This is what gets shown on the UI
-        myBot.runAction(TrajectoryRedFarToPark);
+        myBot.runAction(v3RedNearGeRightPark);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
