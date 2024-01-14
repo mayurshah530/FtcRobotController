@@ -61,18 +61,18 @@ public class V3RobotHardware {
     private OpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-//    private DcMotor leftFrontDrive = null;
-//    private DcMotor leftBackDrive = null;
-//    private DcMotor rightFrontDrive = null;
-//    private DcMotor rightBackDrive = null;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
 
-    private DcMotor linearActLeft = null;
-    private DcMotor linearActRight = null;
+//    private DcMotor linearActLeft = null;
+//    private DcMotor linearActRight = null;
 
 //    private DcMotor intake = null;
 //    private DcMotor intake_back = null;
-    private CRServo liftLeft = null;
-    private CRServo liftRight = null;
+//    private CRServo liftLeft = null;
+//    private CRServo liftRight = null;
 
 //    private CRServo wrist = null;
 
@@ -117,21 +117,21 @@ public class V3RobotHardware {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-//        leftFrontDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_front_drive");
-//        leftBackDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
-//        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
-//        rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
+        leftFrontDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_front_drive");
+        leftBackDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
+        rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
 
-        linearActLeft   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_left");
-        linearActRight   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_right");
+//        linearActLeft   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_left");
+//        linearActRight   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_right");
 
         //        intake = myOpMode.hardwareMap.get(DcMotor.class,"intake");
       //  intake_back = myOpMode.hardwareMap.get(DcMotor.class,"intake_back");
 
 //        plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
 
-        liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
-        liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
+//        liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
+//        liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
       // wrist = myOpMode.hardwareMap.get(CRServo.class,"wrist");
 //        boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
 
@@ -176,18 +176,18 @@ public class V3RobotHardware {
 //        intake_back.setPower(power);
     }
     public void setLinearActuatorPower(double power){
-        linearActLeft.setPower(power);
-        linearActRight.setPower(power);
+//        linearActLeft.setPower(power);
+//        linearActRight.setPower(power);
     }
 
     public void setCRServoPower(double power){
-        liftLeft.setPower(power);
-        liftRight.setPower(power);
+//        liftLeft.setPower(power);
+//        liftRight.setPower(power);
     }
 
-//    public void setPlaneLauncherPosition(double position){
+    public void setPlaneLauncherPosition(double position){
 //        plane_launcher.setPosition(position);
-//    }
+    }
 
     /**
      * Calculates the power required for each of the 4 wheels' motor to accomplish the required axial, lateral and yaw motions.
@@ -237,10 +237,10 @@ public class V3RobotHardware {
      */
     public void setDrivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower) {
         // Send calculated power to wheels
-//        leftFrontDrive.setPower(leftFrontPower);
-//        rightFrontDrive.setPower(rightFrontPower);
-//        leftBackDrive.setPower(leftBackPower);
-//        rightBackDrive.setPower(rightBackPower);
+        leftFrontDrive.setPower(leftFrontPower);
+        rightFrontDrive.setPower(rightFrontPower);
+        leftBackDrive.setPower(leftBackPower);
+        rightBackDrive.setPower(rightBackPower);
     }
 
 }
