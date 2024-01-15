@@ -9,13 +9,12 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-
-
 // Install using https://github.com/acmerobotics/MeepMeep (Road runner 1.0 fork for MeepMeep)
 public class MeepMeepTesting {
 
-
-
+    public static Pose2d mirrorPose2d(Pose2d pose2dIn){
+        return new Pose2d(new Vector2d(pose2dIn.position.x, -pose2dIn.position.y), pose2dIn.heading.inverse());
+    }
     public static void main(String[] args) {
 
         double HALF_ROBO_LEN = 9;
