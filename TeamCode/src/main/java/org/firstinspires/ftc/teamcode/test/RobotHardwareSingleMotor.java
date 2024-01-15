@@ -57,7 +57,6 @@ public class RobotHardwareSingleMotor {
     private OpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     private DcMotor intakeMotor = null;
-    private DcMotor intakeMotor2 = null;
 
 
 
@@ -80,8 +79,7 @@ public class RobotHardwareSingleMotor {
     public void init()    {
 
 
-        intakeMotor   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_left");
-        intakeMotor2   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_right");
+        intakeMotor   = myOpMode.hardwareMap.get(DcMotor.class, "intake");
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -95,10 +93,7 @@ public class RobotHardwareSingleMotor {
      * @param power driving power (-1.0 to 1.0)
      */
     public void setArmPower(double power) {
-
         intakeMotor.setPower(power);
-        intakeMotor2.setPower(power);
-
     }
 
 
