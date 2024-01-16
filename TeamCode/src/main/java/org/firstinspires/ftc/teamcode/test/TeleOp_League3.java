@@ -74,11 +74,11 @@ public class TeleOp_League3 extends LinearOpMode {
 
 
             // Plane launcher
-//            if (gamepad1.dpad_up){
-//                robot.setPlaneLauncherPosition(0.0);
-//            } else{
-//                robot.setPlaneLauncherPosition(1.0);
-//            }
+            if (gamepad1.dpad_up){
+                robot.setPlaneLauncherPosition(0.5);
+            } else{
+                robot.setPlaneLauncherPosition(0.0);
+            }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
@@ -111,8 +111,8 @@ public class TeleOp_League3 extends LinearOpMode {
 
             // Tilt up/down
             // Right trigger to move viper slide up, left trigger to move it down.
-          //  double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
-            //robot.setCRServoPower(servoLiftPower);
+            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
+            robot.setCRServoPower(servoLiftPower);
 
 
 
