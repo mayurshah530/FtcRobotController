@@ -55,23 +55,25 @@ public final class MecanumDrive {
     public static class Params {
         // IMU orientation
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+                RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
 
-         public double inPerTick = 100.0/33822.0; //100.0/33822.0 = 0.00295665543
-        // As per goBuilda specs
-//        public double inPerTick = 0.02224460305;
-        //        public double lateralInPerTick = 82.64231498074504;new bot: 73.145566367
+         public double inPerTick = 100.0/33895.0; //100.0/33895.0 = 0.0029502876530462
+//        public double lateralInPerTick = 0.0021308250141639706; // measured, but shouldn't they be same as inPerTick?
+
         public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 5228.703; // was 4881.468494725864;
+
+        public double trackWidthTicks = 4998.652434955384;
 
         // feedforward parameters (in tick units)
-        public double kS =  1.17778765033946; // was 0.8184513706832748;
-        public double kV = 0.0005718607372084072; // was 0.0005887885510354017;
-        public double kA = 0.000055;
+        public double kS = 1.0; // was 0.8192872057872895 without excluding some points
+
+        public double kV = 0.0005752432014530612; // was 0.0005835750640180775 without excluding some points
+
+        public double kA = 0.00001;
 
         public double SCALE_FACTOR_TO_MAX = 1.0;
         // path profile parameters (in inches)
@@ -84,9 +86,9 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI * SCALE_FACTOR_TO_MAX;
 
         // path controller gains
-        public double axialGain = 0.5;
-        public double lateralGain = 0.5;
-        public double headingGain = 10.0; // shared with turn
+        public double axialGain = 4;
+        public double lateralGain = 2;
+        public double headingGain = 4; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -111,8 +113,8 @@ public final class MecanumDrive {
     public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
 
 
-    private DcMotor intake_front = null;
-    private DcMotor intake_back = null;
+//    private DcMotor intake_front = null;
+//    private DcMotor intake_back = null;
 
     public final VoltageSensor voltageSensor;
 
@@ -208,14 +210,14 @@ public final class MecanumDrive {
         rightBack = hardwareMap.get(DcMotorEx.class, "right_back_drive");
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
-        intake_front = hardwareMap.get(DcMotor.class,"intake_front");
-        intake_back = hardwareMap.get(DcMotor.class,"intake_back");
+      //  intake_front = hardwareMap.get(DcMotor.class,"intake_front");
+        //intake_back = hardwareMap.get(DcMotor.class,"intake_back");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+//        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
+//        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -330,7 +332,7 @@ public final class MecanumDrive {
             p.put("yError", error.position.y);
             p.put("headingError (deg)", Math.toDegrees(error.heading.toDouble()));
 
-            // only draw when active; only one drive action should be active at a time
+            // only draw when active; only one drive actionuld be active at a time
             Canvas c = p.fieldOverlay();
             drawPoseHistory(c);
 

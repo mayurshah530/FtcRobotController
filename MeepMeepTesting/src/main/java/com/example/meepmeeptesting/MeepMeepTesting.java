@@ -3,6 +3,7 @@ package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
@@ -10,25 +11,57 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 // Install using https://github.com/acmerobotics/MeepMeep (Road runner 1.0 fork for MeepMeep)
 public class MeepMeepTesting {
+
+    public static Pose2d mirrorPose2d(Pose2d pose2dIn){
+        return new Pose2d(new Vector2d(pose2dIn.position.x, -pose2dIn.position.y), pose2dIn.heading.inverse());
+    }
     public static void main(String[] args) {
+
+        double HALF_ROBO_LEN = 9;
+        double HALF_ROBO_WIDTH = 9;
+
+        // START POSITIONS
+        Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
+        Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
+
+        Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
+
+
+        // PARK POSITIONS
+        Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
+        Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
+        Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -60, 0);
+
+        // SPIKE Locations
+        Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
+        Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
+        Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
+
+        Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
+        Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
+        Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
+
+
+        Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
+        Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
+
+        // TAG locations
+        Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
+
+        Pose2d BLUE_FAR_START_POSE = new Pose2d(-36, 72-HALF_ROBO_LEN, -Math.PI/2.0);
+        Pose2d BLUE_FAR_CENTER_SPIKE = new Pose2d(-36, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
+        Pose2d BLUE_CENTER_PARK = new Pose2d(56, 12 , 0);
+
+        Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
+        Pose2d RED_RIGHT_SPIKE = new Pose2d(37,-30, Math.toRadians(0) );
+
+
         MeepMeep meepMeep = new MeepMeep(800);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
-
-        double HALF_ROBO_LEN = 9;
-        double HALF_ROBO_WIDTH = 9;
-
-        // Blue near start pose
-        Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
-        Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
-
-        Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
-
-        Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
-        Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -56, 0);
 
         Action TrajectoryBlueNearToLeftPark = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
                 .splineToLinearHeading(BLUE_LEFT_PARK, 0)
@@ -39,10 +72,6 @@ public class MeepMeepTesting {
                 .build();
 
         // 1. Start position: blue near; Game Element location: Center.
-        Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-        Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
-
-        Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
 
         Action TrajectoryBlueNearGeCenterWithScoring = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
                 .lineToY(BLUE_NEAR_CENTER_SPIKE.position.y)
@@ -58,13 +87,6 @@ public class MeepMeepTesting {
                 .build();
 
         // Start position blue far; GE: Center
-        Pose2d BLUE_FAR_START_POSE = new Pose2d(-36, 72-HALF_ROBO_LEN, -Math.PI/2.0);
-        Pose2d BLUE_FAR_CENTER_SPIKE = new Pose2d(-36, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-        Pose2d BLUE_CENTER_PARK = new Pose2d(56, 12 , 0);
-
-        Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
-        Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
-
         Action TrajectoryBlueFarGeCenterWithScoring = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
                 .lineToY(BLUE_FAR_CENTER_SPIKE.position.y)
                 .waitSeconds(1)
@@ -123,8 +145,55 @@ public class MeepMeepTesting {
                 .strafeTo(RED_CENTER_PARK.position)
                 .build();
 
+        Action v3RedNearGeCenterPark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+                .strafeTo(RED_NEAR_CENTER_SPIKE.position)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(12, -40))
+                .turn(Math.toRadians(-120))
+                .strafeTo(RED_RIGHT_PARK.position)
+                .build();
+
+
+        Action v3RedNearGeRightPark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
+                .strafeTo(new Vector2d(RED_NEAR_RIGHT_SPIKE.position.x - 3, RED_NEAR_RIGHT_SPIKE.position.y))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(12, -48))
+                .strafeTo(RED_RIGHT_PARK.position) // Move to parking position
+                .turn(Math.toRadians(-30)) // Turn a little to get head start for the manual mode.
+                .build();
+
+
+        Action v3RedNearGeLeftPark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(RED_NEAR_LEFT_SPIKE.position, Math.toRadians(180))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
+                .strafeToLinearHeading(RED_RIGHT_PARK.position, Math.toRadians(-30)) // Move to parking position
+                .build();
+//
+//        Action v3RedFarGeCenterPark = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+//                .strafeTo(new Vector2d(-36, -33))
+//                .strafeTo(new Vector2d(-36, -46))
+//                .strafeTo(new Vector2d(-53, -30))//                .strafeTo(new Vector2d(-57, -6))
+//                .strafeToLinearHeading(RED_CENTER_PARK.position,0)
+//                .build();
+//
+
+        Action v3RedFarGeCenterPark = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .strafeTo(RED_FAR_CENTER_SPIKE.position)
+                .strafeTo(new Vector2d(RED_FAR_CENTER_SPIKE.position.x, RED_FAR_CENTER_SPIKE.position.y - 10)) // come back
+                .strafeTo(new Vector2d(-52, RED_FAR_CENTER_SPIKE.position.y - 10)) // slide left
+                .strafeTo(new Vector2d(-52, -12)) // move fwd
+                .turn(-Math.PI/2)
+                .strafeTo(RED_CENTER_PARK.position) // park
+                .build();
+
+//        TrajectoryActionBuilder v3RedFarGeRightPark = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+//                .st
+//                .build();
+
         // This is what gets shown on the UI
-        myBot.runAction(TrajectoryRedFarToPark);
+        myBot.runAction(v3RedNearGeLeftPark);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
