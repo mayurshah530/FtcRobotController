@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainCon
 import java.util.concurrent.TimeUnit;
 
 @Autonomous()
+@Disabled
 public class FirstVisionOpmode extends OpMode {
     private FirstVisionProcessorV0 visionProcessor;
     private VisionPortal visionPortal;

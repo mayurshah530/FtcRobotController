@@ -25,8 +25,8 @@ import org.firstinspires.ftc.teamcode.MecanumDrive.FollowTrajectoryAction;
 //import org.firstinspires.ftc.teamcode.modules.drive.MecanumDrive;
 
 @Config
-@Disabled
 @Autonomous(name = "Template Autoop", group = "16481-Example")
+@Disabled
 public class TemplateAutoop extends LinearOpMode {
 
     @Override

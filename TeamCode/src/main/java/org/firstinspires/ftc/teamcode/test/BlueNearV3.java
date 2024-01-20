@@ -19,41 +19,24 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Config
-@Autonomous(name = "Red Far V3", group = "RoadRunner 1.0")
-public class RedFarV3 extends LinearOpMode {
+@Autonomous(name = "Blue Near V3", group = "RoadRunner 1.0")
+public class BlueNearV3 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;
 
-    // Start position red far
-
     // START POSITIONS
     Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
-    Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
-
-    Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
 
 
     // PARK POSITIONS
     Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
-    Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
-    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -60, 0);
-    Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
 
-    // SPIKE Locations
-    Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
-    Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
-    Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
-
-    Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
-    Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(-(46 -HALF_ROBO_LEN), -30, Math.PI);
-    Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), -(30), 0);
-
-
+    // SPIKE POSITIONS
     Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-    Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
+    Pose2d BLUE_NEAR_LEFT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, (30), 0);
+    Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(12, 30,   Math.PI);
 
-    // TAG locations
-    Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
+
 
     private FirstVisionProcessor visionProcessor;
     private VisionPortal visionPortal;
@@ -64,41 +47,37 @@ public class RedFarV3 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_FAR_START_POSE);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, BLUE_NEAR_START_POSE);
 
 
         initVisionPortal();
-        visionProcessor.SetAlliance(Alliance.RED);
+        visionProcessor.SetAlliance(Alliance.BLUE);
 
 
-        Action v3RedFarGeCenterPark = drive.actionBuilder(RED_FAR_START_POSE)
-                .strafeTo(RED_FAR_CENTER_SPIKE.position)
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(RED_FAR_CENTER_SPIKE.position.x, RED_FAR_CENTER_SPIKE.position.y - 10)) // come back
-                .waitSeconds(0.5)
-                .strafeTo(new Vector2d(-52, RED_FAR_CENTER_SPIKE.position.y - 10)) // slide left
-                .waitSeconds(0.5)
-                .strafeTo(new Vector2d(-52, -12)) // move fwd
-                .turn(-Math.PI/2)
-                .strafeTo(RED_CENTER_PARK.position) // park
+        Action v3BlueNearGeCenterPark = drive.actionBuilder(BLUE_NEAR_START_POSE)
+                .strafeTo(BLUE_NEAR_CENTER_SPIKE.position)
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(12, 40))
+                .turn(Math.toRadians(120))
+                .splineToLinearHeading(BLUE_LEFT_PARK, 0)
                 .build();
 
 
-        Action v3RedFarGeLeftPark = drive.actionBuilder(RED_FAR_START_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_FAR_LEFT_SPIKE.position.x-2, RED_FAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+        Action v3BlueNearGeLeftPark = drive.actionBuilder(BLUE_NEAR_START_POSE)
+                .strafeToLinearHeading(BLUE_NEAR_LEFT_SPIKE.position, 0)
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, RED_FAR_LEFT_SPIKE.position.y))
-                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, -12))
-                .turn(Math.PI+1e-6)
-                .strafeTo(RED_CENTER_PARK.position) // park
+                .strafeTo(new Vector2d(BLUE_NEAR_LEFT_SPIKE.position.x - 2, BLUE_NEAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(12, 58))
+                .strafeTo(BLUE_LEFT_PARK.position) // Move to parking position
                 .build();
 
-        Action v3RedfarGeRightPark = drive.actionBuilder(RED_FAR_START_POSE)
-                .splineToLinearHeading(RED_FAR_RIGHT_SPIKE, 0)
+
+        Action v3BlueNearGeRightPark = drive.actionBuilder(BLUE_NEAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(BLUE_NEAR_RIGHT_SPIKE.position.x + 5, BLUE_NEAR_RIGHT_SPIKE.position.y), Math.PI)
+                .strafeTo(new Vector2d(BLUE_NEAR_RIGHT_SPIKE.position.x -2, BLUE_NEAR_RIGHT_SPIKE.position.y))
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, RED_FAR_RIGHT_SPIKE.position.y))
-                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, -8))
-                .strafeTo(RED_CENTER_PARK.position) // park
+                .strafeTo(new Vector2d(BLUE_NEAR_RIGHT_SPIKE.position.x + 0, BLUE_NEAR_RIGHT_SPIKE.position.y))
+                .strafeToLinearHeading(BLUE_LEFT_PARK.position, Math.toRadians(0)) // Move to parking position
                 .build();
 
 
@@ -119,16 +98,16 @@ public class RedFarV3 extends LinearOpMode {
         telemetry.update();
 
 
-        Action trajectoryToRun = v3RedFarGeCenterPark;
+        Action trajectoryToRun = v3BlueNearGeCenterPark;
         switch (selectedSide){
             case LEFT:
-                trajectoryToRun = v3RedFarGeLeftPark;
+                trajectoryToRun = v3BlueNearGeLeftPark;
                 break;
             case CENTER:
-                trajectoryToRun = v3RedFarGeCenterPark;
+                trajectoryToRun = v3BlueNearGeCenterPark;
                 break;
             case RIGHT:
-                trajectoryToRun = v3RedfarGeRightPark;
+                trajectoryToRun = v3BlueNearGeRightPark;
                 break;
         }
 
@@ -153,6 +132,4 @@ public class RedFarV3 extends LinearOpMode {
         visionPortal.setProcessorEnabled(aprilTag, false);
         visionPortal.setProcessorEnabled(visionProcessor, true);
     }
-
-
 }

@@ -8,12 +8,13 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-
 @Config
 @Autonomous(name = "Blue Far V2", group = "RoadRunner 1.0")
+@Disabled
 public class BlueFarV2 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;

@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.common.FieldPosition;
 /*
  * RevBot Autonomous code
  */
-@Disabled
 @Autonomous(name = "RevBot Autonomous", group = "Auto")
+@Disabled
 public class RevBotAuto extends OpMode {
 
   RevStarterRobotHardware robot = new RevStarterRobotHardware(this);
