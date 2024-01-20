@@ -129,6 +129,14 @@ public class TeleOp_League3 extends LinearOpMode {
                 robot.setCRServoPower(prevLiftPower);
             }
 
+            if (gamepad2.dpad_right){
+                robot.setIntakePower(1);
+            } else if (gamepad2.dpad_left) {
+                robot.setIntakePower(-1);
+            } else {
+                robot.setIntakePower(0);
+            }
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
