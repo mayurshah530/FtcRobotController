@@ -41,9 +41,9 @@ public class FirstVisionProcessor implements VisionProcessor {
         mask = new Mat(height, width, CvType.CV_8UC1);
 
         // Divide the mask into three vertical regions
-        leftRegion = new Rect(0, 0, width / 5, height);
-        centerRegion = new Rect(width / 5, 0, 3 * (width / 5), height);
-        rightRegion = new Rect(4 * (width / 5), 0, width / 5, height);
+        leftRegion = new Rect(0, height/3, width / 5, height * 2/3);
+        centerRegion = new Rect(width / 5, height/3, 3 * (width / 5), height * 2/3);
+        rightRegion = new Rect(4 * (width / 5), height/3, width / 5, height * 2/3);
     }
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
