@@ -17,8 +17,8 @@ import java.util.List;
 /*
  * RevBot Autonomous code
  */
-@Disabled
 @Autonomous(name = "RevBot Autonomous", group = "Auto")
+@Disabled
 public class RevBotAuto extends OpMode {
 
   RevStarterRobotHardware robot = new RevStarterRobotHardware(this);
