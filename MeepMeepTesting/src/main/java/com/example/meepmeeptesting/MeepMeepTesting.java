@@ -38,8 +38,8 @@ public class MeepMeepTesting {
         Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(12, -30, -Math.PI);
 
         Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
-        Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
-        Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
+        Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), -(30), 0);
+        Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(-(46 -HALF_ROBO_LEN), -30, Math.PI);
 
 
         Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
@@ -181,12 +181,28 @@ public class MeepMeepTesting {
                 .strafeTo(RED_CENTER_PARK.position) // park
                 .build();
 
-//        TrajectoryActionBuilder v3RedFarGeRightPark = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
-//                .st
-//                .build();
+
+        Action v3RedFarGeLeftPark = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(RED_FAR_LEFT_SPIKE.position.x, RED_FAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 5, RED_FAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 5, -12))
+                .turn(Math.PI+1e-6)
+                .strafeTo(RED_CENTER_PARK.position) // park
+                .build();
+
+        Action v3RedfarGeRightPark = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .splineToLinearHeading(RED_FAR_RIGHT_SPIKE, 0)
+//                .strafeToLinearHeading(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x, RED_FAR_RIGHT_SPIKE.position.y), Math.toRadians(0))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, RED_FAR_RIGHT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, -12))
+                .strafeTo(RED_CENTER_PARK.position) // park
+                .build();
+
 
         // This is what gets shown on the UI
-        myBot.runAction(v3RedNearGeRightPark);
+        myBot.runAction(v3RedfarGeRightPark    );
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
