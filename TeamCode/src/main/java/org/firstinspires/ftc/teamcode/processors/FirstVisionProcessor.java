@@ -85,6 +85,7 @@ public class FirstVisionProcessor implements VisionProcessor {
             selection = ScoringElementLocation.RIGHT;
         }
 
+        telemetry = "";
         telemetry += "leftCount = " + leftCount;
         telemetry += " centerCount =" + centerCount;
         telemetry += " rightCount = " + rightCount;
