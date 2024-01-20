@@ -132,7 +132,7 @@ public class V3RobotHardware {
 
         liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
         liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
-       wrist = myOpMode.hardwareMap.get(CRServo.class,"wrist");
+        wrist = myOpMode.hardwareMap.get(CRServo.class,"wrist");
         boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
 
         // Set directions for drive motors
@@ -146,6 +146,8 @@ public class V3RobotHardware {
 //
         linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -172,21 +174,21 @@ public class V3RobotHardware {
     }
 
     public void setIntakePower(double power){
-//        intake.setPower(power);
-//        intake_back.setPower(power);
+        intake.setPower(power);
+        intake_back.setPower(power);
     }
     public void setLinearActuatorPower(double power){
-//        linearActLeft.setPower(power);
-//        linearActRight.setPower(power);
+        linearActLeft.setPower(power);
+        linearActRight.setPower(power);
     }
 
     public void setCRServoPower(double power){
-//        liftLeft.setPower(power);
-//        liftRight.setPower(power);
+        liftLeft.setPower(power);
+        liftRight.setPower(power);
     }
 
     public void setPlaneLauncherPosition(double position){
-//        plane_launcher.setPosition(position);
+        plane_launcher.setPosition(position);
     }
 
     /**
