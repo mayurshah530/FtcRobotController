@@ -39,13 +39,13 @@ public class RedNearV3 extends LinearOpMode {
     // PARK POSITIONS
     Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
     Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
-    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -60, 0);
+    Pose2d RED_RIGHT_PARK = new Pose2d(62 - HALF_ROBO_LEN, -66, 0);
     Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
 
     // SPIKE Locations
     Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
     public static double RED_NEAR_RIGHT_SPIKE_X = 23.5-HALF_ROBO_LEN;
-    public static double RED_NEAR_RIGHT_SPIKE_Y = -30;
+    public static double RED_NEAR_RIGHT_SPIKE_Y = -25;
     public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 6;
 
     Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(RED_NEAR_RIGHT_SPIKE_X, RED_NEAR_RIGHT_SPIKE_Y, 0);
@@ -89,7 +89,7 @@ public class RedNearV3 extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 5, RED_NEAR_LEFT_SPIKE.position.y), Math.toRadians(180))
                 .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x -5, RED_NEAR_LEFT_SPIKE_Y))
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 0, RED_NEAR_LEFT_SPIKE.position.y))
                 .strafeToLinearHeading(RED_RIGHT_PARK.position, Math.toRadians(0)) // Move to parking position
                 .build();
 
