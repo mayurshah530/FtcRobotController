@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Config
 @Autonomous(name = "Red Far V2", group = "RoadRunner 1.0")
+@Disabled
 public class RedFarV2 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;
