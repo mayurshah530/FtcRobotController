@@ -66,18 +66,18 @@ public class V3RobotHardware {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
-//    private DcMotor linearActLeft = null;
-//    private DcMotor linearActRight = null;
+    private DcMotor linearActLeft = null;
+    private DcMotor linearActRight = null;
 
-//    private DcMotor intake = null;
-//    private DcMotor intake_back = null;
-//    private CRServo liftLeft = null;
-//    private CRServo liftRight = null;
+    private DcMotor intake = null;
+    private DcMotor intake_back = null;
+    private CRServo liftLeft = null;
+    private CRServo liftRight = null;
 
-//    private CRServo wrist = null;
+    private CRServo wrist = null;
 
-//    private Servo plane_launcher= null;
-//    private Servo boxLever = null;
+    private Servo plane_launcher= null;
+    private Servo boxLever = null;
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
@@ -86,8 +86,8 @@ public class V3RobotHardware {
     public static final double LIFT_DOWN_POWER = -0.5 ;
     public static final double LIFT_ZERO_POWER = 0.5;
 
-//    public static final double TICKS_PER_REV = 537.6;
-//    public static final double MAX_RPM = 312;
+    public static final double TICKS_PER_REV = 537.6;
+    public static final double MAX_RPM = 312;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -122,30 +122,32 @@ public class V3RobotHardware {
         rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
 
-//        linearActLeft   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_left");
-//        linearActRight   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_right");
+        linearActLeft   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_left");
+        linearActRight   = myOpMode.hardwareMap.get(DcMotor.class, "linear_act_right");
 
-        //        intake = myOpMode.hardwareMap.get(DcMotor.class,"intake");
-      //  intake_back = myOpMode.hardwareMap.get(DcMotor.class,"intake_back");
+        intake = myOpMode.hardwareMap.get(DcMotor.class,"intake");
+        intake_back = myOpMode.hardwareMap.get(DcMotor.class,"intake_back");
 
-//        plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
+        plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
 
-//        liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
-//        liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
-      // wrist = myOpMode.hardwareMap.get(CRServo.class,"wrist");
-//        boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
+        liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
+        liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
+        wrist = myOpMode.hardwareMap.get(CRServo.class,"wrist");
+        boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
 
         // Set directions for drive motors
-//        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-//        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 //
-//        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-//        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
 //
-//        intake.setDirection(DcMotorSimple.Direction.FORWARD);
-//
-//        linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -172,21 +174,21 @@ public class V3RobotHardware {
     }
 
     public void setIntakePower(double power){
-//        intake.setPower(power);
-//        intake_back.setPower(power);
+        intake.setPower(power);
+        intake_back.setPower(power);
     }
     public void setLinearActuatorPower(double power){
-//        linearActLeft.setPower(power);
-//        linearActRight.setPower(power);
+        linearActLeft.setPower(power);
+        linearActRight.setPower(power);
     }
 
     public void setCRServoPower(double power){
-//        liftLeft.setPower(power);
-//        liftRight.setPower(power);
+        liftLeft.setPower(power);
+        liftRight.setPower(power);
     }
 
     public void setPlaneLauncherPosition(double position){
-//        plane_launcher.setPosition(position);
+        plane_launcher.setPosition(position);
     }
 
     /**

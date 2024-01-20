@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RobotHardware;
 import org.firstinspires.ftc.teamcode.mechanisms.V3RobotHardware;
@@ -63,6 +64,7 @@ public class TeleOp_League3 extends LinearOpMode {
         telemetry.update();
         waitForStart();
         runtime.reset();
+        double prevLiftPower = 0.0;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -74,11 +76,11 @@ public class TeleOp_League3 extends LinearOpMode {
 
 
             // Plane launcher
-//            if (gamepad1.dpad_up){
-//                robot.setPlaneLauncherPosition(0.0);
-//            } else{
-//                robot.setPlaneLauncherPosition(1.0);
-//            }
+            if (gamepad1.dpad_up){
+                robot.setPlaneLauncherPosition(0.5);
+            } else{
+                robot.setPlaneLauncherPosition(0.0);
+            }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
@@ -100,22 +102,32 @@ public class TeleOp_League3 extends LinearOpMode {
                 robot.actuatorStop();
             }
 
-            // Tilt up/down
-            if (gamepad2.dpad_up){
-                robot.setCRServoPower(robot.LIFT_UP_POWER);
-            } else if (gamepad2.dpad_down) {
-                robot.setCRServoPower(robot.LIFT_DOWN_POWER);
-            } else {
-                robot.setCRServoPower(0.0);
-            }
+//            // Tilt up/down
+//            if (gamepad2.y){
+//                robot.setCRServoPower(robot.LIFT_UP_POWER);
+//            } else if (gamepad2.a) {
+//                robot.setCRServoPower(prevLiftPower);
+//            } else {
+//                robot.setCRServoPower(prevLiftPower);
+//            }
+//
+//            if (gamepad2.dpad_up){
+//                robot.setCRServoPower(robot.LIFT_UP_POWER);
+//            } else if (gamepad2.dpad_down) {
+//                robot.setCRServoPower(robot.LIFT_DOWN_POWER);
+//            } else {
+//                robot.setCRServoPower(0.0);
+//            }
 
             // Tilt up/down
             // Right trigger to move viper slide up, left trigger to move it down.
-          //  double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
-            //robot.setCRServoPower(servoLiftPower);
-
-
-
+            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
+            Range.clip(servoLiftPower, -0.9, 0.9);
+            robot.setCRServoPower(servoLiftPower);
+            prevLiftPower = servoLiftPower;
+            if (Math.abs(servoLiftPower) < 0.001) {
+                robot.setCRServoPower(prevLiftPower);
+            }
 
 
             // Show the elapsed game time and wheel power.
