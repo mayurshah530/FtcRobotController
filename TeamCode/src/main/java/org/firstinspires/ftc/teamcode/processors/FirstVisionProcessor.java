@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.processors;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
@@ -30,6 +32,9 @@ public class FirstVisionProcessor implements VisionProcessor {
     private Rect leftRegion;
     private Rect centerRegion;
     private Rect rightRegion;
+
+    String telemetry = "";
+
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
         hsvImage = new Mat(height, width, CvType.CV_8UC3);
@@ -79,6 +84,12 @@ public class FirstVisionProcessor implements VisionProcessor {
         } else {
             selection = ScoringElementLocation.RIGHT;
         }
+
+        telemetry += "leftCount = " + leftCount;
+        telemetry += " centerCount =" + centerCount;
+        telemetry += " rightCount = " + rightCount;
+        telemetry += " Selected " + selection.toString();
+
         return selection;
     }
 
@@ -86,6 +97,26 @@ public class FirstVisionProcessor implements VisionProcessor {
 
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+        Paint selectedPaint = new Paint();
+        selectedPaint.setColor(Color.RED);
+        selectedPaint.setStyle(Paint.Style.STROKE);
+        selectedPaint.setStrokeWidth(scaleCanvasDensity * 4);
+        Paint nonSelectedPaint = new Paint(selectedPaint);
+        nonSelectedPaint.setColor(Color.GREEN);
+        android.graphics.Rect drawRectangleLeft = makeGraphicsRect(leftRegion, scaleBmpPxToCanvasPx);
+        android.graphics.Rect drawRectangleMiddle = makeGraphicsRect(centerRegion, scaleBmpPxToCanvasPx);
+        android.graphics.Rect drawRectangleRight = makeGraphicsRect(rightRegion, scaleBmpPxToCanvasPx);
+        canvas.drawRect(drawRectangleLeft, nonSelectedPaint);
+        canvas.drawRect(drawRectangleMiddle, nonSelectedPaint);
+        canvas.drawRect(drawRectangleRight, nonSelectedPaint);
+    }
+
+
+    private android.graphics.Rect makeGraphicsRect(Rect rect, float  scaleBmpPxToCanvasPx) {
+        int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
+        int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
+        int right = left + Math.round(rect.width * scaleBmpPxToCanvasPx); int bottom = top + Math.round(rect.height * scaleBmpPxToCanvasPx);
+        return new android.graphics.Rect(left, top, right, bottom);
     }
 
     public ScoringElementLocation getSelection() { return selection;
@@ -95,7 +126,7 @@ public class FirstVisionProcessor implements VisionProcessor {
         _alliance = alliance;
     }
 
-
-    private Alliance _alliance = Alliance.BLUE;
+    public String getTelemetry(){ return telemetry;}
+    private Alliance _alliance = Alliance.RED;
 
 }

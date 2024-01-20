@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -37,7 +38,8 @@ public class RedFarV0 extends LinearOpMode {
 
         Action TrajectoryRedFarToPark = drive.actionBuilder(drive.pose)
                 .strafeTo(new Vector2d(-36, -12))
-                .turn(-Math.PI/2)
+                .turn(-Math.PI/2, new TurnConstraints(drive.PARAMS.maxAngVel*0.25, -drive.PARAMS.maxAngAccel*0.25, drive.PARAMS.maxAngAccel*0.25))
+//                .turn(-Math.PI/2)
                 .strafeTo(RED_CENTER_PARK.position)
                 .build();
 
