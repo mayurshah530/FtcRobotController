@@ -13,10 +13,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "Red Far V3", group = "RoadRunner 1.0")
-public class RedFarV3 extends LinearOpMode {
+@Autonomous(name = "Red Near V2", group = "RoadRunner 1.0")
+public class RedNearV2 extends LinearOpMode {
 
-    double HALF_ROBO_LEN = 9;
+    public static double HALF_ROBO_LEN = 9;
+    public static double RED_NEAR_LEFT_SPIKE_X = 10;
+    public static double RED_NEAR_LEFT_SPIKE_Y = -30;
+
 
     // Start position red far
 
@@ -34,9 +37,13 @@ public class RedFarV3 extends LinearOpMode {
     Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
 
     // SPIKE Locations
-    Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
-    Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
-    Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
+    Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
+    public static double RED_NEAR_RIGHT_SPIKE_X = 23.5-HALF_ROBO_LEN;
+    public static double RED_NEAR_RIGHT_SPIKE_Y = -30;
+    public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 6;
+
+    Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(RED_NEAR_RIGHT_SPIKE_X, RED_NEAR_RIGHT_SPIKE_Y, 0);
+    Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(RED_NEAR_LEFT_SPIKE_X, RED_NEAR_LEFT_SPIKE_Y, -Math.PI);
 
     Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
     Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
@@ -52,20 +59,32 @@ public class RedFarV3 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_FAR_START_POSE);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_NEAR_START_POSE);
 
 
 
-        Action v3RedFarGeCenterPark = drive.actionBuilder(RED_FAR_START_POSE)
-                .strafeTo(RED_FAR_CENTER_SPIKE.position)
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(RED_FAR_CENTER_SPIKE.position.x, RED_FAR_CENTER_SPIKE.position.y - 10)) // come back
+        Action v3RedNearGeCenterPark = drive.actionBuilder(RED_NEAR_START_POSE)
+                .strafeTo(RED_NEAR_CENTER_SPIKE.position)
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(12, -40))
+                .turn(Math.toRadians(-120))
+                .strafeTo(RED_RIGHT_PARK.position)
+                .build();
+
+        Action v3RedNearGeLeftPark = drive.actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 5, RED_NEAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x -5, RED_NEAR_LEFT_SPIKE_Y))
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(-52, RED_FAR_CENTER_SPIKE.position.y - 10)) // slide left
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
+                .strafeToLinearHeading(RED_RIGHT_PARK.position, Math.toRadians(0)) // Move to parking position
+                .build();
+
+        Action v3RedNearGeRightPark = drive.actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(-52, -12)) // move fwd
-                .turn(-Math.PI/2)
-                .strafeTo(RED_CENTER_PARK.position) // park
+                .strafeTo(new Vector2d(RED_NEAR_RIGHT_SPIKE.position.x - RED_NEAR_RIGHT_SPIKE_BACK_X, RED_NEAR_RIGHT_SPIKE.position.y))
+                .strafeTo(new Vector2d(12, -58))
+                .strafeTo(RED_RIGHT_PARK.position) // Move to parking position
                 .build();
 
         while(!isStopRequested() && !opModeIsActive()) {
@@ -79,7 +98,7 @@ public class RedFarV3 extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        v3RedFarGeCenterPark, // Example of a drive action
+                        v3RedNearGeRightPark, // Example of a drive action
                         // Only that this action uses a Lambda expression to reduce complexity
                         (telemetryPacket) -> {
                             telemetry.addData("x", drive.pose.position.x);
