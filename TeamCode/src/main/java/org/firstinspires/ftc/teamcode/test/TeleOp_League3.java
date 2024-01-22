@@ -129,6 +129,7 @@ public class TeleOp_League3 extends LinearOpMode {
                 robot.setCRServoPower(prevLiftPower);
             }
 
+
             if (gamepad2.dpad_right){
                 robot.setIntakePower(1);
             } else if (gamepad2.dpad_left) {
