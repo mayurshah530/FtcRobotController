@@ -34,9 +34,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RevStarterRobotHardware;
-@Disabled
 @TeleOp(name="Starter Bot V2", group="Iterative Opmode")
-
+@Disabled
 public class RevBotTeleop extends OpMode
 {
     RevStarterRobotHardware robot       = new RevStarterRobotHardware(this);

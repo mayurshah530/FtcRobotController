@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.common.ScoringElementLocation;
 import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
 @Config
 @Autonomous(name = "Blue Near V2", group = "RoadRunner 1.0")
+@Disabled
 public class BlueNearV2 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;

@@ -51,15 +51,7 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
         Imgproc.cvtColor(frame, hsvImage, Imgproc.COLOR_RGB2HSV);
 
         // Create a mask to extract red-colored pixels
-//        Mat redMask = new Mat();
-        Core.inRange(hsvImage, lowerBlue, upperBlue, frame);
-
-//        Scalar lowerRed2 = new Scalar(150, 100, 100);
-//        Scalar upperRed2 = new Scalar(180, 255, 255);
-//        // Create a mask to extract red-colored pixels
-//        Mat redMask2 = new Mat();
-//        Core.inRange(hsvImage, lowerRed2, upperRed2, redMask2);
-//        Core.add(redMask, redMask2, redMask);
+        Core.inRange(hsvImage, lowerRed, upperRed, frame);
 
         // Get the dimensions of the image
         int height = frame.rows();
@@ -111,9 +103,15 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
         canvas.drawRect(drawRectangleLeft, nonSelectedPaint);
         canvas.drawRect(drawRectangleMiddle, nonSelectedPaint);
         canvas.drawRect(drawRectangleRight, nonSelectedPaint);
-
     }
 
+
+    private android.graphics.Rect makeGraphicsRect(Rect rect, float  scaleBmpPxToCanvasPx) {
+        int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
+        int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
+        int right = left + Math.round(rect.width * scaleBmpPxToCanvasPx); int bottom = top + Math.round(rect.height * scaleBmpPxToCanvasPx);
+        return new android.graphics.Rect(left, top, right, bottom);
+    }
     public ScoringElementLocation getSelection() { return selection;
     }
 
@@ -124,12 +122,5 @@ public class FirstVisionProcessorV0 implements VisionProcessor {
     public String getTelemetry(){ return telemetry;}
     private Alliance _alliance = Alliance.RED;
 
-
-    private android.graphics.Rect makeGraphicsRect(Rect rect, float  scaleBmpPxToCanvasPx) {
-        int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
-        int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
-        int right = left + Math.round(rect.width * scaleBmpPxToCanvasPx); int bottom = top + Math.round(rect.height * scaleBmpPxToCanvasPx);
-        return new android.graphics.Rect(left, top, right, bottom); 
-    }
 
 }

@@ -41,8 +41,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.RobotHardware;
  *
  */
 
-@Disabled
 @TeleOp(name="TeleOp: Iterative OpMode", group="Iterative OpMode")
+@Disabled
 public class TeleOpMode_Iterative extends OpMode
 {
 

@@ -41,8 +41,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
-@Disabled
 @Autonomous(name="Test: Spike Placement", group="Linear OpMode")
+@Disabled
 public class SpikePlacementTest extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
