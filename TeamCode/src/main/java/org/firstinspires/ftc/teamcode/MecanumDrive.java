@@ -38,12 +38,14 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumEncodersMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -95,7 +97,26 @@ public final class MecanumDrive {
         public double headingVelGain = 0.0; // shared with turn
     }
 
-    public static Params PARAMS = new Params();
+    public static class AprilTagParams {
+        // Adjust these numbers to suit your robot.
+        final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+
+        //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
+        //  applied to the drive motors to correct the error.
+        //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
+        final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+        final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+
+        final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+        final double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+        final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+
+    }
+
+
+        public static Params PARAMS = new Params();
+        public static AprilTagParams AT_PARAMS = new AprilTagParams();
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             PARAMS.inPerTick * PARAMS.trackWidthTicks, PARAMS.inPerTick / PARAMS.lateralInPerTick);
@@ -111,10 +132,6 @@ public final class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
-
-
-//    private DcMotor intake_front = null;
-//    private DcMotor intake_back = null;
 
     public final VoltageSensor voltageSensor;
 
@@ -196,6 +213,10 @@ public final class MecanumDrive {
         }
     }
 
+    // Set the pose with new information (e.g. AprilTag ID)
+    public void setPose(Pose2d pose){
+        this.pose = pose;
+    }
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
         this.pose = pose;
 
@@ -210,14 +231,10 @@ public final class MecanumDrive {
         rightBack = hardwareMap.get(DcMotorEx.class, "right_back_drive");
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
-      //  intake_front = hardwareMap.get(DcMotor.class,"intake_front");
-        //intake_back = hardwareMap.get(DcMotor.class,"intake_back");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
-//        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
-//        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -488,4 +505,55 @@ public final class MecanumDrive {
                 0.25, 0.1
         );
     }
+
+    public void alignToAprilTag(AprilTagDetection desiredTag){
+
+        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+        double  rangeError      = (desiredTag.ftcPose.range - AT_PARAMS.DESIRED_DISTANCE);
+        double  headingError    = desiredTag.ftcPose.bearing;
+        double  yawError        = desiredTag.ftcPose.yaw;
+
+        // Use the speed and turn "gains" to calculate how we want the robot to move.
+        double drive  = Range.clip(rangeError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
+        double turn   = Range.clip(headingError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
+        double strafe = Range.clip(-yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
+
+        moveRobot(drive, strafe, turn);
+    }
+
+    /**
+     * Move robot according to desired axes motions
+     * <p>
+     * Positive X is forward
+     * <p>
+     * Positive Y is strafe left
+     * <p>
+     * Positive Yaw is counter-clockwise
+     */
+    public void moveRobot(double x, double y, double yaw) {
+        // Calculate wheel powers.
+        double leftFrontPower    =  x -y -yaw;
+        double rightFrontPower   =  x +y +yaw;
+        double leftBackPower     =  x +y -yaw;
+        double rightBackPower    =  x -y +yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            rightFrontPower /= max;
+            leftBackPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Send powers to the wheels.
+        leftFront.setPower(leftFrontPower);
+        rightFront.setPower(rightFrontPower);
+        leftBack.setPower(leftBackPower);
+        rightBack.setPower(rightBackPower);
+    }
+
 }
