@@ -142,12 +142,12 @@ public class V4Hardware {
         // Set directions for drive motors
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-//
+
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
-//
+
         linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
