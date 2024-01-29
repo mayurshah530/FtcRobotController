@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -55,6 +56,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
+@Config
 public class V4Hardware {
 
     /* Declare OpMode members. */
@@ -78,6 +80,7 @@ public class V4Hardware {
 
     private Servo plane_launcher= null;
     private Servo boxLever = null;
+    private Servo box = null;
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
@@ -88,10 +91,13 @@ public class V4Hardware {
 
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 312;
-    public double BOXLEVER_HOME_POSITION = 0.0;
-    public double BOXLEVER_SCORING_POSITION = 1.0;
-    public double WRIST_HOME_POSITION = 0.0;
-    public double WRIST_SCORING_POSITION = 1.0;
+    public static double BOXLEVER_HOME_POSITION = 0.0;
+    public static  double BOXLEVER_SCORING_POSITION = 1.0;
+    public static  double WRIST_HOME_POSITION = 0.0;
+    public static  double WRIST_SCORING_POSITION = 1.0;
+
+    public static  double BOX_CLOSE_POSITION = 0.0;
+    public static  double BOX_SCORING_POSITION = 1.0;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -138,6 +144,7 @@ public class V4Hardware {
         liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
         boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
+        box = myOpMode.hardwareMap.get(Servo.class, "box");
 
         // Set directions for drive motors
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -150,6 +157,17 @@ public class V4Hardware {
 
         linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        linearActLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linearActRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        linearActLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        linearActRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // Send telemetry message to indicate successful Encoder reset
+        myOpMode.telemetry.addData("Starting at",  "%7d :%7d",
+                linearActLeft.getCurrentPosition(),
+                linearActRight.getCurrentPosition());
+
 
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -199,8 +217,17 @@ public class V4Hardware {
         boxLever.setPosition(position);
     }
 
+    public void setBoxPosition(double position) { box.setPosition(position); }
+
     public void setPlaneLauncherPosition(double position){
         plane_launcher.setPosition(position);
+    }
+
+    public double getLinearActuatorLeftPosition(){
+        return linearActLeft.getCurrentPosition();
+    }
+    public double getLinearActuatorRightPosition(){
+        return linearActRight.getCurrentPosition();
     }
 
     /**

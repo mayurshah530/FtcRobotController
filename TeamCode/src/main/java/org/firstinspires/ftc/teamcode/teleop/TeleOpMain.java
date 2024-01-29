@@ -27,18 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.test;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.mechanisms.RobotHardware;
-import org.firstinspires.ftc.teamcode.mechanisms.V3RobotHardware;
 import org.firstinspires.ftc.teamcode.mechanisms.V4Hardware;
 
 
@@ -49,8 +44,6 @@ public class TeleOpMain extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-
-    public double INTAKE_MOTOR_POWER = 1.0;
 
     @Override
     public void runOpMode() {
@@ -71,9 +64,9 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-//             =======================
-//             Gamepad 1 controls
-//             =======================
+            /* =======================
+             Gamepad 1 controls
+            ======================= */
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
@@ -82,9 +75,9 @@ public class TeleOpMain extends LinearOpMode {
             robot.driveRobot(axial, lateral, yaw);
 
 
-            // =======================
-            // Gamepad 2 controls
-            // =======================
+            /* =======================
+             Gamepad 2 controls
+            ======================= */
 
             // Move linear actuator
             if (gamepad2.left_bumper) {
@@ -129,11 +122,21 @@ public class TeleOpMain extends LinearOpMode {
                 robot.setIntakePower(1.0);
             } else if (gamepad1.dpad_left) {
                 robot.setIntakePower(-1.0);
+            } else
+                robot.setIntakePower(0.0);
+
+            if (gamepad1.left_bumper){
+                robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
+            } else if (gamepad1.right_bumper) {
+                robot.wristPosition(robot.BOX_SCORING_POSITION);
             }
 
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Currently at",  " Left: %7d Right: %7d",
+                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
+
 //            telemetry.addData("Front Wheel left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
 //            telemetry.addData("Back  Wheel left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 //            telemetry.addData("Viper slide power", "%4.2f", viperSlidePower );

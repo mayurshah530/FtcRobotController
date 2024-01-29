@@ -94,7 +94,7 @@ public class RedNearV4 extends LinearOpMode {
                 .waitSeconds(1.0)
                 .strafeTo(new Vector2d(12, -40))
                 .turn(Math.toRadians(-90))
-                .strafeTo(RED_RIGHT_PARK.position)
+                .strafeTo(RED_BOARD_WAIT.position)
                 .build();
 
         Action v3RedNearGeLeftPark = drive.actionBuilder(RED_NEAR_START_POSE)
@@ -112,6 +112,16 @@ public class RedNearV4 extends LinearOpMode {
                 .strafeTo(new Vector2d(12, -58))
                 .strafeTo(RED_RIGHT_PARK.position) // Move to parking position
                 .build();
+
+
+        Action v3RedNearGeCenterScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
+                .strafeTo(RED_NEAR_CENTER_SPIKE.position)
+                .waitSeconds(1.0)
+                .strafeTo(new Vector2d(12, -40))
+                .turn(Math.toRadians(-90))
+                .strafeTo(RED_BOARD_WAIT.position)
+                .build();
+
 
         Action trajectoryActionCloseOut = drive.actionBuilder(drive.pose)
                 .strafeTo(new Vector2d(48, 12))
