@@ -52,6 +52,11 @@ public class TeleOpMain extends LinearOpMode {
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
 
+        robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
+        robot.boxLeverPosition(robot.BOXLEVER_HOME_POSITION);
+        robot.wristPosition(robot.WRIST_HOME_POSITION);
+
+
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -128,14 +133,14 @@ public class TeleOpMain extends LinearOpMode {
             if (gamepad1.left_bumper){
                 robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
             } else if (gamepad1.right_bumper) {
-                robot.wristPosition(robot.BOX_SCORING_POSITION);
+                robot.setBoxPosition(robot.BOX_SCORING_POSITION);
             }
 
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Currently at",  " Left: %7d Right: %7d",
-                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
+//            telemetry.addData("Currently at",  " Left: %7d Right: %7d",
+//                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
 
 //            telemetry.addData("Front Wheel left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
 //            telemetry.addData("Back  Wheel left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
