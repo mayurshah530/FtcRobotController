@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -201,8 +200,8 @@ public class RedNearV4 extends LinearOpMode {
         // open box
         Actions.runBlocking(
                 new SequentialAction(
-                        outtake.wristUp(),
-                        outtake.elbowScore(),
+                        outtake.moveWristUp(),
+                        outtake.moveElbowToScorePosition(),
                         outtake.openBox(),
                         trajectoryActionCloseOut
                 )

@@ -52,9 +52,9 @@ public class TeleOpMain extends LinearOpMode {
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
 
-        robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
-        robot.boxLeverPosition(robot.BOXLEVER_HOME_POSITION);
-        robot.wristPosition(robot.WRIST_HOME_POSITION);
+        robot.setBoxPosition(V4Hardware.BOX_CLOSE_POSITION);
+        robot.boxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
+        robot.wristPosition(V4Hardware.WRIST_HOME_POSITION);
 
 
 
