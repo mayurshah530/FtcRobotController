@@ -115,8 +115,8 @@ public final class MecanumDrive {
     }
 
 
-        public static Params PARAMS = new Params();
-        public static AprilTagParams AT_PARAMS = new AprilTagParams();
+    public static Params PARAMS = new Params();
+    public static AprilTagParams AT_PARAMS = new AprilTagParams();
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             PARAMS.inPerTick * PARAMS.trackWidthTicks, PARAMS.inPerTick / PARAMS.lateralInPerTick);
@@ -304,7 +304,7 @@ public final class MecanumDrive {
             PoseVelocity2d robotVelRobot = updatePoseEstimate();
             Pose2d error = txWorldTarget.value().minusExp(pose);
 
-            if ((t >= timeTrajectory.duration && error.position.norm() < 2
+            if ((t >= timeTrajectory.duration && error.position.norm() < 1
                     && robotVelRobot.linearVel.norm() < 0.5)
                     || t + 1 >= timeTrajectory.duration) {
                 leftFront.setPower(0);
