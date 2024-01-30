@@ -91,13 +91,13 @@ public class V4Hardware {
 
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 312;
-    public static double BOXLEVER_HOME_POSITION = 0.0;
-    public static  double BOXLEVER_SCORING_POSITION = 1.0;
+    public static double BOXLEVER_HOME_POSITION = 0.8;
+    public static  double BOXLEVER_SCORING_POSITION = 0.4;
     public static  double WRIST_HOME_POSITION = 0.0;
-    public static  double WRIST_SCORING_POSITION = 1.0;
+    public static  double WRIST_SCORING_POSITION = 0.56;
 
-    public static  double BOX_CLOSE_POSITION = 0.0;
-    public static  double BOX_SCORING_POSITION = 1.0;
+    public static  double BOX_CLOSE_POSITION = 1.0;
+    public static  double BOX_SCORING_POSITION = 0.5;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -157,12 +157,12 @@ public class V4Hardware {
 
         linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        linearActLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        linearActRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        linearActLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        linearActRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        linearActLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        linearActRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        linearActLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        linearActRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
         myOpMode.telemetry.addData("Starting at",  "%7d :%7d",
                 linearActLeft.getCurrentPosition(),
