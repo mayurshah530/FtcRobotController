@@ -45,6 +45,13 @@ public class TeleOpMain extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
 
+    public double SquareInputWithSign(double input){
+        double sign = 1.0;
+        if (input < 0.0){
+            sign = -1.0;
+        }
+        return sign * input * input;
+    }
     @Override
     public void runOpMode() {
 
@@ -74,9 +81,14 @@ public class TeleOpMain extends LinearOpMode {
             ======================= */
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x/2;
-            double yaw     =  gamepad1.right_stick_x/2;
+//            double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
+//            double lateral =  gamepad1.left_stick_x/2;
+//            double yaw     =  gamepad1.right_stick_x/2;
+
+            // Note: pushing stick forward gives negative value
+            double axial = SquareInputWithSign(-gamepad1.left_stick_y);
+            double lateral =  SquareInputWithSign(gamepad1.left_stick_x);
+            double yaw     =  SquareInputWithSign(gamepad1.right_stick_x);
             robot.driveRobot(axial, lateral, yaw);
 
 
