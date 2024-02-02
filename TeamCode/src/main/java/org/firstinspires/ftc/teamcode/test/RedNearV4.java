@@ -194,18 +194,19 @@ public class RedNearV4 extends LinearOpMode {
         }
 
 
-        // (TBD) - move linear actuator forward.
-        // tilt elbow up
+        // move linear actuator forward.
+        // tilt box lever up
         // turn wrist 180
         // open box
-        Actions.runBlocking(
-                new SequentialAction(
-                        outtake.moveWristUp(),
-                        outtake.moveElbowToScorePosition(),
-                        outtake.openBox(),
-                        trajectoryActionCloseOut
-                )
-        );
+//        Actions.runBlocking(
+//                new SequentialAction(
+//                        outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT),
+//                        outtake.moveWristOut(),
+//                        outtake.moveElbowToScorePosition(),
+//                        outtake.openBox(),
+//                        trajectoryActionCloseOut
+//                )
+//        );
     } // runOpMode
 
 
