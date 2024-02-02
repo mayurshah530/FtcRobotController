@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Outtake;
@@ -15,6 +16,9 @@ import org.firstinspires.ftc.teamcode.mechanisms.Outtake;
 @Config
 @Autonomous(name = "Pixel Score Only", group = "RoadRunner 1.0")
 public class AutoScoreOnlyTest extends LinearOpMode {
+
+    private final ElapsedTime runtime = new ElapsedTime();
+    public static boolean USE_ACTION_CONSTRUCT = true;
 
     @Override
     public void runOpMode() {
@@ -29,6 +33,8 @@ public class AutoScoreOnlyTest extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
+
+        if (USE_ACTION_CONSTRUCT){
 
         // move linear actuator forward. (how much? how long?)
         // tilt elbow up
@@ -53,5 +59,64 @@ public class AutoScoreOnlyTest extends LinearOpMode {
                 )
         );
 
-    } // runOpMode
+        } else {
+
+
+            // alternate: try to do it without the Action construct.
+            while (opModeIsActive()) {
+
+                boolean wristInScoringPosition = false;
+                int initLeftActuatorPos = outtake.LinearActLeftEncoder.getPositionAndVelocity().position;
+                int initRightActuatorPos = outtake.LinearActRightEncoder.getPositionAndVelocity().position;
+                boolean leftDone = false;
+                boolean rightDone = false;
+                runtime.reset();
+
+                while ((leftDone && rightDone) || (runtime.seconds() < 3.0)) {
+                    outtake.linearActLeft.setPower(Outtake.PARAMS.LINEAR_ACTUATOR_POWER);
+                    outtake.linearActRight.setPower(Outtake.PARAMS.LINEAR_ACTUATOR_POWER);
+
+                    int leftActuatorPos = outtake.LinearActLeftEncoder.getPositionAndVelocity().position;
+                    int rightActuatorPos = outtake.LinearActRightEncoder.getPositionAndVelocity().position;
+                    int leftDelta = leftActuatorPos - initLeftActuatorPos;
+                    int rightDelta = rightActuatorPos - initRightActuatorPos;
+                    telemetry.addData("leftDelta ", leftDelta);
+                    telemetry.addData("rightDelta ", rightDelta);
+
+                    leftDone = Math.abs(leftDelta) >= Math.abs(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT);
+                    rightDone = Math.abs(rightDelta) >= Math.abs(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT);
+
+                    if (leftDone) {
+                        outtake.linearActLeft.setPower(0.0);
+                    }
+                    if (rightDone) {
+                        outtake.linearActRight.setPower(0.0);
+                    }
+
+                    if (!wristInScoringPosition &&
+                            Math.abs(leftDelta) >= Outtake.PARAMS.ACTUATOR_ENCODER_COUNT / 2 &&
+                            Math.abs(rightDelta) >= Outtake.PARAMS.ACTUATOR_ENCODER_COUNT / 2) {
+                        outtake.setBoxLeverPosition(Outtake.PARAMS.BOX_LEVER_SCORING_POSITION);
+                        sleep(100);
+                        outtake.setWristPosition(Outtake.PARAMS.WRIST_SCORING_POSITION);
+                        wristInScoringPosition = true;
+                    }
+                    sleep(20);
+                }
+
+                outtake.linearActLeft.setPower(0.0);
+                outtake.linearActRight.setPower(0.0);
+
+                outtake.setBoxPosition(Outtake.PARAMS.BOX_SCORING_POSITION);
+                sleep(200);
+                outtake.setBoxPosition(Outtake.PARAMS.BOX_CLOSE_POSITION);
+                outtake.setWristPosition(Outtake.PARAMS.WRIST_HOME_POSITION);
+                sleep(200);
+                outtake.setBoxLeverPosition(Outtake.PARAMS.BOX_LEVER_HOME_POSITION);
+
+            }
+        }
+
+
+        } // runOpMode
 }
