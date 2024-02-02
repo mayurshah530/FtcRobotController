@@ -6,19 +6,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Actions;
-import com.acmerobotics.roadrunner.ftc.FlightRecorder;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.roadrunner.ftc.Encoder;
-import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
-import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
 public final class Outtake {
@@ -33,16 +28,16 @@ public final class Outtake {
         public double BOX_CLOSE_POSITION = 1.0;
         public double BOX_SCORING_POSITION = 0.5;
 
-        public int ACTUATOR_ENCODER_COUNT = 100;
-        public double LINEAR_ACTUATOR_POWER = 0.5;
-        public double LINEAR_ACTUATOR_TIMEOUT_SEC = 5;
+        public int ACTUATOR_ENCODER_COUNT = 3500;
+        public double LINEAR_ACTUATOR_POWER = 0.4;
+        public double LINEAR_ACTUATOR_TIMEOUT_SEC = 12;
     }
 
     private DcMotorEx linearActLeft = null;
     private DcMotorEx linearActRight = null;
 
     private Servo wrist = null;
-    private Servo elbow = null;
+    private Servo boxLever = null;
     private Servo box = null;
 
     public Encoder LinearActLeftEncoder = null;
@@ -57,20 +52,20 @@ public final class Outtake {
         linearActRight = hardwareMap.get(DcMotorEx.class, "linear_act_right");
 
         wrist = hardwareMap.get(Servo.class,"wrist");
-        elbow = hardwareMap.get(Servo.class,"box_lever");
+        boxLever = hardwareMap.get(Servo.class,"box_lever");
         box = hardwareMap.get(Servo.class, "box");
 
-        linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        linearActLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        linearActRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LinearActLeftEncoder = new OverflowEncoder(new RawEncoder(linearActLeft));
         LinearActRightEncoder = new OverflowEncoder(new RawEncoder(linearActRight));
 
         wrist.setPosition(PARAMS.WRIST_HOME_POSITION);
-        elbow.setPosition(PARAMS.ELBOW_HOME_POSITION);
+        boxLever.setPosition(PARAMS.ELBOW_HOME_POSITION);
         box.setPosition(PARAMS.BOX_CLOSE_POSITION);
         
-        FlightRecorder.write("MECANUM_PARAMS", PARAMS);
+//        FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
 
@@ -86,9 +81,24 @@ public final class Outtake {
     }
 
     public class OpenBox implements Action {
+        private boolean initialized = false;
+        private double beginTs = -1;
+
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                duration = 0;
+                initialized = true;
+            }
+            duration = Actions.now() - beginTs;
             box.setPosition(PARAMS.BOX_SCORING_POSITION);
+            packet.put("boxPosition ", box.getPosition());
+
+            if (duration < 2.0){
+                return true;
+            }
             return false;
         }
     }
@@ -97,9 +107,26 @@ public final class Outtake {
     }
 
     public class WristUp implements Action {
+        private boolean initialized = false;
+        private double beginTs = -1;
+
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                duration = 0;
+                initialized = true;
+            }
+            duration = Actions.now() - beginTs;
             wrist.setPosition(PARAMS.WRIST_SCORING_POSITION);
+            packet.put("wristPosition ", wrist.getPosition());
+
+            if (duration < 2.0){
+                return true;
+            }
+
             return false;
         }
     }
@@ -111,6 +138,7 @@ public final class Outtake {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             wrist.setPosition(PARAMS.WRIST_HOME_POSITION);
+            packet.put("wristPosition ", wrist.getPosition());
             return false;
         }
     }
@@ -120,7 +148,8 @@ public final class Outtake {
 
     public class ElbowHome implements Action {
         public boolean run(@NonNull TelemetryPacket packet) {
-            elbow.setPosition(PARAMS.ELBOW_HOME_POSITION);
+
+            boxLever.setPosition(PARAMS.ELBOW_HOME_POSITION);
             return false;
         }
     }
@@ -130,8 +159,24 @@ public final class Outtake {
 
 
     public class ElbowScore implements Action {
+        private boolean initialized = false;
+        private double beginTs = -1;
+
         public boolean run(@NonNull TelemetryPacket packet) {
-            elbow.setPosition(PARAMS.ELBOW_SCORING_POSITION);
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                duration = 0;
+                initialized = true;
+            }
+            duration = Actions.now() - beginTs;
+            boxLever.setPosition(PARAMS.ELBOW_SCORING_POSITION);
+            packet.put("boxLeverPosition ", boxLever.getPosition());
+
+            if (duration < 2.0){
+                return true;
+            }
+
             return false;
         }
     }
@@ -201,10 +246,14 @@ public final class Outtake {
     }
 
     public void setElbowPosition(double position){
-        elbow.setPosition(position);
+        boxLever.setPosition(position);
     }
     public void setWristPosition(double position){
         wrist.setPosition(position);
+    }
+
+    public double getWristPosition() {
+        return wrist.getPosition();
     }
 
 }

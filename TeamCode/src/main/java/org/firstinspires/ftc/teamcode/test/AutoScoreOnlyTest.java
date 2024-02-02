@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.test;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -29,6 +30,9 @@ public class AutoScoreOnlyTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        telemetry.addData("WristPosition: %.2f", outtake.getWristPosition() );
+
+//        outtake.setWristPosition(Outtake.PARAMS.WRIST_SCORING_POSITION);
         // move linear actuator forward. (how much? how long?)
         // tilt elbow up
         // turn wrist 180
@@ -37,8 +41,10 @@ public class AutoScoreOnlyTest extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT),
-                        outtake.moveWristUp(),
-                        outtake.moveElbowToScorePosition(),
+                        new ParallelAction(
+                                outtake.moveElbowToScorePosition()
+                                ,outtake.moveWristUp()
+                        ),
                         outtake.openBox()
                 )
         );
