@@ -19,14 +19,18 @@ import com.acmerobotics.roadrunner.ftc.RawEncoder;
 public final class Outtake {
     public static class Params {
 
-        public double ELBOW_HOME_POSITION = 0.8;
-        public double ELBOW_SCORING_POSITION = 0.4;
+        public double BOX_LEVER_HOME_POSITION = 0.8;
+        public double BOX_LEVER_SCORING_POSITION = 0.4;
+
+        public double BOX_LEVER_DURATION = 2.0;
 
         public double WRIST_HOME_POSITION = 0.0;
         public double WRIST_SCORING_POSITION = 0.56;
+        public double WRIST_DURATION = 2.0;
 
         public double BOX_CLOSE_POSITION = 1.0;
         public double BOX_SCORING_POSITION = 0.5;
+        public double BOX_DURATION = 2.0;
 
         public int ACTUATOR_ENCODER_COUNT = 3500;
         public double LINEAR_ACTUATOR_POWER = 0.4;
@@ -62,126 +66,109 @@ public final class Outtake {
         LinearActRightEncoder = new OverflowEncoder(new RawEncoder(linearActRight));
 
         wrist.setPosition(PARAMS.WRIST_HOME_POSITION);
-        boxLever.setPosition(PARAMS.ELBOW_HOME_POSITION);
+        boxLever.setPosition(PARAMS.BOX_LEVER_HOME_POSITION);
         box.setPosition(PARAMS.BOX_CLOSE_POSITION);
         
 //        FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
-
-    public class CloseBox implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            box.setPosition(PARAMS.BOX_CLOSE_POSITION);
-            return false;
-        }
-    }
-    public Action closeBox() {
-        return new Outtake.CloseBox();
-    }
-
-    public class OpenBox implements Action {
+    public class MoveBoxLever implements Action {
         private boolean initialized = false;
         private double beginTs = -1;
+        private final double BOX_LEVER_POSITION;
 
+        MoveBoxLever(double boxLeverPosition){
+            BOX_LEVER_POSITION = boxLeverPosition;
+        }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             double duration;
             if (!initialized){
+                boxLever.setPosition(BOX_LEVER_POSITION);
                 beginTs = Actions.now();
-                duration = 0;
                 initialized = true;
             }
             duration = Actions.now() - beginTs;
-            box.setPosition(PARAMS.BOX_SCORING_POSITION);
+            packet.put("boxLeverPosition ", boxLever.getPosition());
+
+            if (duration < PARAMS.BOX_LEVER_DURATION){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public Action moveBoxLeverUp(){
+        return new MoveBoxLever(PARAMS.BOX_LEVER_SCORING_POSITION);
+    }
+    public Action moveBoxLeverDown(){
+        return new MoveBoxLever(PARAMS.BOX_LEVER_HOME_POSITION);
+    }
+
+    public class OpenOrCloseBox implements Action {
+        private boolean initialized = false;
+        private double beginTs = -1;
+        private final double BOX_POSITION;
+
+        OpenOrCloseBox(double boxPosition){
+            BOX_POSITION = boxPosition;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            double duration;
+            if (!initialized){
+                box.setPosition(BOX_POSITION);
+                beginTs = Actions.now();
+                initialized = true;
+            }
+            duration = Actions.now() - beginTs;
             packet.put("boxPosition ", box.getPosition());
 
             if (duration < 2.0){
                 return true;
             }
             return false;
-        }
+       }
+    }
+
+    public Action closeBox() {
+        return new Outtake.OpenOrCloseBox(PARAMS.BOX_CLOSE_POSITION);
     }
     public Action openBox() {
-        return new Outtake.OpenBox();
+        return new Outtake.OpenOrCloseBox(PARAMS.BOX_SCORING_POSITION);
     }
 
-    public class WristUp implements Action {
+    public class MoveWrist implements Action {
         private boolean initialized = false;
         private double beginTs = -1;
+        private final double WRIST_POSITION;
 
+        MoveWrist(double wristPosition){
+            WRIST_POSITION = wristPosition;
+        }
         @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            double duration;
-            if (!initialized){
-                beginTs = Actions.now();
-                duration = 0;
-                initialized = true;
-            }
-            duration = Actions.now() - beginTs;
-            wrist.setPosition(PARAMS.WRIST_SCORING_POSITION);
-            packet.put("wristPosition ", wrist.getPosition());
-
-            if (duration < 2.0){
-                return true;
-            }
-
-            return false;
-        }
-    }
-    public Action moveWristUp() {
-        return new Outtake.WristUp();
-    }
-
-    public class WristDown implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            wrist.setPosition(PARAMS.WRIST_HOME_POSITION);
-            packet.put("wristPosition ", wrist.getPosition());
-            return false;
-        }
-    }
-    public Action moveWristDown() {
-        return new Outtake.WristDown();
-    }
-
-    public class ElbowHome implements Action {
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            boxLever.setPosition(PARAMS.ELBOW_HOME_POSITION);
-            return false;
-        }
-    }
-    public Action moveElbowHomePosition() {
-        return new Outtake.ElbowHome();
-    }
-
-
-    public class ElbowScore implements Action {
-        private boolean initialized = false;
-        private double beginTs = -1;
-
         public boolean run(@NonNull TelemetryPacket packet) {
             double duration;
             if (!initialized){
                 beginTs = Actions.now();
-                duration = 0;
                 initialized = true;
             }
             duration = Actions.now() - beginTs;
-            boxLever.setPosition(PARAMS.ELBOW_SCORING_POSITION);
-            packet.put("boxLeverPosition ", boxLever.getPosition());
+            wrist.setPosition(WRIST_POSITION);
+            packet.put("wristPosition ", wrist.getPosition());
 
-            if (duration < 2.0){
+            if (duration < PARAMS.WRIST_DURATION){
                 return true;
             }
-
             return false;
         }
     }
-    public Action moveElbowToScorePosition() {
-        return new Outtake.ElbowScore();
+
+    public Action moveWristOut() {
+        return new Outtake.MoveWrist(PARAMS.WRIST_SCORING_POSITION);
+    }
+    public Action moveWristIn() {
+        return new Outtake.MoveWrist(PARAMS.WRIST_HOME_POSITION);
     }
 
     public class LinearActuatorMotion implements Action {
@@ -245,15 +232,19 @@ public final class Outtake {
         return new LinearActuatorMotion(-encoderCount); // -ve sign
     }
 
-    public void setElbowPosition(double position){
+    public void setBoxLeverPosition(double position){
         boxLever.setPosition(position);
     }
     public void setWristPosition(double position){
         wrist.setPosition(position);
     }
+    public void setBoxPosition(double position) {box.setPosition(position);}
 
+    public double getBoxLeverPosition(){return boxLever.getPosition();}
     public double getWristPosition() {
         return wrist.getPosition();
     }
+    public double getBoxPosition(){return box.getPosition();}
+
 
 }

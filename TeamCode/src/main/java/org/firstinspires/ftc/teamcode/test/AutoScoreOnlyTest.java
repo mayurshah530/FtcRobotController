@@ -30,24 +30,28 @@ public class AutoScoreOnlyTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        telemetry.addData("WristPosition: %.2f", outtake.getWristPosition() );
-
-//        outtake.setWristPosition(Outtake.PARAMS.WRIST_SCORING_POSITION);
         // move linear actuator forward. (how much? how long?)
         // tilt elbow up
         // turn wrist 180
         // move wheels forward, look for signs of deceleration and zero velocity
         // open box
+        // close box + move wrist in
+        // put boxlever down + move to park position
         Actions.runBlocking(
                 new SequentialAction(
                         outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT),
                         new ParallelAction(
-                                outtake.moveElbowToScorePosition()
-                                ,outtake.moveWristUp()
+                                outtake.moveBoxLeverUp(),
+                                outtake.moveWristOut()
                         ),
-                        outtake.openBox()
+                        outtake.openBox(),
+                        new ParallelAction(
+                                outtake.closeBox(),
+                                outtake.moveWristIn()
+                        ),
+                        outtake.moveBoxLeverDown()
                 )
         );
-    } // runOpMode
 
+    } // runOpMode
 }
