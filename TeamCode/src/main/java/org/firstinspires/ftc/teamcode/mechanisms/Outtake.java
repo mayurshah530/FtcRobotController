@@ -37,8 +37,8 @@ public final class Outtake {
         public double LINEAR_ACTUATOR_TIMEOUT_SEC = 12;
     }
 
-    private DcMotorEx linearActLeft = null;
-    private DcMotorEx linearActRight = null;
+    public DcMotorEx linearActLeft = null;
+    public DcMotorEx linearActRight = null;
 
     private Servo wrist = null;
     private Servo boxLever = null;
