@@ -98,9 +98,9 @@ public class TeleOpMain extends LinearOpMode {
 
             // Move linear actuator
             if (gamepad2.left_bumper) {
-                robot.actuatorExpand();
-            } else if (gamepad2.right_bumper){
                 robot.actuatorRetract();
+            } else if (gamepad2.right_bumper){
+                robot.actuatorExpand();
             } else {
                 robot.actuatorStop();
             }
