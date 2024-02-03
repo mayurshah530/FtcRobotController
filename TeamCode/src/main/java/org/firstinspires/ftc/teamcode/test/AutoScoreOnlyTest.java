@@ -45,11 +45,13 @@ public class AutoScoreOnlyTest extends LinearOpMode {
         // put boxlever down + move to park position
         Actions.runBlocking(
                 new SequentialAction(
-                        outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT),
                         new ParallelAction(
                                 outtake.moveBoxLeverUp(),
-                                outtake.moveWristOut()
+                                outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
                         ),
+                        outtake.moveWristOut(),
+                        outtake.actuatorExpand(50),
+                        outtake.waitSec(0.5),
                         outtake.openBox(),
                         new ParallelAction(
                                 outtake.closeBox(),
@@ -72,7 +74,7 @@ public class AutoScoreOnlyTest extends LinearOpMode {
                 boolean rightDone = false;
                 runtime.reset();
 
-                while ((leftDone && rightDone) || (runtime.seconds() < 3.0)) {
+                while ((leftDone && rightDone) || (runtime.seconds() < 10.0)) {
                     outtake.linearActLeft.setPower(Outtake.PARAMS.LINEAR_ACTUATOR_POWER);
                     outtake.linearActRight.setPower(Outtake.PARAMS.LINEAR_ACTUATOR_POWER);
 

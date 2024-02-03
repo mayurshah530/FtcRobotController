@@ -68,7 +68,7 @@ public final class Outtake {
         wrist.setPosition(PARAMS.WRIST_HOME_POSITION);
         boxLever.setPosition(PARAMS.BOX_LEVER_HOME_POSITION);
         box.setPosition(PARAMS.BOX_CLOSE_POSITION);
-        
+
 //        FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
@@ -230,6 +230,31 @@ public final class Outtake {
 
     public Action actuatorRetract(int encoderCount){
         return new LinearActuatorMotion(-encoderCount); // -ve sign
+    }
+
+    public static class Wait implements Action {
+        private boolean initialized = false;
+        private double beginTs = -1;
+        private final double WAIT_SEC;
+
+        Wait(double waitSec){
+            WAIT_SEC = waitSec;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            double duration;
+            if (!initialized){
+                beginTs = Actions.now();
+                initialized = true;
+            }
+            duration = Actions.now() - beginTs;
+
+            return duration < WAIT_SEC;
+        }
+    }
+
+    public Action waitSec(double waitSec) {
+        return new Wait(waitSec);
     }
 
     public void setBoxLeverPosition(double position){
