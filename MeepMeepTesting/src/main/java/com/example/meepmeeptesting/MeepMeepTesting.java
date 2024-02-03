@@ -32,10 +32,10 @@ public class MeepMeepTesting {
         // PARK POSITIONS
         Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
         Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
-        Pose2d BLUE_CENTER_PARK = new Pose2d(56, 12 , 0);
+        Pose2d BLUE_CENTER_PARK = new Pose2d(58 - HALF_ROBO_LEN, 12 , 0);
 
-        Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -60, 0);
-        Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
+        Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -66, 0);
+        Pose2d RED_CENTER_PARK = new Pose2d(58 - HALF_ROBO_LEN, -12 , 0);
 
 
         // SPIKE POSITIONS
@@ -56,6 +56,15 @@ public class MeepMeepTesting {
         Pose2d BLUE_FAR_LEFT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), (30), 0);
 
         // TAG locations
+        final double TAG_BOT_OFFSET = 20.25;
+        Pose2d BLUE_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, 41.41, 0);
+        Pose2d BLUE_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, 35.41, 0);
+        Pose2d BLUE_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, 29.41, 0);
+
+        Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -29.41, 0);
+        Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -35.41, 0);
+        Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -41.41, 0);
+
         Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
 
 
@@ -260,19 +269,77 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(BLUE_LEFT_PARK.position, Math.toRadians(0)) // Move to parking position
                 .build();
 
-        Pose2d RED_BOARD_WAIT = new Pose2d(40, -36, 0);
-
-        Action v3RedNearGeCenterScorePark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+        Action v4RedNearGeCenterScorePark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
                 .strafeTo(RED_NEAR_CENTER_SPIKE.position)
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(12, -40))
                 .turn(Math.toRadians(-90))
-                .strafeTo(RED_BOARD_WAIT.position)
+                .strafeTo(RED_ALLIANCE_CENTER_TAG.position)
+                .build();
+        double RED_NEAR_LEFT_SPIKE_Y = -30;
+
+        Action v4RedNearGeLeftScorePark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 5, RED_NEAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x - 3, RED_NEAR_LEFT_SPIKE_Y))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
+                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0)
+                .build();
+
+        double RED_NEAR_RIGHT_SPIKE_BACK_X = 4;
+
+        Action v4RedNearGeRightPark = myBot.getDrive().actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_NEAR_RIGHT_SPIKE.position.x - RED_NEAR_RIGHT_SPIKE_BACK_X, RED_NEAR_RIGHT_SPIKE.position.y))
+                .strafeTo(new Vector2d(12, -58))
+                .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
                 .build();
 
 
+        Action v4RedFarGeCenterScore = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .strafeTo(RED_FAR_CENTER_SPIKE.position)
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(RED_FAR_CENTER_SPIKE.position.x, RED_FAR_CENTER_SPIKE.position.y - 10)) // come back
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(-52, RED_FAR_CENTER_SPIKE.position.y - 10)) // slide left
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(-52, -12)) // move fwd
+                .turn(-Math.PI/2)
+                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_CENTER_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_CENTER_TAG.position, 0 )
+                .build();
+
+
+        Action v4RedFarGeLeftScore = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(RED_FAR_LEFT_SPIKE.position.x-2, RED_FAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, RED_FAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, -12))
+                .turn(Math.PI+1e-6)
+                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_LEFT_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0 )
+                .build();
+
+        Action v4RedfarGeRightScore = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .splineToLinearHeading(RED_FAR_RIGHT_SPIKE, 0)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, RED_FAR_RIGHT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, -8))
+                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_RIGHT_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0 )
+                .build();
+
+        Action v4RedNearCloseOut = myBot.getDrive().actionBuilder(RED_ALLIANCE_CENTER_TAG)
+                .strafeTo(RED_RIGHT_PARK.position)
+                .build();
+
+        Action v4RedFarCloseOut = myBot.getDrive().actionBuilder(RED_ALLIANCE_CENTER_TAG)
+                .strafeTo(RED_CENTER_PARK.position)
+                .build();
+
         // This is what gets shown on the UI
-        myBot.runAction(v3RedNearGeCenterScorePark);
+        myBot.runAction(v4RedfarGeRightScore);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)

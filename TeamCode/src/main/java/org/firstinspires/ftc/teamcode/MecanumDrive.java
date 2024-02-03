@@ -100,6 +100,8 @@ public final class MecanumDrive {
     public static class AprilTagParams {
         // Adjust these numbers to suit your robot.
         final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+        final double HEADING_CALIBRATION = 0.0;
+        final double YAW_CALIBRATION = 0.0;
 
         //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
         //  applied to the drive motors to correct the error.
@@ -506,12 +508,12 @@ public final class MecanumDrive {
         );
     }
 
-    public void alignToAprilTag(AprilTagDetection desiredTag){
+    public boolean alignToAprilTag(AprilTagDetection desiredTag){
 
         // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
         double  rangeError      = (desiredTag.ftcPose.range - AT_PARAMS.DESIRED_DISTANCE);
-        double  headingError    = desiredTag.ftcPose.bearing;
-        double  yawError        = desiredTag.ftcPose.yaw;
+        double  headingError    = (desiredTag.ftcPose.bearing - AT_PARAMS.HEADING_CALIBRATION);
+        double  yawError        = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
 
         // Use the speed and turn "gains" to calculate how we want the robot to move.
         double drive  = Range.clip(rangeError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
@@ -519,6 +521,8 @@ public final class MecanumDrive {
         double strafe = Range.clip(-yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
 
         moveRobot(drive, strafe, turn);
+
+        return rangeError < 1;
     }
 
     /**

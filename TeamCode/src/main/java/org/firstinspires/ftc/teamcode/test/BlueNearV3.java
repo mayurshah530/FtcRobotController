@@ -19,7 +19,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Config
-@Autonomous(name = "Blue Near V3", group = "RoadRunner 1.0")
+@Autonomous(name = " \uD83D\uDD35 Blue Near V3", group = "RoadRunner 1.0")
 public class BlueNearV3 extends LinearOpMode {
 
     double HALF_ROBO_LEN = 9;

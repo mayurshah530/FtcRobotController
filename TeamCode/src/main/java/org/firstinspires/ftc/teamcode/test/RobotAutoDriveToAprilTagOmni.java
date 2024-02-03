@@ -165,9 +165,11 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
             if (targetFound) {
                 telemetry.addData(">","HOLD Left-Bumper to Drive to Target\n");
                 telemetry.addData("Target", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                telemetry.addData("x",  "%5.1f inches", desiredTag.ftcPose.x);
+                telemetry.addData("y",  "%5.1f inches", desiredTag.ftcPose.y);
+                telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
                 telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
                 telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-                telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
             } else {
                 telemetry.addData(">","Drive using joysticks to find valid target\n");
             }
