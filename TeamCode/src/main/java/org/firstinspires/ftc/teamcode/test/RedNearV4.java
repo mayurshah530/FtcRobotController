@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.test;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -27,6 +29,8 @@ import java.util.List;
 @Autonomous(name = "Red Near V4", group = "RoadRunner 1.0")
 public class RedNearV4 extends LinearOpMode {
 
+    public static boolean ENABLE_APRIL_TAG_CORRECTION = true;
+
     public static double HALF_ROBO_LEN = 9;
     public static double RED_NEAR_LEFT_SPIKE_X = 10;
     public static double RED_NEAR_LEFT_SPIKE_Y = -30;
@@ -35,23 +39,17 @@ public class RedNearV4 extends LinearOpMode {
     // Start position red far
 
     // START POSITIONS
-    Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
     Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
-
-    Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
 
 
     // PARK POSITIONS
-    Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
-    Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
-    Pose2d RED_RIGHT_PARK = new Pose2d(62 - HALF_ROBO_LEN, -66, 0);
-    Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
+    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -66, 0);
 
     // SPIKE Locations
     Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
     public static double RED_NEAR_RIGHT_SPIKE_X = 23.5-HALF_ROBO_LEN;
     public static double RED_NEAR_RIGHT_SPIKE_Y = -25;
-    public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 6;
+    public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 4;
 
     Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(RED_NEAR_RIGHT_SPIKE_X, RED_NEAR_RIGHT_SPIKE_Y, 0);
     Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(RED_NEAR_LEFT_SPIKE_X, RED_NEAR_LEFT_SPIKE_Y, -Math.PI);
@@ -65,10 +63,12 @@ public class RedNearV4 extends LinearOpMode {
     Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
 
     // TAG locations
-    Pose2d BLUE_BOARD_CENTER_TAG = new Pose2d(58 - HALF_ROBO_LEN, 36, 0);
-
+    // TAG locations
+    public static double TAG_BOT_OFFSET = 20.25;
+    Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -29.41, 0);
+    Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -35.41, 0);
+    Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -41.41, 0);
     // wait location
-    Pose2d RED_BOARD_WAIT = new Pose2d(40, -36, 0);
 
 
     private FirstVisionProcessor visionProcessor;
@@ -77,7 +77,7 @@ public class RedNearV4 extends LinearOpMode {
     private ScoringElementLocation selectedSide = ScoringElementLocation.UNKNOWN;
 
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
-    final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+    private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -88,37 +88,27 @@ public class RedNearV4 extends LinearOpMode {
         initVisionPortal();
         visionProcessor.SetAlliance(Alliance.RED);
 
-        Action v3RedNearGeCenterScore = drive.actionBuilder(RED_NEAR_START_POSE)
+        Action v4RedNearGeLeftScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 5, RED_NEAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x - 3, RED_NEAR_LEFT_SPIKE_Y))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
+                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0)
+                .build();
+
+        Action v4RedNearGeCenterScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
                 .strafeTo(RED_NEAR_CENTER_SPIKE.position)
-                .waitSeconds(1.0)
+                .waitSeconds(0.5)
                 .strafeTo(new Vector2d(12, -40))
                 .turn(Math.toRadians(-90))
-                .strafeTo(RED_BOARD_WAIT.position)
+                .strafeTo(RED_ALLIANCE_CENTER_TAG.position)
                 .build();
-
-        Action v3RedNearGeLeftPark = drive.actionBuilder(RED_NEAR_START_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 5, RED_NEAR_LEFT_SPIKE.position.y), Math.toRadians(180))
-                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x -5, RED_NEAR_LEFT_SPIKE_Y))
-                .waitSeconds(0.5)
-                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 0, RED_NEAR_LEFT_SPIKE.position.y))
-                .strafeToLinearHeading(RED_RIGHT_PARK.position, Math.toRadians(0)) // Move to parking position
-                .build();
-
-        Action v3RedNearGeRightPark = drive.actionBuilder(RED_NEAR_START_POSE)
+        Action v4RedNearGeRightPark = drive.actionBuilder(RED_NEAR_START_POSE)
                 .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(RED_NEAR_RIGHT_SPIKE.position.x - RED_NEAR_RIGHT_SPIKE_BACK_X, RED_NEAR_RIGHT_SPIKE.position.y))
                 .strafeTo(new Vector2d(12, -58))
-                .strafeTo(RED_RIGHT_PARK.position) // Move to parking position
-                .build();
-
-
-        Action v3RedNearGeCenterScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
-                .strafeTo(RED_NEAR_CENTER_SPIKE.position)
-                .waitSeconds(1.0)
-                .strafeTo(new Vector2d(12, -40))
-                .turn(Math.toRadians(-90))
-                .strafeTo(RED_BOARD_WAIT.position)
+                .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
                 .build();
 
 
@@ -152,16 +142,16 @@ public class RedNearV4 extends LinearOpMode {
         Action trajectoryToRun = null;
         switch (selectedSide){
             case LEFT:
-                trajectoryToRun = v3RedNearGeLeftPark;
+                trajectoryToRun = v4RedNearGeLeftScorePark;
                 break;
             case CENTER:
-                trajectoryToRun = v3RedNearGeCenterScore;
+                trajectoryToRun = v4RedNearGeCenterScorePark;
                 break;
             case RIGHT:
-                trajectoryToRun = v3RedNearGeRightPark;
+                trajectoryToRun = v4RedNearGeRightPark;
                 break;
             default:
-                trajectoryToRun = v3RedNearGeCenterScore;
+                trajectoryToRun = v4RedNearGeCenterScorePark;
         }
 
         Actions.runBlocking(
@@ -170,43 +160,57 @@ public class RedNearV4 extends LinearOpMode {
                 )
         );
 
-        desiredTag  = null;
-        // Step through the list of detected tags and look for a matching tag
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        for (AprilTagDetection detection : currentDetections) {
-            if ((detection.metadata != null) && (detection.id == desiredTagId) ){
-                targetFound = true;
-                desiredTag = detection;
-                break;  // don't look any further.
-            } else {
-                telemetry.addData("Unknown Target", "Tag ID %d is not in TagLibrary\n", detection.id);
+        if(ENABLE_APRIL_TAG_CORRECTION){
+            boolean aprilTagConverged = false;
+            runtime.reset();
+            while(runtime.seconds() < 10.0 && !aprilTagConverged) {
+                desiredTag = null;
+                // Step through the list of detected tags and look for a matching tag
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    if ((detection.metadata != null) && (detection.id == desiredTagId)) {
+                        targetFound = true;
+                        desiredTag = detection;
+                        break;  // don't look any further.
+                    } else {
+                        telemetry.addData("Unknown Target", "Tag ID %d is not in TagLibrary\n", detection.id);
+                    }
+                }
+
+                // Tell the driver what we see, and what to do.
+                if (targetFound) {
+                    telemetry.addData("Target", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                    telemetry.addData("x", "%5.1f inches", desiredTag.ftcPose.x);
+                    telemetry.addData("y", "%5.1f inches", desiredTag.ftcPose.y);
+                    telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+                    telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+                    telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+                    telemetry.addData("Robot Pose", "%3.1f, %3.1 %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
+
+                    aprilTagConverged = drive.alignToAprilTag(desiredTag);
+                }
             }
-        }
 
-        // Tell the driver what we see, and what to do.
-        if (targetFound) {
-            telemetry.addData("Target", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
-            telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-            telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
-
-            drive.alignToAprilTag(desiredTag);
         }
 
 
-        // move linear actuator forward.
-        // tilt box lever up
-        // turn wrist 180
-        // open box
-//        Actions.runBlocking(
-//                new SequentialAction(
-//                        outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT),
-//                        outtake.moveWristOut(),
-//                        outtake.moveElbowToScorePosition(),
-//                        outtake.openBox(),
-//                        trajectoryActionCloseOut
-//                )
-//        );
+        Actions.runBlocking(
+                new SequentialAction(
+                        new ParallelAction(
+                                outtake.moveBoxLeverUp(),
+                                outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
+                        ),
+                        outtake.moveWristOut(),
+                        outtake.actuatorExpand(50),
+                        outtake.waitSec(0.5),
+                        outtake.openBox(),
+                        new ParallelAction(
+                                outtake.closeBox(),
+                                outtake.moveWristIn()
+                        ),
+                        outtake.moveBoxLeverDown()
+                )
+        );
     } // runOpMode
 
 

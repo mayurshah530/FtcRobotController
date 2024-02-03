@@ -56,8 +56,8 @@ public class AutoScoreOnlyTest extends LinearOpMode {
                         new ParallelAction(
                                 outtake.closeBox(),
                                 outtake.moveWristIn()
-                        ),
-                        outtake.moveBoxLeverDown()
+                        )
+//                       ,outtake.moveBoxLeverDown()
                 )
         );
 
@@ -70,11 +70,13 @@ public class AutoScoreOnlyTest extends LinearOpMode {
                 boolean wristInScoringPosition = false;
                 int initLeftActuatorPos = outtake.LinearActLeftEncoder.getPositionAndVelocity().position;
                 int initRightActuatorPos = outtake.LinearActRightEncoder.getPositionAndVelocity().position;
+                outtake.setBoxLeverPosition(Outtake.PARAMS.BOX_LEVER_SCORING_POSITION);
+
                 boolean leftDone = false;
                 boolean rightDone = false;
                 runtime.reset();
 
-                while ((leftDone && rightDone) || (runtime.seconds() < 10.0)) {
+                while ((!leftDone || !rightDone) && (runtime.seconds() < 10.0)) {
                     outtake.linearActLeft.setPower(Outtake.PARAMS.LINEAR_ACTUATOR_POWER);
                     outtake.linearActRight.setPower(Outtake.PARAMS.LINEAR_ACTUATOR_POWER);
 
@@ -96,10 +98,8 @@ public class AutoScoreOnlyTest extends LinearOpMode {
                     }
 
                     if (!wristInScoringPosition &&
-                            Math.abs(leftDelta) >= Outtake.PARAMS.ACTUATOR_ENCODER_COUNT / 2 &&
-                            Math.abs(rightDelta) >= Outtake.PARAMS.ACTUATOR_ENCODER_COUNT / 2) {
-                        outtake.setBoxLeverPosition(Outtake.PARAMS.BOX_LEVER_SCORING_POSITION);
-                        sleep(100);
+                            Math.abs(leftDelta) >= Outtake.PARAMS.ACTUATOR_ENCODER_COUNT *8/10 &&
+                            Math.abs(rightDelta) >= Outtake.PARAMS.ACTUATOR_ENCODER_COUNT  *8/10) {
                         outtake.setWristPosition(Outtake.PARAMS.WRIST_SCORING_POSITION);
                         wristInScoringPosition = true;
                     }
@@ -109,12 +109,13 @@ public class AutoScoreOnlyTest extends LinearOpMode {
                 outtake.linearActLeft.setPower(0.0);
                 outtake.linearActRight.setPower(0.0);
 
+                sleep(500);
                 outtake.setBoxPosition(Outtake.PARAMS.BOX_SCORING_POSITION);
                 sleep(200);
                 outtake.setBoxPosition(Outtake.PARAMS.BOX_CLOSE_POSITION);
                 outtake.setWristPosition(Outtake.PARAMS.WRIST_HOME_POSITION);
                 sleep(200);
-                outtake.setBoxLeverPosition(Outtake.PARAMS.BOX_LEVER_HOME_POSITION);
+//                outtake.setBoxLeverPosition(Outtake.PARAMS.BOX_LEVER_HOME_POSITION);
 
             }
         }
