@@ -27,13 +27,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.mechanisms.RobotHardware;
+import org.firstinspires.ftc.teamcode.mechanisms.V3RobotHardware;
 import org.firstinspires.ftc.teamcode.mechanisms.V4Hardware;
 
 
@@ -44,26 +49,15 @@ public class TeleOpMain extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private double liftServoPosition = 0.0;
 
-    public double SquareInputWithSign(double input){
-        double sign = 1.0;
-        if (input < 0.0){
-            sign = -1.0;
-        }
-        return sign * input * input;
-    }
+    public double INTAKE_MOTOR_POWER = 1.0;
+
     @Override
     public void runOpMode() {
 
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
-
-        robot.setBoxPosition(V4Hardware.BOX_CLOSE_POSITION);
-        robot.boxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
-        robot.wristPosition(V4Hardware.WRIST_HOME_POSITION);
-
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -77,31 +71,26 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            /* =======================
-             Gamepad 1 controls
-            ======================= */
+//             =======================
+//             Gamepad 1 controls
+//             =======================
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-//            double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
-//            double lateral =  gamepad1.left_stick_x/2;
-//            double yaw     =  gamepad1.right_stick_x/2;
-
-            // Note: pushing stick forward gives negative value
-            double axial = SquareInputWithSign(-gamepad1.left_stick_y);
-            double lateral =  SquareInputWithSign(gamepad1.left_stick_x);
-            double yaw     =  SquareInputWithSign(gamepad1.right_stick_x);
+            double axial   = -gamepad1.left_stick_y/2;  // Note: pushing stick forward gives negative value
+            double lateral =  gamepad1.left_stick_x/2;
+            double yaw     =  gamepad1.right_stick_x/2;
             robot.driveRobot(axial, lateral, yaw);
 
 
-            /* =======================
-             Gamepad 2 controls
-            ======================= */
+            // =======================
+            // Gamepad 2 controls
+            // =======================
 
             // Move linear actuator
             if (gamepad2.left_bumper) {
-                robot.actuatorRetract();
-            } else if (gamepad2.right_bumper){
                 robot.actuatorExpand();
+            } else if (gamepad2.right_bumper){
+                robot.actuatorRetract();
             } else {
                 robot.actuatorStop();
             }
@@ -109,22 +98,13 @@ public class TeleOpMain extends LinearOpMode {
 
             // Tilt up/down
             // Right trigger to move viper slide up, left trigger to move it down.
-//            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
-//            Range.clip(servoLiftPower, -0.9, 0.9);
-//            robot.setCRServoPower(servoLiftPower);
-//            prevLiftPower = servoLiftPower;
-//            if (Math.abs(servoLiftPower) < 0.001) {
-//                robot.setCRServoPower(prevLiftPower);
-//            }
-
-            if (gamepad1.dpad_up){
-                liftServoPosition += 0.1;
-                Range.clip(liftServoPosition, 0.0, 0.9);
-            } else if (gamepad1.dpad_down) {
-                liftServoPosition -= 0.1;
-                Range.clip(liftServoPosition, 0.0, 0.9);
+            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
+            Range.clip(servoLiftPower, -0.9, 0.9);
+            robot.setCRServoPower(servoLiftPower);
+            prevLiftPower = servoLiftPower;
+            if (Math.abs(servoLiftPower) < 0.001) {
+                robot.setCRServoPower(prevLiftPower);
             }
-            robot.setLiftPosition(liftServoPosition);
 
             //plane_launcher
             if (gamepad2.dpad_up) {
@@ -149,21 +129,15 @@ public class TeleOpMain extends LinearOpMode {
                 robot.setIntakePower(1.0);
             } else if (gamepad1.dpad_left) {
                 robot.setIntakePower(-1.0);
-            } else
+            } else {
                 robot.setIntakePower(0.0);
-
-            if (gamepad1.left_bumper){
-                robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
-            } else if (gamepad1.right_bumper) {
-                robot.setBoxPosition(robot.BOX_SCORING_POSITION);
             }
+
+
 
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-//            telemetry.addData("Currently at",  " Left: %7d Right: %7d",
-//                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
-
 //            telemetry.addData("Front Wheel left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
 //            telemetry.addData("Back  Wheel left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 //            telemetry.addData("Viper slide power", "%4.2f", viperSlidePower );

@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -56,7 +55,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Config
 public class V4Hardware {
 
     /* Declare OpMode members. */
@@ -73,14 +71,14 @@ public class V4Hardware {
 
     private DcMotor intake = null;
     private DcMotor intake_back = null;
-    private Servo liftLeft = null;
-    private Servo liftRight = null;
+    private CRServo liftLeft = null;
+    private CRServo liftRight = null;
 
     private Servo wrist = null;
 
     private Servo plane_launcher= null;
     private Servo boxLever = null;
-    private Servo box = null;
+    private CRServo intake3 = null;
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
@@ -91,13 +89,11 @@ public class V4Hardware {
 
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 312;
-    public static double BOXLEVER_HOME_POSITION = 0.8;
-    public static  double BOXLEVER_SCORING_POSITION = 0.4;
-    public static  double WRIST_HOME_POSITION = 0.0;
-    public static  double WRIST_SCORING_POSITION = 0.56;
-
-    public static  double BOX_CLOSE_POSITION = 1.0;
-    public static  double BOX_SCORING_POSITION = 0.5;
+    public double BOXLEVER_HOME_POSITION = 0.0;
+    public double BOXLEVER_SCORING_POSITION = 1.0;
+    public double WRIST_HOME_POSITION = 0.0;
+    public double WRIST_SCORING_POSITION = 1.0;
+    public double INTAKE3SPEED = 1.0;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -140,41 +136,42 @@ public class V4Hardware {
 
         plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
 
-        liftLeft = myOpMode.hardwareMap.get(Servo.class,"lift_left");
-        liftRight = myOpMode.hardwareMap.get(Servo.class,"lift_right");
+        liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
+        liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
         boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
-        box = myOpMode.hardwareMap.get(Servo.class, "box");
+        intake3 = myOpMode.hardwareMap.get(CRServo.class,"intake3");
+
 
         // Set directions for drive motors
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-
+//
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        linearActLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+        linearActLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
-//
-//        linearActLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        linearActRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//        linearActLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        linearActRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // Send telemetry message to indicate successful Encoder reset
-        myOpMode.telemetry.addData("Starting at",  "%7d :%7d",
-                linearActLeft.getCurrentPosition(),
-                linearActRight.getCurrentPosition());
 
-
-        liftLeft.setDirection(Servo.Direction.REVERSE);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
     }
 
+    public void liftUp(){
+        setCRServoPower(LIFT_UP_POWER);
+    }
+
+    public void liftDown(){
+        setCRServoPower(LIFT_DOWN_POWER);
+    }
+
+    public void intake3run(){
+        intake3.setPower(INTAKE3SPEED);
+    }
     public void actuatorExpand(){
         setLinearActuatorPower(0.5);
     }
@@ -190,16 +187,18 @@ public class V4Hardware {
     public void setIntakePower(double power){
         intake.setPower(power);
         intake_back.setPower(power);
+        intake3.setPower(power);
     }
     public void setLinearActuatorPower(double power){
         linearActLeft.setPower(power);
         linearActRight.setPower(power);
     }
 
-    public void setLiftPosition(double position){
-        liftLeft.setPosition(position);
-        liftRight.setPosition(position);
+    public void setCRServoPower(double power){
+        liftLeft.setPower(power);
+        liftRight.setPower(power);
     }
+
     public void wristPosition(double position){
         wrist.setPosition(position);
     }
@@ -208,17 +207,8 @@ public class V4Hardware {
         boxLever.setPosition(position);
     }
 
-    public void setBoxPosition(double position) { box.setPosition(position); }
-
     public void setPlaneLauncherPosition(double position){
         plane_launcher.setPosition(position);
-    }
-
-    public double getLinearActuatorLeftPosition(){
-        return linearActLeft.getCurrentPosition();
-    }
-    public double getLinearActuatorRightPosition(){
-        return linearActRight.getCurrentPosition();
     }
 
     /**
