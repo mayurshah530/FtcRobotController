@@ -29,7 +29,6 @@ import java.util.List;
 @Autonomous(name = "April Tag Motion Test", group = "RoadRunner 1.0")
 public class AprilTagTest extends LinearOpMode {
 
-    public static boolean ENABLE_APRIL_TAG_CORRECTION = true;
 
     public static double HALF_ROBO_LEN = 9;
     public static double RED_NEAR_LEFT_SPIKE_X = 10;
@@ -40,35 +39,6 @@ public class AprilTagTest extends LinearOpMode {
 
     // START POSITIONS
     Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
-
-
-    // PARK POSITIONS
-    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -66, 0);
-
-    // SPIKE Locations
-    Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
-    public static double RED_NEAR_RIGHT_SPIKE_X = 23.5-HALF_ROBO_LEN;
-    public static double RED_NEAR_RIGHT_SPIKE_Y = -25;
-    public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 4;
-
-    Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(RED_NEAR_RIGHT_SPIKE_X, RED_NEAR_RIGHT_SPIKE_Y, 0);
-    Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(RED_NEAR_LEFT_SPIKE_X, RED_NEAR_LEFT_SPIKE_Y, -Math.PI);
-
-    Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
-    Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
-    Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
-
-
-    Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-    Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
-
-    // TAG locations
-    // TAG locations
-    public static double TAG_BOT_OFFSET = 20.25;
-    Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -29.41, 0);
-    Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -35.41, 0);
-    Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -41.41, 0);
-    // wait location
 
 
     private FirstVisionProcessor visionProcessor;
@@ -106,11 +76,11 @@ public class AprilTagTest extends LinearOpMode {
         visionPortal.setProcessorEnabled(aprilTag, true);
         sleep(100);
 
-        if(ENABLE_APRIL_TAG_CORRECTION){
+        while(opModeIsActive()){
             boolean aprilTagConverged = false;
             runtime.reset();
+            desiredTag = null;
             while(runtime.seconds() < 10.0 && !aprilTagConverged) {
-                desiredTag = null;
                 // Step through the list of detected tags and look for a matching tag
                 List<AprilTagDetection> currentDetections = aprilTag.getDetections();
                 for (AprilTagDetection detection : currentDetections) {
@@ -130,7 +100,7 @@ public class AprilTagTest extends LinearOpMode {
                     telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
                     telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
                     telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
-                    telemetry.addData("Robot Pose", "%3.1f, %3.1 %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
+//                    telemetry.addData("Robot Pose", "%3.1f, %3.1 %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
                     telemetry.update();
 
                     aprilTagConverged = drive.alignToAprilTag(desiredTag);

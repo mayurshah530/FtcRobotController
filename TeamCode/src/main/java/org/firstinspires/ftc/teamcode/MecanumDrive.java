@@ -522,7 +522,7 @@ public final class MecanumDrive {
 
         moveRobot(drive, strafe, turn);
 
-        return rangeError < 1;
+        return rangeError < 0.6;
     }
 
     /**
