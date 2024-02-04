@@ -73,8 +73,8 @@ public class V4Hardware {
 
     private DcMotor intake = null;
     private DcMotor intake_back = null;
-    private CRServo liftLeft = null;
-    private CRServo liftRight = null;
+    private Servo liftLeft = null;
+    private Servo liftRight = null;
 
     private Servo wrist = null;
 
@@ -140,8 +140,8 @@ public class V4Hardware {
 
         plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
 
-        liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
-        liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
+        liftLeft = myOpMode.hardwareMap.get(Servo.class,"lift_left");
+        liftRight = myOpMode.hardwareMap.get(Servo.class,"lift_right");
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
         boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
         box = myOpMode.hardwareMap.get(Servo.class, "box");
@@ -169,18 +169,10 @@ public class V4Hardware {
                 linearActRight.getCurrentPosition());
 
 
-        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftLeft.setDirection(Servo.Direction.REVERSE);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
-    }
-
-    public void liftUp(){
-        setCRServoPower(LIFT_UP_POWER);
-    }
-
-    public void liftDown(){
-        setCRServoPower(LIFT_DOWN_POWER);
     }
 
     public void actuatorExpand(){
@@ -204,11 +196,10 @@ public class V4Hardware {
         linearActRight.setPower(power);
     }
 
-    public void setCRServoPower(double power){
-        liftLeft.setPower(power);
-        liftRight.setPower(power);
+    public void setLiftPosition(double position){
+        liftLeft.setPosition(position);
+        liftRight.setPosition(position);
     }
-
     public void wristPosition(double position){
         wrist.setPosition(position);
     }
