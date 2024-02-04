@@ -60,7 +60,7 @@ public final class Outtake {
         box = hardwareMap.get(Servo.class, "box");
 
         linearActLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        linearActRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         LinearActLeftEncoder = new OverflowEncoder(new RawEncoder(linearActLeft));
         LinearActRightEncoder = new OverflowEncoder(new RawEncoder(linearActRight));
