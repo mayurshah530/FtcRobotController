@@ -75,11 +75,11 @@ public class AprilTagTest extends LinearOpMode {
         int desiredTagId = Utils.GetDesiredTagId(Alliance.RED, selectedSide);
         visionPortal.setProcessorEnabled(aprilTag, true);
         sleep(100);
+        runtime.reset();
+        boolean aprilTagConverged = false;
+        desiredTag = null;
 
         while(opModeIsActive()){
-            boolean aprilTagConverged = false;
-            runtime.reset();
-            desiredTag = null;
             while(runtime.seconds() < 10.0 && !aprilTagConverged) {
                 // Step through the list of detected tags and look for a matching tag
                 List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -106,6 +106,9 @@ public class AprilTagTest extends LinearOpMode {
                     aprilTagConverged = drive.alignToAprilTag(desiredTag);
                 }
             }
+            telemetry.addData("AprilTagConverged? ", aprilTagConverged);
+            telemetry.addData("runtime: ", runtime.seconds());
+            telemetry.update();
         }
 
     } // runOpMode

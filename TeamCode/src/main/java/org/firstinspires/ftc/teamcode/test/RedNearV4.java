@@ -66,7 +66,7 @@ public class RedNearV4 extends LinearOpMode {
 
     // TAG locations
     // TAG locations
-    public static double TAG_BOT_OFFSET = 20.25;
+    public static double TAG_BOT_OFFSET = 19.75;
     Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -29.41, 0);
     Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -35.41, 0);
     Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -41.41, 0);
@@ -79,7 +79,7 @@ public class RedNearV4 extends LinearOpMode {
     private FirstVisionProcessor visionProcessor;
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
-    private ScoringElementLocation selectedSide = ScoringElementLocation.UNKNOWN;
+    private ScoringElementLocation selectedSide = ScoringElementLocation.CENTER;
 
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     private final ElapsedTime runtime = new ElapsedTime();
@@ -117,8 +117,8 @@ public class RedNearV4 extends LinearOpMode {
                 .build();
 
 
-        Action trajectoryActionCloseOut = drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(48, 12))
+        Action trajectoryActionCloseOut = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
+                .strafeTo(new Vector2d(48, -66))
                 .build();
         // Set to true when an AprilTag target is detected
         boolean targetFound = false;
@@ -167,9 +167,9 @@ public class RedNearV4 extends LinearOpMode {
 
         if(ENABLE_APRIL_TAG_CORRECTION){
             boolean aprilTagConverged = false;
+            desiredTag = null;
             runtime.reset();
-            while(runtime.seconds() < 10.0 && !aprilTagConverged) {
-                desiredTag = null;
+            while(runtime.seconds() < 3.0 && !aprilTagConverged) {
                 // Step through the list of detected tags and look for a matching tag
                 List<AprilTagDetection> currentDetections = aprilTag.getDetections();
                 for (AprilTagDetection detection : currentDetections) {
@@ -190,14 +190,15 @@ public class RedNearV4 extends LinearOpMode {
                     telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
                     telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
                     telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
-                    telemetry.addData("Robot Pose", "%3.1f, %3.1 %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
+                    telemetry.addData("Robot Pose", "%3.1f, %3.1f", drive.pose.position.x, drive.pose.position.y);
+                    telemetry.addData("runtime ", runtime.seconds());
                     telemetry.update();
                     if (ENABLE_APRIL_TAG_GLOBAL_POSE){
                         double robotX = RED_ALLIANCE_CENTER_TAG_REF.position.x - desiredTag.ftcPose.y;
                         double robotY = RED_ALLIANCE_CENTER_TAG_REF.position.y + desiredTag.ftcPose.x;
                         Pose2d newRobotPose = new Pose2d(robotX, robotY, desiredTag.ftcPose.yaw);
-                        telemetry.addData("Odom Pose", "%3.1f, %3.1 %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
-                        telemetry.addData("April Pose", "%3.1f, %3.1 %3.1f", newRobotPose.position.x, newRobotPose.position.y, newRobotPose.heading.log());
+                        telemetry.addData("Odom Pose", "%3.1f, %3.1f %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
+                        telemetry.addData("April Pose", "%3.1f, %3.1f %3.1f", newRobotPose.position.x, newRobotPose.position.y, newRobotPose.heading.log());
                         telemetry.update();
                         drive.setPose(newRobotPose);
 
@@ -209,11 +210,16 @@ public class RedNearV4 extends LinearOpMode {
                     } else {
                         aprilTagConverged = drive.alignToAprilTag(desiredTag);
                     }
+
+                } else {
+                    telemetry.addLine("Target not found");
+                    telemetry.update();
                 }
             }
-
+            telemetry.addData("AprilTagConverged? ", aprilTagConverged);
+            telemetry.addData("runtime: ", runtime.seconds());
+            telemetry.update();
         }
-
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -222,14 +228,15 @@ public class RedNearV4 extends LinearOpMode {
                                 outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
                         ),
                         outtake.moveWristOut(),
-                        outtake.actuatorExpand(50),
+                        outtake.actuatorExpand(200),
                         outtake.waitSec(0.5),
                         outtake.openBox(),
                         new ParallelAction(
                                 outtake.closeBox(),
                                 outtake.moveWristIn()
                         ),
-                        outtake.moveBoxLeverDown()
+//                        outtake.moveBoxLeverDown(),
+                        trajectoryActionCloseOut
                 )
         );
     } // runOpMode
