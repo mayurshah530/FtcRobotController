@@ -31,6 +31,8 @@ public class RedNearV4 extends LinearOpMode {
 
     public static boolean ENABLE_APRIL_TAG_CORRECTION = true;
 
+    public static boolean ENABLE_APRIL_TAG_GLOBAL_POSE = false;
+
     public static double HALF_ROBO_LEN = 9;
     public static double RED_NEAR_LEFT_SPIKE_X = 10;
     public static double RED_NEAR_LEFT_SPIKE_Y = -30;
@@ -69,6 +71,9 @@ public class RedNearV4 extends LinearOpMode {
     Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -35.41, 0);
     Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -41.41, 0);
     // wait location
+    Pose2d RED_ALLIANCE_LEFT_TAG_REF = new Pose2d(60.25, -29.41, 0);
+    Pose2d RED_ALLIANCE_CENTER_TAG_REF = new Pose2d(60.25, -35.41, 0);
+    Pose2d RED_ALLIANCE_RIGHT_TAG_REF = new Pose2d(60.25, -41.41, 0);
 
 
     private FirstVisionProcessor visionProcessor;
@@ -186,8 +191,24 @@ public class RedNearV4 extends LinearOpMode {
                     telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
                     telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
                     telemetry.addData("Robot Pose", "%3.1f, %3.1 %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
+                    telemetry.update();
+                    if (ENABLE_APRIL_TAG_GLOBAL_POSE){
+                        double robotX = RED_ALLIANCE_CENTER_TAG_REF.position.x - desiredTag.ftcPose.y;
+                        double robotY = RED_ALLIANCE_CENTER_TAG_REF.position.y + desiredTag.ftcPose.x;
+                        Pose2d newRobotPose = new Pose2d(robotX, robotY, desiredTag.ftcPose.yaw);
+                        telemetry.addData("Odom Pose", "%3.1f, %3.1 %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
+                        telemetry.addData("April Pose", "%3.1f, %3.1 %3.1f", newRobotPose.position.x, newRobotPose.position.y, newRobotPose.heading.log());
+                        telemetry.update();
+                        drive.setPose(newRobotPose);
 
-                    aprilTagConverged = drive.alignToAprilTag(desiredTag);
+                        Action v4StrafeToCenterScorePose = drive.actionBuilder(newRobotPose)
+                                .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
+                                .build();
+                        Actions.runBlocking(v4StrafeToCenterScorePose);
+
+                    } else {
+                        aprilTagConverged = drive.alignToAprilTag(desiredTag);
+                    }
                 }
             }
 
