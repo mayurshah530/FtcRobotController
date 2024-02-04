@@ -44,6 +44,7 @@ public class TeleOpMain extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
+    private double liftServoPosition = 0.0;
 
     public double SquareInputWithSign(double input){
         double sign = 1.0;
@@ -108,13 +109,22 @@ public class TeleOpMain extends LinearOpMode {
 
             // Tilt up/down
             // Right trigger to move viper slide up, left trigger to move it down.
-            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
-            Range.clip(servoLiftPower, -0.9, 0.9);
-            robot.setCRServoPower(servoLiftPower);
-            prevLiftPower = servoLiftPower;
-            if (Math.abs(servoLiftPower) < 0.001) {
-                robot.setCRServoPower(prevLiftPower);
+//            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
+//            Range.clip(servoLiftPower, -0.9, 0.9);
+//            robot.setCRServoPower(servoLiftPower);
+//            prevLiftPower = servoLiftPower;
+//            if (Math.abs(servoLiftPower) < 0.001) {
+//                robot.setCRServoPower(prevLiftPower);
+//            }
+
+            if (gamepad1.dpad_up){
+                liftServoPosition += 0.1;
+                Range.clip(liftServoPosition, 0.0, 0.9);
+            } else if (gamepad1.dpad_down) {
+                liftServoPosition -= 0.1;
+                Range.clip(liftServoPosition, 0.0, 0.9);
             }
+            robot.setLiftPosition(liftServoPosition);
 
             //plane_launcher
             if (gamepad2.dpad_up) {
