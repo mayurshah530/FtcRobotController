@@ -156,7 +156,7 @@ public class V4Hardware {
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         linearActLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        linearActRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
 //
 //        linearActLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        linearActRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
