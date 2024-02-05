@@ -129,7 +129,11 @@ public class TeleOpMain extends LinearOpMode {
                 robot.setIntakePower(1.0);
             } else if (gamepad1.dpad_left) {
                 robot.setIntakePower(-1.0);
+            } else {
+                robot.setIntakePower(0.0);
             }
+
+
 
 
             // Show the elapsed game time and wheel power.
