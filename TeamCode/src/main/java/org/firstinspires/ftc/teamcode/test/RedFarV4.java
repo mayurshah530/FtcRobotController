@@ -16,9 +16,9 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.common.Alliance;
 import org.firstinspires.ftc.teamcode.common.ScoringElementLocation;
+import org.firstinspires.ftc.teamcode.common.Utils;
 import org.firstinspires.ftc.teamcode.mechanisms.Outtake;
 import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
-import org.firstinspires.ftc.teamcode.common.Utils;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -26,8 +26,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @Config
-@Autonomous(name = "\uD83D\uDD34 - Red Near V4", group = "RoadRunner 1.0")
-public class RedNearV4 extends LinearOpMode {
+@Autonomous(name = "\uD83D\uDD34 --- Red Far V4", group = "RoadRunner 1.0")
+public class RedFarV4 extends LinearOpMode {
 
     public static boolean ENABLE_APRIL_TAG_CORRECTION = true;
 
@@ -39,32 +39,30 @@ public class RedNearV4 extends LinearOpMode {
 
 
     // Start position red far
+    // Start position red far
 
     // START POSITIONS
+    Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
     Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
+
+    Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
 
 
     // PARK POSITIONS
-    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -66, 0);
+    Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
+    Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
+    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -60, 0);
+    Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
 
     // SPIKE Locations
-    Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
-    public static double RED_NEAR_RIGHT_SPIKE_X = 23.5-HALF_ROBO_LEN;
-    public static double RED_NEAR_RIGHT_SPIKE_Y = -25;
-    public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 4;
-
-    Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(RED_NEAR_RIGHT_SPIKE_X, RED_NEAR_RIGHT_SPIKE_Y, 0);
-    Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(RED_NEAR_LEFT_SPIKE_X, RED_NEAR_LEFT_SPIKE_Y, -Math.PI);
+    Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
+    Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
+    Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
 
     Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
-    Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
-    Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
+    Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(-(46 -HALF_ROBO_LEN), -30, Math.PI);
+    Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), -(30), 0);
 
-
-    Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-    Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
-
-    // TAG locations
     // TAG locations
     public static double TAG_BOT_OFFSET = 19.75;
     Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -29.41, 0);
@@ -93,32 +91,42 @@ public class RedNearV4 extends LinearOpMode {
         initVisionPortal();
         visionProcessor.SetAlliance(Alliance.RED);
 
-        Action v4RedNearGeLeftScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 5, RED_NEAR_LEFT_SPIKE.position.y), Math.toRadians(180))
-                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x - 3, RED_NEAR_LEFT_SPIKE_Y))
+
+        Action v4RedFarGeCenterScore = drive.actionBuilder(RED_FAR_START_POSE)
+                .strafeTo(RED_FAR_CENTER_SPIKE.position)
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(RED_FAR_CENTER_SPIKE.position.x, RED_FAR_CENTER_SPIKE.position.y - 10)) // come back
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
-                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0)
+                .strafeTo(new Vector2d(-52, RED_FAR_CENTER_SPIKE.position.y - 10)) // slide left
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(-52, -12)) // move fwd
+                .turn(-Math.PI/2)
+                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_CENTER_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_CENTER_TAG.position, 0 )
                 .build();
 
-        Action v4RedNearGeCenterScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
-                .strafeTo(RED_NEAR_CENTER_SPIKE.position)
+
+        Action v4RedFarGeLeftScore = drive.actionBuilder(RED_FAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(RED_FAR_LEFT_SPIKE.position.x-2, RED_FAR_LEFT_SPIKE.position.y), Math.toRadians(180))
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(12, -40))
-                .turn(Math.toRadians(-90))
-                .strafeTo(RED_ALLIANCE_CENTER_TAG.position)
-                .build();
-        Action v4RedNearGeRightPark = drive.actionBuilder(RED_NEAR_START_POSE)
-                .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
-                .waitSeconds(0.5)
-                .strafeTo(new Vector2d(RED_NEAR_RIGHT_SPIKE.position.x - RED_NEAR_RIGHT_SPIKE_BACK_X, RED_NEAR_RIGHT_SPIKE.position.y))
-                .strafeTo(new Vector2d(12, -58))
-                .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, RED_FAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, -12))
+                .turn(Math.PI+1e-6)
+                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_LEFT_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0 )
                 .build();
 
+        Action v4RedfarGeRightScore = drive.actionBuilder(RED_FAR_START_POSE)
+                .splineToLinearHeading(RED_FAR_RIGHT_SPIKE, 0)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, RED_FAR_RIGHT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, -8))
+                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_RIGHT_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0 )
+                .build();
 
         Action trajectoryActionCloseOut = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
-                .strafeTo(new Vector2d(48, -66))
+                .strafeTo(new Vector2d(48, 12))
                 .build();
         // Set to true when an AprilTag target is detected
         boolean targetFound = false;
@@ -147,16 +155,16 @@ public class RedNearV4 extends LinearOpMode {
         Action trajectoryToRun = null;
         switch (selectedSide){
             case LEFT:
-                trajectoryToRun = v4RedNearGeLeftScorePark;
+                trajectoryToRun = v4RedFarGeLeftScore;
                 break;
             case CENTER:
-                trajectoryToRun = v4RedNearGeCenterScorePark;
+                trajectoryToRun = v4RedFarGeCenterScore;
                 break;
             case RIGHT:
-                trajectoryToRun = v4RedNearGeRightPark;
+                trajectoryToRun = v4RedfarGeRightScore;
                 break;
             default:
-                trajectoryToRun = v4RedNearGeCenterScorePark;
+                trajectoryToRun = v4RedFarGeCenterScore;
         }
 
         Actions.runBlocking(
