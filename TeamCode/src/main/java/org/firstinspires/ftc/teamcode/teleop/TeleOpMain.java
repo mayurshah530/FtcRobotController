@@ -156,7 +156,11 @@ public class TeleOpMain extends LinearOpMode {
                 robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
             } else if (gamepad1.right_bumper) {
                 robot.setBoxPosition(robot.BOX_SCORING_POSITION);
+            } else {
+                robot.setIntakePower(0.0);
             }
+
+
 
 
             // Show the elapsed game time and wheel power.
