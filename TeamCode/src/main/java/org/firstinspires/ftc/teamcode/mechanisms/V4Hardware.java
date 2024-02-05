@@ -265,4 +265,11 @@ public class V4Hardware {
         rightBackDrive.setPower(rightBackPower);
     }
 
+    public double getLiftLeftPosition() {
+        return liftLeft.getPosition();
+    }
+    public double getLiftRightPosition(){
+        return liftRight.getPosition();
+    }
+
 }
