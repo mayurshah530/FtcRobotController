@@ -113,12 +113,17 @@ public final class MecanumDrive {
         public double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
         public double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
         public double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    }
 
+    public static class CalibrationParams {
+        public double CHASSIS_FROM_CAMERA_X = 8;
+        public double CHASSIS_FROM_CAMERA_Y = -1;
     }
 
 
     public static Params PARAMS = new Params();
     public static AprilTagParams AT_PARAMS = new AprilTagParams();
+    public static CalibrationParams CALIBRATION = new CalibrationParams();
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             PARAMS.inPerTick * PARAMS.trackWidthTicks, PARAMS.inPerTick / PARAMS.lateralInPerTick);
@@ -508,21 +513,38 @@ public final class MecanumDrive {
         );
     }
 
+//    public boolean alignToAprilTagV0(AprilTagDetection desiredTag){
+//
+//        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+//        double  rangeError      = (desiredTag.ftcPose.range - AT_PARAMS.DESIRED_DISTANCE);
+//        double  headingError    = (desiredTag.ftcPose.bearing - AT_PARAMS.HEADING_CALIBRATION);
+//        double  yawError        = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
+//
+//        // Use the speed and turn "gains" to calculate how we want the robot to move.
+//        double drive  = Range.clip(rangeError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
+//        double turn   = Range.clip(headingError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
+//        double strafe = Range.clip(-yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
+//
+//        moveRobot(drive, strafe, turn);
+//
+//        return rangeError < 0.6;
+//    }
+
     public boolean alignToAprilTag(AprilTagDetection desiredTag){
 
         // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-        double  rangeError      = (desiredTag.ftcPose.range - AT_PARAMS.DESIRED_DISTANCE);
-        double  headingError    = (desiredTag.ftcPose.bearing - AT_PARAMS.HEADING_CALIBRATION);
+        double  axialError      = (desiredTag.ftcPose.y - AT_PARAMS.DESIRED_DISTANCE);
+        double  strafeError    = (-desiredTag.ftcPose.x - AT_PARAMS.HEADING_CALIBRATION);
         double  yawError        = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
 
         // Use the speed and turn "gains" to calculate how we want the robot to move.
-        double drive  = Range.clip(rangeError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
-        double turn   = Range.clip(headingError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
-        double strafe = Range.clip(-yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
+        double drive  = Range.clip(axialError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
+        double strafe   = Range.clip(strafeError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
+        double turn = Range.clip(yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
 
         moveRobot(drive, strafe, turn);
 
-        return rangeError < 0.6;
+        return axialError < 0.6;
     }
 
     /**
