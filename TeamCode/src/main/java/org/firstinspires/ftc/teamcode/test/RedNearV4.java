@@ -139,7 +139,6 @@ public class RedNearV4 extends LinearOpMode {
 
 
         selectedSide = visionProcessor.getSelection();
-//        visionPortal.stopStreaming();
         visionPortal.setProcessorEnabled(visionProcessor, false);
         telemetry.addData("selectedSide: ", selectedSide.toString());
         telemetry.addData("Identified", visionProcessor.getTelemetry());
@@ -200,8 +199,11 @@ public class RedNearV4 extends LinearOpMode {
                     telemetry.addData("runtime ", runtime.seconds());
                     telemetry.update();
                     if (ENABLE_APRIL_TAG_GLOBAL_POSE){
-                        double robotX = RED_ALLIANCE_CENTER_TAG_REF.position.x - desiredTag.ftcPose.y;
-                        double robotY = RED_ALLIANCE_CENTER_TAG_REF.position.y + desiredTag.ftcPose.x;
+                        double cameraX = RED_ALLIANCE_CENTER_TAG_REF.position.x - desiredTag.ftcPose.y;
+                        double cameraY = RED_ALLIANCE_CENTER_TAG_REF.position.y + desiredTag.ftcPose.x;
+                        double robotX = cameraX - MecanumDrive.CALIBRATION.CHASSIS_FROM_CAMERA_X;
+                        double robotY = cameraY - MecanumDrive.CALIBRATION.CHASSIS_FROM_CAMERA_Y;
+                        // YAW sign?
                         Pose2d newRobotPose = new Pose2d(robotX, robotY, desiredTag.ftcPose.yaw);
                         telemetry.addData("Odom Pose", "%3.1f, %3.1f %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
                         telemetry.addData("April Pose", "%3.1f, %3.1f %3.1f", newRobotPose.position.x, newRobotPose.position.y, newRobotPose.heading.log());
@@ -212,6 +214,7 @@ public class RedNearV4 extends LinearOpMode {
                                 .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
                                 .build();
                         Actions.runBlocking(v4StrafeToCenterScorePose);
+                        break;
 
                     } else {
                         aprilTagConverged = drive.alignToAprilTag(desiredTag);
