@@ -221,10 +221,10 @@ public class V4Hardware {
         plane_launcher.setPosition(position);
     }
 
-    public double getLinearActuatorLeftPosition(){
+    public int getLinearActuatorLeftPosition(){
         return linearActLeft.getCurrentPosition();
     }
-    public double getLinearActuatorRightPosition(){
+    public int getLinearActuatorRightPosition(){
         return linearActRight.getCurrentPosition();
     }
 
