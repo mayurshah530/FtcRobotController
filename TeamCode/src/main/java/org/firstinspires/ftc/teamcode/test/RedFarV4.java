@@ -34,31 +34,17 @@ public class RedFarV4 extends LinearOpMode {
     public static boolean ENABLE_APRIL_TAG_GLOBAL_POSE = false;
 
     public static double HALF_ROBO_LEN = 9;
-    public static double RED_NEAR_LEFT_SPIKE_X = 10;
-    public static double RED_NEAR_LEFT_SPIKE_Y = -30;
 
-
-    // Start position red far
     // Start position red far
 
     // START POSITIONS
-    Pose2d BLUE_NEAR_START_POSE = new Pose2d(12, 72-HALF_ROBO_LEN, -Math.PI/2.0);
-    Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
-
     Pose2d RED_FAR_START_POSE = new Pose2d(-36, -(72-HALF_ROBO_LEN), Math.PI/2.0);
 
 
     // PARK POSITIONS
-    Pose2d BLUE_LEFT_PARK = new Pose2d(58 - HALF_ROBO_LEN, 56, 0);
-    Pose2d BLUE_LEFT_PARK_REVERSE = new Pose2d(58 - HALF_ROBO_LEN, 56, -Math.PI);
-    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -60, 0);
-    Pose2d RED_CENTER_PARK = new Pose2d(56, -12 , 0);
+    Pose2d RED_CENTER_PARK = new Pose2d(48, -12 , 0);
 
     // SPIKE Locations
-    Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
-    Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
-    Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
-
     Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
     Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(-(46 -HALF_ROBO_LEN), -30, Math.PI);
     Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), -(30), 0);
@@ -128,7 +114,7 @@ public class RedFarV4 extends LinearOpMode {
                 .build();
 
         Action trajectoryActionCloseOut = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
-                .strafeTo(new Vector2d(48, -12))
+                .strafeTo(RED_CENTER_PARK.position)
                 .build();
         // Set to true when an AprilTag target is detected
         boolean targetFound = false;
@@ -245,7 +231,6 @@ public class RedFarV4 extends LinearOpMode {
                                 outtake.closeBox(),
                                 outtake.moveWristIn()
                         ),
-//                        outtake.moveBoxLeverDown(),
                         trajectoryActionCloseOut
                 )
         );
