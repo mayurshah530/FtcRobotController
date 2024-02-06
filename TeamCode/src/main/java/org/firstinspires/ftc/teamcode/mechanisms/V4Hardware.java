@@ -73,8 +73,8 @@ public class V4Hardware {
 
     private DcMotor intake = null;
     private DcMotor intake_back = null;
-    private Servo liftLeft = null;
-    private Servo liftRight = null;
+    private CRServo liftLeft = null;
+    private CRServo liftRight = null;
 
     private Servo wrist = null;
 
@@ -142,8 +142,8 @@ public class V4Hardware {
 
         plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
 
-        liftLeft = myOpMode.hardwareMap.get(Servo.class,"lift_left");
-        liftRight = myOpMode.hardwareMap.get(Servo.class,"lift_right");
+        liftLeft = myOpMode.hardwareMap.get(CRServo.class,"lift_left");
+        liftRight = myOpMode.hardwareMap.get(CRServo.class,"lift_right");
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
         boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
         box = myOpMode.hardwareMap.get(Servo.class, "box");
@@ -172,7 +172,7 @@ public class V4Hardware {
                 linearActRight.getCurrentPosition());
 
 
-        liftLeft.setDirection(Servo.Direction.REVERSE);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -203,10 +203,14 @@ public class V4Hardware {
         linearActRight.setPower(power);
     }
 
-    public void setLiftPosition(double position){
-        liftLeft.setPosition(position);
-        liftRight.setPosition(position);
+    public void setCRServoPower(double power) {
+        liftLeft.setPower(power);
+        liftRight.setPower(power);
     }
+//    public void setLiftPosition(double position){
+//        liftLeft.setPosition(position);
+//        liftRight.setPosition(position);
+//    }
     public void wristPosition(double position){
         wrist.setPosition(position);
     }
@@ -282,11 +286,11 @@ public class V4Hardware {
         rightBackDrive.setPower(rightBackPower);
     }
 
-    public double getLiftLeftPosition() {
-        return liftLeft.getPosition();
-    }
-    public double getLiftRightPosition(){
-        return liftRight.getPosition();
-    }
+//    public double getLiftLeftPosition() {
+//        return liftLeft.getPosition();
+//    }
+//    public double getLiftRightPosition(){
+//        return liftRight.getPosition();
+//    }
 
 }
