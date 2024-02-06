@@ -312,12 +312,11 @@ public class MeepMeepTesting {
 
 
         Action v4RedFarGeLeftScore = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
-                .strafeToLinearHeading(new Vector2d(RED_FAR_LEFT_SPIKE.position.x-2, RED_FAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-57, RED_FAR_LEFT_SPIKE.position.y), Math.toRadians(0))
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, RED_FAR_LEFT_SPIKE.position.y))
-                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, -12))
-                .turn(Math.PI+1e-6)
-                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_LEFT_TAG.position.x, -12), 0 )
+                .strafeTo(new Vector2d(-60, RED_FAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(-60, -12))
+                .strafeToLinearHeading(new Vector2d(10, -12), 0 )
                 .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0 )
                 .build();
 
@@ -338,8 +337,38 @@ public class MeepMeepTesting {
                 .strafeTo(RED_CENTER_PARK.position)
                 .build();
 
+        Pose2d START = new Pose2d(11.8, 61.7, Math.toRadians(90));
+        Action trajectoryAction1 = myBot.getDrive().actionBuilder(START)
+                .lineToYSplineHeading(33, Math.toRadians(0))
+                .waitSeconds(2)
+                .setTangent(Math.toRadians(90))
+                .lineToY(48)
+                .setTangent(Math.toRadians(0))
+                .lineToX(32)
+                .strafeTo(new Vector2d(44.5, 30))
+                .turn(Math.toRadians(180))
+                .lineToX(47.5)
+                .waitSeconds(3)
+                .build();
+        Action trajectoryAction2 = myBot.getDrive().actionBuilder(START)
+                .lineToY(37)
+                .setTangent(Math.toRadians(0))
+                .lineToX(18)
+                .waitSeconds(3)
+                .setTangent(Math.toRadians(0))
+                .lineToXSplineHeading(46, Math.toRadians(180))
+                .waitSeconds(3)
+                .build();
+        Action trajectoryAction3 = myBot.getDrive().actionBuilder(START)
+                .lineToYSplineHeading(33, Math.toRadians(180))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(46, 30))
+                .waitSeconds(3)
+                .build();
+
+
         // This is what gets shown on the UI
-        myBot.runAction(v4RedfarGeRightScore);
+        myBot.runAction(trajectoryAction1);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
