@@ -92,6 +92,20 @@ public class TeleOpMain extends LinearOpMode {
             double yaw     =  SquareInputWithSign(gamepad1.right_stick_x);
             robot.driveRobot(axial, lateral, yaw);
 
+            //plane_launcher
+            if (gamepad1.dpad_up) {
+                robot.setPlaneLauncherPosition(0.0);
+            } else {
+                robot.setPlaneLauncherPosition(1.0);
+            }
+
+            // intake
+            if (gamepad1.dpad_right){
+                robot.setIntakePower(1.0);
+            } else if (gamepad1.dpad_left) {
+                robot.setIntakePower(-1.0);
+            } else
+                robot.setIntakePower(0.0);
 
             /* =======================
              Gamepad 2 controls
@@ -117,65 +131,43 @@ public class TeleOpMain extends LinearOpMode {
 //                robot.setCRServoPower(prevLiftPower);
 //            }
 
-            if (gamepad1.dpad_up){
+            if (gamepad2.dpad_up){
                 liftServoPosition += 0.1;
-                Range.clip(liftServoPosition, 0.0, 0.9);
-            } else if (gamepad1.dpad_down) {
+                liftServoPosition = Range.clip(liftServoPosition, 0.0, 0.9);
+            } else if (gamepad2.dpad_down) {
                 liftServoPosition -= 0.1;
-                Range.clip(liftServoPosition, 0.0, 0.9);
+                liftServoPosition = Range.clip(liftServoPosition, 0.0, 0.9);
             }
             robot.setLiftPosition(liftServoPosition);
 
-            //plane_launcher
-            if (gamepad2.dpad_up) {
-                robot.setPlaneLauncherPosition(0.0);
-            } else {
-                robot.setPlaneLauncherPosition(1.0);
-            }
 
-            if (gamepad1.a){
+            if (gamepad2.a){
                 robot.boxLeverPosition(robot.BOXLEVER_HOME_POSITION);
-            } else if (gamepad1.y) {
+            } else if (gamepad2.y) {
                 robot.boxLeverPosition(robot.BOXLEVER_SCORING_POSITION);
             }
 
-            if (gamepad1.x){
+            if (gamepad2.x){
                 robot.wristPosition(robot.WRIST_HOME_POSITION);
-            } else if (gamepad1.b) {
+            } else if (gamepad2.b) {
                 robot.wristPosition(robot.WRIST_SCORING_POSITION);
             }
 
-            if (gamepad1.dpad_right){
-                robot.setIntakePower(1.0);
-            } else if (gamepad1.dpad_left) {
-                robot.setIntakePower(-1.0);
-            } else
-                robot.setIntakePower(0.0);
-
-            if (gamepad1.left_bumper){
+            if (gamepad2.left_bumper){
                 robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
-            } else if (gamepad1.right_bumper) {
+            } else if (gamepad2.right_bumper) {
                 robot.setBoxPosition(robot.BOX_SCORING_POSITION);
             } else {
                 robot.setIntakePower(0.0);
             }
 
-
-
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("LiftServoPosition: ", "%3.1f", liftServoPosition);
             telemetry.addData("LiftServoPosition: ", "%2.1f, %2.1f", robot.getLiftLeftPosition(), robot.getLiftRightPosition());
-//            telemetry.addData("Currently at",  " Left: %7d Right: %7d",
-//                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
+            telemetry.addData("Currently at",  " Left: %5d Right: %5d",
+                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
 
-//            telemetry.addData("Front Wheel left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-//            telemetry.addData("Back  Wheel left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-//            telemetry.addData("Viper slide power", "%4.2f", viperSlidePower );
-//            telemetry.addData("Intake motor power Front/Back", "%4.2f, %4.2f", intake_front.getPower(), intake_back.getPower());
-//            telemetry.addData("Forearm servo position", "%4.2f", forearm.getPosition());
-//            telemetry.addData("Wrist servo position", "%4.2f", wrist.getPosition());
             telemetry.update();
         }
     }}
