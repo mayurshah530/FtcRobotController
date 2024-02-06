@@ -160,6 +160,13 @@ public class V4Hardware {
 
         linearActLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         linearActRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+
 //
 //        linearActLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        linearActRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
