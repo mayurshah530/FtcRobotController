@@ -156,11 +156,17 @@ public class TeleOpMain extends LinearOpMode {
                 robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
             } else if (gamepad1.right_bumper) {
                 robot.setBoxPosition(robot.BOX_SCORING_POSITION);
+            } else {
+                robot.setIntakePower(0.0);
             }
+
+
 
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("LiftServoPosition: ", "%3.1f", liftServoPosition);
+            telemetry.addData("LiftServoPosition: ", "%2.1f, %2.1f", robot.getLiftLeftPosition(), robot.getLiftRightPosition());
 //            telemetry.addData("Currently at",  " Left: %7d Right: %7d",
 //                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
 

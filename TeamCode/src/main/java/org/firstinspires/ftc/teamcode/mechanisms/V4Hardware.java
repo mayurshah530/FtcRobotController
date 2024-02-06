@@ -81,6 +81,7 @@ public class V4Hardware {
     private Servo plane_launcher= null;
     private Servo boxLever = null;
     private Servo box = null;
+    private CRServo intake3 = null;
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
@@ -98,6 +99,7 @@ public class V4Hardware {
 
     public static  double BOX_CLOSE_POSITION = 1.0;
     public static  double BOX_SCORING_POSITION = 0.5;
+    public double INTAKE3SPEED = 1.0;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -145,6 +147,7 @@ public class V4Hardware {
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
         boxLever = myOpMode.hardwareMap.get(Servo.class,"box_lever");
         box = myOpMode.hardwareMap.get(Servo.class, "box");
+        intake3 = myOpMode.hardwareMap.get(CRServo.class,"intake3");
 
         // Set directions for drive motors
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -175,6 +178,9 @@ public class V4Hardware {
         myOpMode.telemetry.update();
     }
 
+    public void intake3run(){
+        intake3.setPower(INTAKE3SPEED);
+    }
     public void actuatorExpand(){
         setLinearActuatorPower(0.5);
     }
@@ -190,6 +196,7 @@ public class V4Hardware {
     public void setIntakePower(double power){
         intake.setPower(power);
         intake_back.setPower(power);
+        intake3.setPower(power);
     }
     public void setLinearActuatorPower(double power){
         linearActLeft.setPower(power);
@@ -273,6 +280,13 @@ public class V4Hardware {
         rightFrontDrive.setPower(rightFrontPower);
         leftBackDrive.setPower(leftBackPower);
         rightBackDrive.setPower(rightBackPower);
+    }
+
+    public double getLiftLeftPosition() {
+        return liftLeft.getPosition();
+    }
+    public double getLiftRightPosition(){
+        return liftRight.getPosition();
     }
 
 }
