@@ -64,10 +64,12 @@ public class RedFarV4 extends LinearOpMode {
     Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), -(30), 0);
 
     // TAG locations
-    public static double TAG_BOT_OFFSET = 19.75;
-    Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -29.41, 0);
-    Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -35.41, 0);
-    Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -41.41, 0);
+    public static double TAG_BOT_X_OFFSET = 19.75;
+    public static double TAG_BOT_Y_OFFSET = 0.0;
+
+    Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_X_OFFSET, -29.41 - TAG_BOT_Y_OFFSET, 0);
+    Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_X_OFFSET, -38.41- TAG_BOT_Y_OFFSET, 0);
+    Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_X_OFFSET, -41.41- TAG_BOT_Y_OFFSET, 0);
     // wait location
     Pose2d RED_ALLIANCE_LEFT_TAG_REF = new Pose2d(60.25, -29.41, 0);
     Pose2d RED_ALLIANCE_CENTER_TAG_REF = new Pose2d(60.25, -35.41, 0);
@@ -85,7 +87,7 @@ public class RedFarV4 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_NEAR_START_POSE);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_FAR_START_POSE);
         Outtake outtake = new Outtake(hardwareMap);
 
         initVisionPortal();
@@ -126,7 +128,7 @@ public class RedFarV4 extends LinearOpMode {
                 .build();
 
         Action trajectoryActionCloseOut = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
-                .strafeTo(new Vector2d(48, 12))
+                .strafeTo(new Vector2d(48, -12))
                 .build();
         // Set to true when an AprilTag target is detected
         boolean targetFound = false;
