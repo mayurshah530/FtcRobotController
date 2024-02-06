@@ -123,22 +123,22 @@ public class TeleOpMain extends LinearOpMode {
 
             // Tilt up/down
             // Right trigger to move viper slide up, left trigger to move it down.
-//            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
-//            Range.clip(servoLiftPower, -0.9, 0.9);
-//            robot.setCRServoPower(servoLiftPower);
-//            prevLiftPower = servoLiftPower;
-//            if (Math.abs(servoLiftPower) < 0.001) {
-//                robot.setCRServoPower(prevLiftPower);
-//            }
-
-            if (gamepad2.dpad_up){
-                liftServoPosition += 0.1;
-                liftServoPosition = Range.clip(liftServoPosition, 0.0, 0.9);
-            } else if (gamepad2.dpad_down) {
-                liftServoPosition -= 0.1;
-                liftServoPosition = Range.clip(liftServoPosition, 0.0, 0.9);
+            double servoLiftPower = gamepad2.right_trigger - gamepad2.left_trigger;
+            Range.clip(servoLiftPower, -0.9, 0.9);
+            robot.setCRServoPower(servoLiftPower);
+            prevLiftPower = servoLiftPower;
+            if (Math.abs(servoLiftPower) < 0.001) {
+                robot.setCRServoPower(prevLiftPower);
             }
-            robot.setLiftPosition(liftServoPosition);
+
+//            if (gamepad2.dpad_up){
+//                liftServoPosition += 0.1;
+//                liftServoPosition = Range.clip(liftServoPosition, 0.0, 0.9);
+//            } else if (gamepad2.dpad_down) {
+//                liftServoPosition -= 0.1;
+//                liftServoPosition = Range.clip(liftServoPosition, 0.0, 0.9);
+//            }
+//            robot.setLiftPosition(liftServoPosition);
 
 
             if (gamepad2.a){
@@ -163,8 +163,8 @@ public class TeleOpMain extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("LiftServoPosition: ", "%3.1f", liftServoPosition);
-            telemetry.addData("LiftServoPosition: ", "%2.1f, %2.1f", robot.getLiftLeftPosition(), robot.getLiftRightPosition());
+//            telemetry.addData("LiftServoPosition: ", "%3.1f", liftServoPosition);
+//            telemetry.addData("LiftServoPosition: ", "%2.1f, %2.1f", robot.getLiftLeftPosition(), robot.getLiftRightPosition());
             telemetry.addData("Currently at",  " Left: %5d Right: %5d",
                     robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
 
