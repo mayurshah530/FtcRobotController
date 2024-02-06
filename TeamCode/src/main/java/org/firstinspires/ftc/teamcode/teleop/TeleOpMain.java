@@ -153,9 +153,9 @@ public class TeleOpMain extends LinearOpMode {
                 robot.wristPosition(robot.WRIST_SCORING_POSITION);
             }
 
-            if (gamepad2.left_bumper){
+            if (gamepad2.dpad_left){
                 robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
-            } else if (gamepad2.right_bumper) {
+            } else if (gamepad2.dpad_right) {
                 robot.setBoxPosition(robot.BOX_SCORING_POSITION);
             } else {
                 robot.setIntakePower(0.0);
