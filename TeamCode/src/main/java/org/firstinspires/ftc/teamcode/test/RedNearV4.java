@@ -38,7 +38,7 @@ public class RedNearV4 extends LinearOpMode {
     public static double RED_NEAR_LEFT_SPIKE_Y = -30;
 
 
-    // Start position red far
+    // Start position red near
 
     // START POSITIONS
     Pose2d RED_NEAR_START_POSE = new Pose2d(12, -(72-HALF_ROBO_LEN), Math.PI/2.0);
@@ -56,13 +56,6 @@ public class RedNearV4 extends LinearOpMode {
     Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(RED_NEAR_RIGHT_SPIKE_X, RED_NEAR_RIGHT_SPIKE_Y, 0);
     Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(RED_NEAR_LEFT_SPIKE_X, RED_NEAR_LEFT_SPIKE_Y, -Math.PI);
 
-    Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
-    Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(23.5-HALF_ROBO_LEN, -(30), 0);
-    Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(9, -(19.5)-HALF_ROBO_LEN, -(30));
-
-
-    Pose2d BLUE_NEAR_CENTER_SPIKE = new Pose2d(12, 24.5+HALF_ROBO_LEN, -Math.PI/2.0);
-    Pose2d BLUE_NEAR_RIGHT_SPIKE = new Pose2d(0.5+HALF_ROBO_LEN, 30+HALF_ROBO_LEN, -Math.PI);
 
     // TAG locations
     // TAG locations
@@ -116,10 +109,23 @@ public class RedNearV4 extends LinearOpMode {
                 .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
                 .build();
 
-
         Action trajectoryActionCloseOut = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
                 .strafeTo(new Vector2d(48, -66))
                 .build();
+
+        Action PixelDropAction =
+                new SequentialAction(
+                        new ParallelAction(
+                                outtake.moveBoxLeverUp(),
+                                outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
+                        ),
+                        outtake.moveWristOut(),
+                        outtake.actuatorExpand(200),
+                        outtake.openBox(),
+                        new ParallelAction(outtake.closeBox(),outtake.moveWristIn()
+                        )
+                );
+
         // Set to true when an AprilTag target is detected
         boolean targetFound = false;
 
@@ -223,21 +229,8 @@ public class RedNearV4 extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        new ParallelAction(
-                                outtake.moveBoxLeverUp(),
-                                outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
-                        ),
-                        outtake.moveWristOut(),
-                        outtake.actuatorExpand(200),
-                        outtake.waitSec(0.5),
-                        outtake.openBox(),
-                        new ParallelAction(
-                                outtake.closeBox(),
-                                outtake.moveWristIn()
-                        ),
-//                        outtake.moveBoxLeverDown(),
-                        trajectoryActionCloseOut
-                )
+                        PixelDropAction,
+                        trajectoryActionCloseOut)
         );
     } // runOpMode
 
