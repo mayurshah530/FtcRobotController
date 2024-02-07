@@ -33,7 +33,8 @@ public final class Outtake {
         public double BOX_DURATION = 2.0;
 
         public int ACTUATOR_ENCODER_COUNT = 3500;
-        public double LINEAR_ACTUATOR_POWER = 0.4;
+        public int ACTUATOR_ENCODER_COUNT_2 = 1000;
+        public double LINEAR_ACTUATOR_POWER = 0.8;
         public double LINEAR_ACTUATOR_TIMEOUT_SEC = 12;
     }
 
