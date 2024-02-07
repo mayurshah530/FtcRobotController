@@ -283,7 +283,7 @@ public class MeepMeepTesting {
                 .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x - 3, RED_NEAR_LEFT_SPIKE_Y))
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
-                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0)
+                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0-1e-6)
                 .build();
 
         double RED_NEAR_RIGHT_SPIKE_BACK_X = 4;
@@ -306,7 +306,7 @@ public class MeepMeepTesting {
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(-52, -12)) // move fwd
                 .turn(-Math.PI/2)
-                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_CENTER_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(new Vector2d(33, -12), 0 )
                 .strafeToLinearHeading(RED_ALLIANCE_CENTER_TAG.position, 0 )
                 .build();
 
@@ -368,7 +368,7 @@ public class MeepMeepTesting {
 
 
         // This is what gets shown on the UI
-        myBot.runAction(trajectoryAction1);
+        myBot.runAction(v4RedNearGeLeftScorePark);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)

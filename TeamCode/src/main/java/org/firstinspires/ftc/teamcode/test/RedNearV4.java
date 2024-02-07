@@ -49,9 +49,9 @@ public class RedNearV4 extends LinearOpMode {
 
     // SPIKE Locations
     Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
-    public static double RED_NEAR_RIGHT_SPIKE_X = 23.5-HALF_ROBO_LEN;
+    public static double RED_NEAR_RIGHT_SPIKE_X = 23.5-HALF_ROBO_LEN - 1.5;
     public static double RED_NEAR_RIGHT_SPIKE_Y = -25;
-    public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 4;
+    public static double RED_NEAR_RIGHT_SPIKE_BACK_X = 2.5;
 
     Pose2d RED_NEAR_RIGHT_SPIKE = new Pose2d(RED_NEAR_RIGHT_SPIKE_X, RED_NEAR_RIGHT_SPIKE_Y, 0);
     Pose2d RED_NEAR_LEFT_SPIKE = new Pose2d(RED_NEAR_LEFT_SPIKE_X, RED_NEAR_LEFT_SPIKE_Y, -Math.PI);
@@ -59,7 +59,9 @@ public class RedNearV4 extends LinearOpMode {
 
     // TAG locations
     // TAG locations
-    public static double TAG_BOT_OFFSET = 19.75;
+    public static double TAG_BOT_OFFSET = 18; //20.75;
+//    public static double TAG_BOT_Y_OFFSET = 19.75;
+
     Pose2d RED_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -29.41, 0);
     Pose2d RED_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -35.41, 0);
     Pose2d RED_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, -41.41, 0);
@@ -88,10 +90,11 @@ public class RedNearV4 extends LinearOpMode {
 
         Action v4RedNearGeLeftScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
                 .strafeToLinearHeading(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 5, RED_NEAR_LEFT_SPIKE.position.y), Math.toRadians(180))
-                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x - 3, RED_NEAR_LEFT_SPIKE_Y))
+                .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x -5, RED_NEAR_LEFT_SPIKE_Y))
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(RED_NEAR_LEFT_SPIKE.position.x + 3, RED_NEAR_LEFT_SPIKE.position.y))
-                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0)
+                .turn(Math.PI-1e-6)
+                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0-1e-6)
                 .build();
 
         Action v4RedNearGeCenterScorePark = drive.actionBuilder(RED_NEAR_START_POSE)
@@ -105,7 +108,7 @@ public class RedNearV4 extends LinearOpMode {
                 .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(RED_NEAR_RIGHT_SPIKE.position.x - RED_NEAR_RIGHT_SPIKE_BACK_X, RED_NEAR_RIGHT_SPIKE.position.y))
-                .strafeTo(new Vector2d(12, -58))
+                .strafeTo(new Vector2d(12, -54))
                 .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
                 .build();
 
@@ -120,7 +123,7 @@ public class RedNearV4 extends LinearOpMode {
                                 outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
                         ),
                         outtake.moveWristOut(),
-                        outtake.actuatorExpand(200),
+                        outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT_2),
                         outtake.openBox(),
                         new ParallelAction(outtake.closeBox(),outtake.moveWristIn()
                         )
@@ -225,6 +228,9 @@ public class RedNearV4 extends LinearOpMode {
                     telemetry.update();
                 }
             }
+            // set powers to 0
+            drive.moveRobot(0,0,0);
+
             telemetry.addData("AprilTagConverged? ", aprilTagConverged);
             telemetry.addData("runtime: ", runtime.seconds());
             telemetry.update();

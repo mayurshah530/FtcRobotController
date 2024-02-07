@@ -106,6 +106,19 @@ public class AprilTagTest extends LinearOpMode {
                     aprilTagConverged = drive.alignToAprilTag(desiredTag);
                 }
             }
+            // set powers to 0
+            drive.moveRobot(0,0,0);
+
+            if (null != desiredTag){
+
+                telemetry.addData("Target", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                telemetry.addData("x", "%5.1f inches", desiredTag.ftcPose.x);
+                telemetry.addData("y", "%5.1f inches", desiredTag.ftcPose.y);
+                telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+                telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+                telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+            }
+
             telemetry.addData("AprilTagConverged? ", aprilTagConverged);
             telemetry.addData("runtime: ", runtime.seconds());
             telemetry.update();
