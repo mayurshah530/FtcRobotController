@@ -45,7 +45,7 @@ public class RedNearV4 extends LinearOpMode {
 
 
     // PARK POSITIONS
-    Pose2d RED_RIGHT_PARK = new Pose2d(58 - HALF_ROBO_LEN, -66, 0);
+    Vector2d RED_RIGHT_PARK_POS = new Vector2d(48, -66);
 
     // SPIKE Locations
     Pose2d RED_NEAR_CENTER_SPIKE = new Pose2d(12, -(24.5+HALF_ROBO_LEN), Math.PI/2.0);
@@ -112,8 +112,14 @@ public class RedNearV4 extends LinearOpMode {
                 .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0)
                 .build();
 
-        Action trajectoryActionCloseOut = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
-                .strafeTo(new Vector2d(48, -66))
+        Action trajectoryActionCloseOutCenter = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
+                .strafeTo(RED_RIGHT_PARK_POS)
+                .build();
+        Action trajectoryActionCloseOutLeft = drive.actionBuilder(RED_ALLIANCE_LEFT_TAG)
+                .strafeTo(RED_RIGHT_PARK_POS)
+                .build();
+        Action trajectoryActionCloseOutRight = drive.actionBuilder(RED_ALLIANCE_RIGHT_TAG)
+                .strafeTo(RED_RIGHT_PARK_POS)
                 .build();
 
         Action PixelDropAction =
@@ -153,18 +159,23 @@ public class RedNearV4 extends LinearOpMode {
 
 
         Action trajectoryToRun = null;
+        Action trajectoryActionCloseOut = null;
         switch (selectedSide){
             case LEFT:
                 trajectoryToRun = v4RedNearGeLeftScorePark;
+                trajectoryActionCloseOut = trajectoryActionCloseOutLeft;
                 break;
             case CENTER:
                 trajectoryToRun = v4RedNearGeCenterScorePark;
+                trajectoryActionCloseOut = trajectoryActionCloseOutCenter;
                 break;
             case RIGHT:
                 trajectoryToRun = v4RedNearGeRightPark;
+                trajectoryActionCloseOut = trajectoryActionCloseOutRight;
                 break;
             default:
                 trajectoryToRun = v4RedNearGeCenterScorePark;
+                trajectoryActionCloseOut = trajectoryActionCloseOutCenter;
         }
 
         Actions.runBlocking(

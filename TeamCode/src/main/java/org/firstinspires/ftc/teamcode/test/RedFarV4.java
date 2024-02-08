@@ -113,9 +113,16 @@ public class RedFarV4 extends LinearOpMode {
                 .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0 )
                 .build();
 
-        Action trajectoryActionCloseOut = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
+        Action trajectoryActionCloseOutCenter = drive.actionBuilder(RED_ALLIANCE_CENTER_TAG)
                 .strafeTo(RED_CENTER_PARK.position)
                 .build();
+        Action trajectoryActionCloseOutLeft = drive.actionBuilder(RED_ALLIANCE_LEFT_TAG)
+                .strafeTo(RED_CENTER_PARK.position)
+                .build();
+        Action trajectoryActionCloseOutRight = drive.actionBuilder(RED_ALLIANCE_RIGHT_TAG)
+                .strafeTo(RED_CENTER_PARK.position)
+                .build();
+
         // Set to true when an AprilTag target is detected
         boolean targetFound = false;
 
@@ -141,18 +148,23 @@ public class RedFarV4 extends LinearOpMode {
 
 
         Action trajectoryToRun = null;
+        Action trajectoryActionCloseOut = null;
         switch (selectedSide){
             case LEFT:
                 trajectoryToRun = v4RedFarGeLeftScore;
+                trajectoryActionCloseOut = trajectoryActionCloseOutLeft;
                 break;
             case CENTER:
                 trajectoryToRun = v4RedFarGeCenterScore;
+                trajectoryActionCloseOut = trajectoryActionCloseOutCenter;
                 break;
             case RIGHT:
                 trajectoryToRun = v4RedfarGeRightScore;
+                trajectoryActionCloseOut = trajectoryActionCloseOutRight;
                 break;
             default:
                 trajectoryToRun = v4RedFarGeCenterScore;
+                trajectoryActionCloseOut = trajectoryActionCloseOutCenter;
         }
 
         Actions.runBlocking(
