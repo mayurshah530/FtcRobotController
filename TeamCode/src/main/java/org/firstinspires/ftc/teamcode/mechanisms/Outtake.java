@@ -6,6 +6,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Actions;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -125,11 +127,8 @@ public final class Outtake {
             duration = Actions.now() - beginTs;
             packet.put("boxPosition ", box.getPosition());
 
-            if (duration < 2.0){
-                return true;
-            }
-            return false;
-       }
+            return duration < 2.0;
+        }
     }
 
     public Action closeBox() {
@@ -272,5 +271,19 @@ public final class Outtake {
     }
     public double getBoxPosition(){return box.getPosition();}
 
+    public Action pixelDropAction =
+            new SequentialAction(
+                    new ParallelAction(
+                            moveBoxLeverUp(),
+                            actuatorExpand(PARAMS.ACTUATOR_ENCODER_COUNT)
+                    ),
+                    moveWristOut(),
+                    actuatorExpand(PARAMS.ACTUATOR_ENCODER_COUNT_2),
+                    openBox(),
+                    new ParallelAction(
+                            closeBox(),
+                            moveWristIn()
+                    )
+            );
 
 }

@@ -366,9 +366,74 @@ public class MeepMeepTesting {
                 .waitSeconds(3)
                 .build();
 
+        Action v4BlueNearGeCenterScore = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
+                .strafeTo(BLUE_NEAR_CENTER_SPIKE.position)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(12, 40))
+                .turn(Math.toRadians(90))
+                .strafeTo(BLUE_ALLIANCE_CENTER_TAG.position)
+                .build();
 
+        Action v4BlueNearGeLeftScore = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
+                .strafeToLinearHeading(BLUE_NEAR_LEFT_SPIKE.position, 0)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(BLUE_NEAR_LEFT_SPIKE.position.x - 2, BLUE_NEAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(12, 54))
+                .strafeToLinearHeading(BLUE_ALLIANCE_LEFT_TAG.position, 0)
+                .build();
+
+        Action v4BlueNearGeRightScore = myBot.getDrive().actionBuilder(BLUE_NEAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(BLUE_NEAR_RIGHT_SPIKE.position.x + 5, BLUE_NEAR_RIGHT_SPIKE.position.y), Math.PI)
+                .strafeTo(new Vector2d(BLUE_NEAR_RIGHT_SPIKE.position.x -2, BLUE_NEAR_RIGHT_SPIKE.position.y))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(BLUE_NEAR_RIGHT_SPIKE.position.x + 3, BLUE_NEAR_RIGHT_SPIKE.position.y))
+                .turn(-Math.PI+1e-6)
+                .strafeToLinearHeading(BLUE_ALLIANCE_RIGHT_TAG.position, 0)
+                .build();
+
+        Action v4BlueFarGeCenterScore = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
+                .strafeTo(BLUE_FAR_CENTER_SPIKE.position)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(BLUE_FAR_CENTER_SPIKE.position.x, BLUE_FAR_CENTER_SPIKE.position.y + 10)) // come back
+                .strafeTo(new Vector2d(-52, BLUE_FAR_CENTER_SPIKE.position.y + 10))
+                .strafeTo(new Vector2d(-52, 12)) // move fwd
+                .turn(Math.PI/2)
+                .strafeToLinearHeading(new Vector2d(28, 12), 0 )
+                .strafeToLinearHeading(BLUE_ALLIANCE_CENTER_TAG.position, 0 )
+                .build();
+
+        Action v4BlueFarGeLeftScore = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
+                .splineToLinearHeading(BLUE_FAR_LEFT_SPIKE, 0)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(BLUE_FAR_LEFT_SPIKE.position.x - 5, BLUE_FAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(BLUE_FAR_LEFT_SPIKE.position.x - 5, 10))
+                .strafeToLinearHeading(new Vector2d(35, 10), 0 )
+                .strafeToLinearHeading(BLUE_ALLIANCE_LEFT_TAG.position, 0 )
+                .build();
+
+        Action v4BluefarGeRightScore = myBot.getDrive().actionBuilder(BLUE_FAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(BLUE_FAR_RIGHT_SPIKE.position.x, BLUE_FAR_RIGHT_SPIKE.position.y), -Math.PI)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(BLUE_FAR_RIGHT_SPIKE.position.x + 2, BLUE_FAR_RIGHT_SPIKE.position.y))
+                .strafeTo(new Vector2d(BLUE_FAR_RIGHT_SPIKE.position.x + 2, 10))
+                .turn(-(Math.PI+1e-6))
+                .strafeToLinearHeading(new Vector2d(20, 10), 0 )
+                .strafeToLinearHeading(BLUE_ALLIANCE_RIGHT_TAG.position, 0 )
+                .build();
+
+        Action v4RedFarGeLeftScore0 = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .strafeToLinearHeading(new Vector2d(RED_FAR_LEFT_SPIKE.position.x-2, RED_FAR_LEFT_SPIKE.position.y), Math.toRadians(180))
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, RED_FAR_LEFT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, -12))
+                .turn(Math.PI+1e-6)
+                .strafeToLinearHeading(new Vector2d(20, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0 )
+                .build();
+        // ==================================
         // This is what gets shown on the UI
-        myBot.runAction(v4RedNearGeLeftScorePark);
+        // ==================================
+        myBot.runAction(v4RedFarGeLeftScore0);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)

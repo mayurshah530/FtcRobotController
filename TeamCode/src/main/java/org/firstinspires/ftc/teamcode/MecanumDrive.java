@@ -513,38 +513,39 @@ public final class MecanumDrive {
         );
     }
 
-//    public boolean alignToAprilTagV0(AprilTagDetection desiredTag){
-//
-//        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-//        double  rangeError      = (desiredTag.ftcPose.range - AT_PARAMS.DESIRED_DISTANCE);
-//        double  headingError    = (desiredTag.ftcPose.bearing - AT_PARAMS.HEADING_CALIBRATION);
-//        double  yawError        = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
-//
-//        // Use the speed and turn "gains" to calculate how we want the robot to move.
-//        double drive  = Range.clip(rangeError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
-//        double turn   = Range.clip(headingError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
-//        double strafe = Range.clip(-yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
-//
-//        moveRobot(drive, strafe, turn);
-//
-//        return rangeError < 0.6;
-//    }
+    public boolean alignToAprilTagV0(AprilTagDetection desiredTag){
+
+        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+        double  rangeError      = (desiredTag.ftcPose.range - AT_PARAMS.DESIRED_DISTANCE);
+        double  headingError    = (desiredTag.ftcPose.bearing - AT_PARAMS.HEADING_CALIBRATION);
+        double  yawError        = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
+
+        // Use the speed and turn "gains" to calculate how we want the robot to move.
+        double drive  = Range.clip(rangeError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
+        double turn   = Range.clip(headingError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
+        double strafe = Range.clip(-yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
+
+        moveRobot(drive, strafe, turn);
+
+        return rangeError < 0.6;
+    }
 
     public boolean alignToAprilTag(AprilTagDetection desiredTag){
 
         // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-        double  axialError      = (desiredTag.ftcPose.y - AT_PARAMS.DESIRED_DISTANCE);
-        double  strafeError    = (-desiredTag.ftcPose.x - AT_PARAMS.HEADING_CALIBRATION);
-        double  yawError        = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
+        // ftcPose.y
+        double  axialError = (desiredTag.ftcPose.y - AT_PARAMS.DESIRED_DISTANCE);
+        double  strafeError = (-desiredTag.ftcPose.x - AT_PARAMS.HEADING_CALIBRATION);
+        double  yawError = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
 
         // Use the speed and turn "gains" to calculate how we want the robot to move.
-        double drive  = Range.clip(axialError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
-        double strafe   = Range.clip(strafeError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
+        double drive = Range.clip(axialError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
+        double strafe = Range.clip(strafeError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
         double turn = Range.clip(yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
 
         moveRobot(drive, strafe, turn);
 
-        return axialError < 0.6;
+        return axialError < 0.6 && strafeError < 0.6;
     }
 
     /**
@@ -557,16 +558,12 @@ public final class MecanumDrive {
      * Positive Yaw is counter-clockwise
      */
     public void moveRobot(double axial, double lateral, double yaw) {
-        // Calculate wheel powers.
-//        double leftFrontPower    =  x -y -yaw;
-//        double rightFrontPower   =  x +y +yaw;
-//        double leftBackPower     =  x +y -yaw;
-//        double rightBackPower    =  x -y +yaw;
-
-        double leftFrontPower  = axial + lateral + yaw;
-        double rightFrontPower = axial - lateral - yaw;
-        double leftBackPower   = axial - lateral + yaw;
-        double rightBackPower  = axial + lateral - yaw;
+        // Calculate wheel powers. The formula is correct for X forward, +lateral => left, +yaw => counter-clockwise.
+        // Note: This is different from usual basic omni opmode.
+        double leftFrontPower    =  axial -lateral -yaw;
+        double rightFrontPower   =  axial +lateral +yaw;
+        double leftBackPower     =  axial +lateral -yaw;
+        double rightBackPower    =  axial -lateral +yaw;
 
         // Normalize wheel powers to be less than 1.0
         double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));

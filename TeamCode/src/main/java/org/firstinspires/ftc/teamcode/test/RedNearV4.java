@@ -104,6 +104,7 @@ public class RedNearV4 extends LinearOpMode {
                 .turn(Math.toRadians(-90))
                 .strafeTo(RED_ALLIANCE_CENTER_TAG.position)
                 .build();
+
         Action v4RedNearGeRightPark = drive.actionBuilder(RED_NEAR_START_POSE)
                 .strafeToLinearHeading(RED_NEAR_RIGHT_SPIKE.position, 0)
                 .waitSeconds(0.5)
@@ -121,19 +122,6 @@ public class RedNearV4 extends LinearOpMode {
         Action trajectoryActionCloseOutRight = drive.actionBuilder(RED_ALLIANCE_RIGHT_TAG)
                 .strafeTo(RED_RIGHT_PARK_POS)
                 .build();
-
-        Action PixelDropAction =
-                new SequentialAction(
-                        new ParallelAction(
-                                outtake.moveBoxLeverUp(),
-                                outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
-                        ),
-                        outtake.moveWristOut(),
-                        outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT_2),
-                        outtake.openBox(),
-                        new ParallelAction(outtake.closeBox(),outtake.moveWristIn()
-                        )
-                );
 
         // Set to true when an AprilTag target is detected
         boolean targetFound = false;
@@ -249,7 +237,7 @@ public class RedNearV4 extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        PixelDropAction,
+                        outtake.pixelDropAction,
                         trajectoryActionCloseOut)
         );
     } // runOpMode
