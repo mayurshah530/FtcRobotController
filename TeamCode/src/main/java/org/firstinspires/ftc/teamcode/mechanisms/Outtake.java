@@ -38,6 +38,10 @@ public final class Outtake {
         public int ACTUATOR_ENCODER_COUNT_2 = 1000;
         public double LINEAR_ACTUATOR_POWER = 0.8;
         public double LINEAR_ACTUATOR_TIMEOUT_SEC = 12;
+
+        public boolean ENABLE_SMOOTH_BOX_OPEN = true;
+
+        public double BOX_SMOOTH_OPEN_FILTER_CONST = 0.05;
     }
 
     public DcMotorEx linearActLeft = null;
@@ -112,6 +116,7 @@ public final class Outtake {
         private boolean initialized = false;
         private double beginTs = -1;
         private final double BOX_POSITION;
+        private double prevBoxPosition = 0.0;
 
         OpenOrCloseBox(double boxPosition){
             BOX_POSITION = boxPosition;
@@ -120,11 +125,22 @@ public final class Outtake {
         public boolean run(@NonNull TelemetryPacket packet) {
             double duration;
             if (!initialized){
-                box.setPosition(BOX_POSITION);
+                prevBoxPosition = box.getPosition();
                 beginTs = Actions.now();
                 initialized = true;
             }
+
+            double desiredBoxPosition = 0.0;
+            if (PARAMS.ENABLE_SMOOTH_BOX_OPEN && BOX_POSITION == PARAMS.BOX_SCORING_POSITION){
+                desiredBoxPosition = prevBoxPosition * (1.0 - PARAMS.BOX_SMOOTH_OPEN_FILTER_CONST) + BOX_POSITION * PARAMS.BOX_SMOOTH_OPEN_FILTER_CONST;
+                prevBoxPosition = desiredBoxPosition;
+            } else {
+                desiredBoxPosition = BOX_POSITION;
+            }
+            box.setPosition(desiredBoxPosition);
             duration = Actions.now() - beginTs;
+            packet.put("previousPosition ", prevBoxPosition);
+            packet.put("desiredBoxPosition ", desiredBoxPosition);
             packet.put("boxPosition ", box.getPosition());
 
             return duration < 2.0;
