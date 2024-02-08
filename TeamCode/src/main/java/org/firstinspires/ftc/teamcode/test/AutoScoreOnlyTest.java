@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.test;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -36,13 +37,6 @@ public class AutoScoreOnlyTest extends LinearOpMode {
 
         if (USE_ACTION_CONSTRUCT){
 
-            // move linear actuator forward. (how much? how long?)
-            // tilt elbow up
-            // turn wrist 180
-            // move wheels forward, look for signs of deceleration and zero velocity
-            // open box
-            // close box + move wrist in
-            // put boxlever down + move to park position
             Actions.runBlocking(
                     new SequentialAction(
                             new ParallelAction(
@@ -50,16 +44,11 @@ public class AutoScoreOnlyTest extends LinearOpMode {
                                     outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
                             ),
                             outtake.moveWristOut(),
-                            outtake.actuatorExpand(50),
-                            outtake.waitSec(0.5),
-                            outtake.openBox(),
-                            new ParallelAction(
-                                    outtake.closeBox(),
-                                    outtake.moveWristIn()
-                            )
-//                       ,outtake.moveBoxLeverDown()
+                            outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT_2),
+                            outtake.openBox()
                     )
             );
+
 
         } else {
 

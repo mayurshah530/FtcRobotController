@@ -54,7 +54,7 @@ public class AprilTagTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_NEAR_START_POSE);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, RED_ALLIANCE_CENTER_TAG);
 
         initVisionPortal();
         visionProcessor.SetAlliance(Alliance.RED);
@@ -105,22 +105,34 @@ public class AprilTagTest extends LinearOpMode {
                     telemetry.update();
 
                     if (ENABLE_APRIL_TAG_GLOBAL_POSE){
-                        double cameraX = RED_ALLIANCE_CENTER_TAG_REF.position.x - desiredTag.ftcPose.y;
-                        double cameraY = RED_ALLIANCE_CENTER_TAG_REF.position.y + desiredTag.ftcPose.x;
-                        double robotX = cameraX - MecanumDrive.CALIBRATION.CHASSIS_FROM_CAMERA_X;
-                        double robotY = cameraY - MecanumDrive.CALIBRATION.CHASSIS_FROM_CAMERA_Y;
-                        // YAW sign?
-                        Pose2d newRobotPose = new Pose2d(robotX, robotY, desiredTag.ftcPose.yaw);
-                        telemetry.addData("Odom Pose", "%3.1f, %3.1f %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
-                        telemetry.addData("April Pose", "%3.1f, %3.1f %3.1f", newRobotPose.position.x, newRobotPose.position.y, newRobotPose.heading.log());
-                        telemetry.update();
-                        drive.setPose(newRobotPose);
-                        sleep(100);
+//                        double cameraX = RED_ALLIANCE_CENTER_TAG_REF.position.x - desiredTag.ftcPose.y;
+//                        double cameraY = RED_ALLIANCE_CENTER_TAG_REF.position.y + desiredTag.ftcPose.x;
+//                        double robotX = cameraX - MecanumDrive.CALIBRATION.CHASSIS_FROM_CAMERA_X;
+//                        double robotY = cameraY - MecanumDrive.CALIBRATION.CHASSIS_FROM_CAMERA_Y;
+//                        // YAW sign?
+//                        Pose2d newRobotPose = new Pose2d(robotX, robotY, desiredTag.ftcPose.yaw);
+//                        telemetry.addData("Odom Pose", "%3.1f, %3.1f %3.1f", drive.pose.position.x, drive.pose.position.y, drive.pose.heading.log());
+//                        telemetry.addData("April Pose", "%3.1f, %3.1f %3.1f", newRobotPose.position.x, newRobotPose.position.y, newRobotPose.heading.log());
+//                        telemetry.update();
+//                        drive.setPose(newRobotPose);
+//                        sleep(100);
+//
+//                        Action v4StrafeToCenterScorePose = drive.actionBuilder(newRobotPose)
+//                                .strafeTo(RED_ALLIANCE_CENTER_TAG.position)
+//                                .build();
+//                        Actions.runBlocking(v4StrafeToCenterScorePose);
 
-                        Action v4StrafeToCenterScorePose = drive.actionBuilder(newRobotPose)
-                                .strafeTo(RED_ALLIANCE_CENTER_TAG.position)
+                        // Strafe to align with the AprilTag center.
+                        Pose2d currentPose = drive.pose;
+                        Vector2d desiredPos = new Vector2d(currentPose.position.x, currentPose.position.y - desiredTag.ftcPose.x);
+                        telemetry.addData("CurrentPos: ", "%3.1f, %3.1f", currentPose.position.x, currentPose.position.y);
+                        telemetry.addData("DesiredPos: ", "%3.1f, %3.1f", desiredPos.x, desiredPos.y);
+
+                        Action v4StrafeToAprilTag = drive.actionBuilder(currentPose)
+                                .strafeTo(desiredPos)
                                 .build();
-                        Actions.runBlocking(v4StrafeToCenterScorePose);
+                        Actions.runBlocking(v4StrafeToAprilTag);
+
                         break;
 
                     } else {
