@@ -61,10 +61,8 @@ public class TeleOpMain extends LinearOpMode {
         robot.init();
 
         robot.setBoxPosition(V4Hardware.BOX_CLOSE_POSITION);
-        robot.boxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
+        robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
         robot.wristPosition(V4Hardware.WRIST_HOME_POSITION);
-
-
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -89,7 +87,7 @@ public class TeleOpMain extends LinearOpMode {
             // Note: pushing stick forward gives negative value
             double axial = SquareInputWithSign(-gamepad1.left_stick_y);
             double lateral =  SquareInputWithSign(gamepad1.left_stick_x);
-            double yaw     =  SquareInputWithSign(gamepad1.right_stick_x);
+            double yaw     =  SquareInputWithSign(gamepad1.right_stick_x * 0.5);
             robot.driveRobot(axial, lateral, yaw);
 
             //plane_launcher
@@ -113,8 +111,10 @@ public class TeleOpMain extends LinearOpMode {
 
             // Move linear actuator
             if (gamepad2.left_bumper) {
+                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
                 robot.actuatorRetract();
             } else if (gamepad2.right_bumper){
+                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
                 robot.actuatorExpand();
             } else {
                 robot.actuatorStop();
@@ -142,23 +142,23 @@ public class TeleOpMain extends LinearOpMode {
 
 
             if (gamepad2.a){
-                robot.boxLeverPosition(robot.BOXLEVER_HOME_POSITION);
+                robot.boxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
             } else if (gamepad2.y) {
-                robot.boxLeverPosition(robot.BOXLEVER_SCORING_POSITION);
+                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
             }
 
             if (gamepad2.x){
-                robot.wristPosition(robot.WRIST_HOME_POSITION);
+                robot.wristPosition(V4Hardware.WRIST_HOME_POSITION);
+                robot.boxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
             } else if (gamepad2.b) {
-                robot.wristPosition(robot.WRIST_SCORING_POSITION);
+                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
+                robot.wristPosition(V4Hardware.WRIST_SCORING_POSITION);
             }
 
             if (gamepad2.dpad_left){
-                robot.setBoxPosition(robot.BOX_CLOSE_POSITION);
+                robot.setBoxPosition(V4Hardware.BOX_CLOSE_POSITION);
             } else if (gamepad2.dpad_right) {
-                robot.setBoxPosition(robot.BOX_SCORING_POSITION);
-            } else {
-                robot.setIntakePower(0.0);
+                robot.setBoxPosition(V4Hardware.BOX_SCORING_POSITION);
             }
 
             // Show the elapsed game time and wheel power.
