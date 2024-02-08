@@ -100,7 +100,7 @@ public class RedFarV4 extends LinearOpMode {
                 .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, RED_FAR_LEFT_SPIKE.position.y))
                 .strafeTo(new Vector2d(RED_FAR_LEFT_SPIKE.position.x + 0, -12))
                 .turn(Math.PI+1e-6)
-                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_LEFT_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(new Vector2d(20, -12), 0 )
                 .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0 )
                 .build();
 
@@ -231,21 +231,10 @@ public class RedFarV4 extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        new ParallelAction(
-                                outtake.moveBoxLeverUp(),
-                                outtake.actuatorExpand(Outtake.PARAMS.ACTUATOR_ENCODER_COUNT)
-                        ),
-                        outtake.moveWristOut(),
-                        outtake.actuatorExpand(200),
-                        outtake.waitSec(0.5),
-                        outtake.openBox(),
-                        new ParallelAction(
-                                outtake.closeBox(),
-                                outtake.moveWristIn()
-                        ),
-                        trajectoryActionCloseOut
-                )
+                        outtake.pixelDropAction,
+                        trajectoryActionCloseOut)
         );
+
     } // runOpMode
 
 
