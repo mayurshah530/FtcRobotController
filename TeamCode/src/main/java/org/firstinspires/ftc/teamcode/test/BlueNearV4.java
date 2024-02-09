@@ -46,7 +46,7 @@ public class BlueNearV4 extends LinearOpMode {
     private FirstVisionProcessor visionProcessor;
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
-    private ScoringElementLocation selectedSide = ScoringElementLocation.UNKNOWN;
+    private ScoringElementLocation selectedSide = ScoringElementLocation.CENTER;
 
 
     @Override
