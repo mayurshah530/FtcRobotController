@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
@@ -218,12 +217,18 @@ public class V4Hardware {
 //        liftLeft.setPosition(position);
 //        liftRight.setPosition(position);
 //    }
-    public void wristPosition(double position){
+    public void setWristPosition(double position){
         wrist.setPosition(position);
     }
+    public double getWristPosition(){
+        return wrist.getPosition();
+    }
 
-    public void boxLeverPosition(double position){
+    public void setBoxLeverPosition(double position){
         boxLever.setPosition(position);
+    }
+    public double getBoxLeverPosition(){
+        return boxLever.getPosition();
     }
 
     public void setBoxPosition(double position) { box.setPosition(position); }
@@ -292,12 +297,5 @@ public class V4Hardware {
         leftBackDrive.setPower(leftBackPower);
         rightBackDrive.setPower(rightBackPower);
     }
-
-//    public double getLiftLeftPosition() {
-//        return liftLeft.getPosition();
-//    }
-//    public double getLiftRightPosition(){
-//        return liftRight.getPosition();
-//    }
 
 }
