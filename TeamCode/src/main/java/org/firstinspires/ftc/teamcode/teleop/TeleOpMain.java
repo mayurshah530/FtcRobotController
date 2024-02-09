@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.mechanisms.V4Hardware;
 
 
-@TeleOp(name="TeleOpMain", group="Linear OpMode")
+@TeleOp(name="\uD83E\uDD16 \uD83C\uDFC6 TeleOpMain", group="Linear OpMode")
 public class TeleOpMain extends LinearOpMode {
 
     V4Hardware robot = new V4Hardware(this);
@@ -46,6 +46,13 @@ public class TeleOpMain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private double liftServoPosition = 0.0;
 
+    public double boxLeverPosition;
+    public int leftLaPosition;
+    public int rightLaPosition;
+
+    public int initLeftLaPosition;
+    public int initRightLaPosition;
+
     public double SquareInputWithSign(double input){
         double sign = 1.0;
         if (input < 0.0){
@@ -53,6 +60,7 @@ public class TeleOpMain extends LinearOpMode {
         }
         return sign * input * input;
     }
+
     @Override
     public void runOpMode() {
 
@@ -61,8 +69,8 @@ public class TeleOpMain extends LinearOpMode {
         robot.init();
 
         robot.setBoxPosition(V4Hardware.BOX_CLOSE_POSITION);
-        robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
-        robot.wristPosition(V4Hardware.WRIST_HOME_POSITION);
+        robot.setBoxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
+        robot.setWristPosition(V4Hardware.WRIST_HOME_POSITION);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -70,9 +78,15 @@ public class TeleOpMain extends LinearOpMode {
         waitForStart();
         runtime.reset();
         double prevLiftPower = 0.0;
+        initLeftLaPosition = robot.getLinearActuatorLeftPosition();
+        initRightLaPosition = robot.getLinearActuatorRightPosition();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            leftLaPosition = robot.getLinearActuatorLeftPosition();
+            rightLaPosition = robot.getLinearActuatorRightPosition();
+            boxLeverPosition = robot.getBoxLeverPosition();
+
             double max;
 
             /* =======================
@@ -98,12 +112,13 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             // intake
-            if (gamepad1.dpad_right){
+            if (gamepad1.left_bumper){
                 robot.setIntakePower(1.0);
-            } else if (gamepad1.dpad_left) {
+            } else if (gamepad1.right_bumper) {
                 robot.setIntakePower(-1.0);
-            } else
+            } else {
                 robot.setIntakePower(0.0);
+            }
 
             /* =======================
              Gamepad 2 controls
@@ -111,10 +126,8 @@ public class TeleOpMain extends LinearOpMode {
 
             // Move linear actuator
             if (gamepad2.left_bumper) {
-                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
                 robot.actuatorRetract();
             } else if (gamepad2.right_bumper){
-                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
                 robot.actuatorExpand();
             } else {
                 robot.actuatorStop();
@@ -142,17 +155,15 @@ public class TeleOpMain extends LinearOpMode {
 
 
             if (gamepad2.a){
-                robot.boxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
+                robot.setBoxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
             } else if (gamepad2.y) {
-                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
+                robot.setBoxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
             }
 
             if (gamepad2.x){
-                robot.wristPosition(V4Hardware.WRIST_HOME_POSITION);
-                robot.boxLeverPosition(V4Hardware.BOXLEVER_HOME_POSITION);
+                robot.setWristPosition(V4Hardware.WRIST_HOME_POSITION);
             } else if (gamepad2.b) {
-                robot.boxLeverPosition(V4Hardware.BOXLEVER_SCORING_POSITION);
-                robot.wristPosition(V4Hardware.WRIST_SCORING_POSITION);
+                robot.setWristPosition(V4Hardware.WRIST_SCORING_POSITION);
             }
 
             if (gamepad2.dpad_left){
@@ -163,11 +174,8 @@ public class TeleOpMain extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-//            telemetry.addData("LiftServoPosition: ", "%3.1f", liftServoPosition);
-//            telemetry.addData("LiftServoPosition: ", "%2.1f, %2.1f", robot.getLiftLeftPosition(), robot.getLiftRightPosition());
-            telemetry.addData("Currently at",  " Left: %5d Right: %5d",
-                    robot.getLinearActuatorLeftPosition(), robot.getLinearActuatorRightPosition());
-
+            telemetry.addData("BoxLeverPosition: ", "%2.1f", boxLeverPosition);
+            telemetry.addData("Linear Actuator",  " Left: %5d Right: %5d", leftLaPosition, rightLaPosition);
             telemetry.update();
         }
     }}
