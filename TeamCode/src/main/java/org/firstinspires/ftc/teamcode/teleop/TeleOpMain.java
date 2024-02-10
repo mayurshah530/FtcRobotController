@@ -101,7 +101,7 @@ public class TeleOpMain extends LinearOpMode {
             // Note: pushing stick forward gives negative value
             double axial = SquareInputWithSign(-gamepad1.left_stick_y);
             double lateral =  SquareInputWithSign(gamepad1.left_stick_x);
-            double yaw     =  SquareInputWithSign(gamepad1.right_stick_x * 0.5);
+            double yaw     =  SquareInputWithSign(gamepad1.right_stick_x * 0.75);
             robot.driveRobot(axial, lateral, yaw);
 
             //plane_launcher

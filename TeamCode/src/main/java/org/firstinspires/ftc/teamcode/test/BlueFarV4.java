@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -17,26 +18,39 @@ import org.firstinspires.ftc.teamcode.common.ScoringElementLocation;
 import org.firstinspires.ftc.teamcode.mechanisms.Outtake;
 import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Config
 @Autonomous(name = "\uD83D\uDD35 --- Blue Far V4", group = "RoadRunner 1.0")
 public class BlueFarV4 extends LinearOpMode {
+    public static boolean ENABLE_APRIL_TAG_CORRECTION = true;
 
+    public static boolean ENABLE_APRIL_TAG_GLOBAL_POSE = false;
     double HALF_ROBO_LEN = 9;
 
     // START POSITIONS
     Pose2d BLUE_FAR_START_POSE = new Pose2d(-36, (72-HALF_ROBO_LEN), -Math.PI/2.0);
     // PARK POSITIONS
-    Pose2d BLUE_CENTER_PARK = new Pose2d(56, 12 , 0);
+    Pose2d BLUE_CENTER_PARK = new Pose2d(58 - HALF_ROBO_LEN, 10 , 0);
     // SPIKE POSITIONS
     Pose2d BLUE_FAR_CENTER_SPIKE = new Pose2d(-36, (24.5+HALF_ROBO_LEN), Math.PI/2.0);
     Pose2d BLUE_FAR_RIGHT_SPIKE = new Pose2d(-(46 -HALF_ROBO_LEN), 30, -Math.PI);
     Pose2d BLUE_FAR_LEFT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), (30), 0);
-    public static double TAG_BOT_OFFSET = 20.25;
+    public static double TAG_BOT_OFFSET = 14.0;
     Pose2d BLUE_ALLIANCE_LEFT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, 41.41, 0);
     Pose2d BLUE_ALLIANCE_CENTER_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, 35.41, 0);
     Pose2d BLUE_ALLIANCE_RIGHT_TAG = new Pose2d(60.25 - TAG_BOT_OFFSET, 29.41, 0);
+
+    Pose2d BLUE_ALLIANCE_LEFT_TAG_REF = new Pose2d(60.25 - TAG_BOT_OFFSET, 41.41, 0);
+    Pose2d BLUE_ALLIANCE_CENTER_TAG_REF = new Pose2d(60.25 - TAG_BOT_OFFSET, 35.41, 0);
+    Pose2d BLUE_ALLIANCE_RIGHT_TAG_REF = new Pose2d(60.25 - TAG_BOT_OFFSET, 29.41, 0);
+
+    public static double CLOSEOUT_BOT_OFFSET = 20;
+    Pose2d BLUE_ALLIANCE_LEFT_TAG_CLOSEOUT = new Pose2d(60.25 - CLOSEOUT_BOT_OFFSET, 41.41, 0);
+    Pose2d BLUE_ALLIANCE_CENTER_TAG_CLOSEOUT = new Pose2d(60.25 - CLOSEOUT_BOT_OFFSET, 35.41, 0);
+    Pose2d BLUE_ALLIANCE_RIGHT_TAG_CLOSEOUT = new Pose2d(60.25 - CLOSEOUT_BOT_OFFSET, 29.41, 0);
+
 
 
     private FirstVisionProcessor visionProcessor;
@@ -44,6 +58,8 @@ public class BlueFarV4 extends LinearOpMode {
     private AprilTagProcessor aprilTag;
     private ScoringElementLocation selectedSide = ScoringElementLocation.CENTER;
 
+    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+    private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -86,13 +102,13 @@ public class BlueFarV4 extends LinearOpMode {
                 .build();
 
 
-        Action trajectoryActionCloseOutCenter = drive.actionBuilder(BLUE_ALLIANCE_CENTER_TAG)
+        Action trajectoryActionCloseOutCenter = drive.actionBuilder(BLUE_ALLIANCE_CENTER_TAG_CLOSEOUT)
                 .strafeTo(BLUE_CENTER_PARK.position)
                 .build();
-        Action trajectoryActionCloseOutLeft = drive.actionBuilder(BLUE_ALLIANCE_LEFT_TAG)
+        Action trajectoryActionCloseOutLeft = drive.actionBuilder(BLUE_ALLIANCE_LEFT_TAG_CLOSEOUT)
                 .strafeTo(BLUE_CENTER_PARK.position)
                 .build();
-        Action trajectoryActionCloseOutRight = drive.actionBuilder(BLUE_ALLIANCE_RIGHT_TAG)
+        Action trajectoryActionCloseOutRight = drive.actionBuilder(BLUE_ALLIANCE_RIGHT_TAG_CLOSEOUT)
                 .strafeTo(BLUE_CENTER_PARK.position)
                 .build();
 
@@ -101,7 +117,8 @@ public class BlueFarV4 extends LinearOpMode {
         }
 
         waitForStart();
-
+        // Set to true when an AprilTag target is detected
+        boolean targetFound = false;
         if (isStopRequested()) return;
 
         selectedSide = visionProcessor.getSelection();
@@ -141,10 +158,13 @@ public class BlueFarV4 extends LinearOpMode {
 
         // TODO: INSERT APRIL TAG ALIGNMENT PART
 
+        Action trajectoryActionCloseOut0 = drive.actionBuilder(drive.pose)
+                .strafeTo(BLUE_CENTER_PARK.position).build();
+
         Actions.runBlocking(
                 new SequentialAction(
                         outtake.pixelDropAction,
-                        trajectoryActionCloseOut)
+                        trajectoryActionCloseOut0)
         );
     }
 
