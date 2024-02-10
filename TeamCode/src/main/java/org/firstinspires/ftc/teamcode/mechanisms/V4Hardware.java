@@ -91,6 +91,8 @@ public class V4Hardware {
 
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 312;
+
+    public static double BOXLEVER_INTAKE_POSITION = 0.9;
     public static double BOXLEVER_HOME_POSITION = 0.8;
     public static  double BOXLEVER_SCORING_POSITION = 0.4;
     public static  double WRIST_HOME_POSITION = 0.0;
