@@ -114,8 +114,10 @@ public class TeleOpMain extends LinearOpMode {
             // intake
             if (gamepad1.left_bumper){
                 robot.setIntakePower(1.0);
+                robot.setBoxLeverPosition(V4Hardware.BOXLEVER_INTAKE_POSITION);
             } else if (gamepad1.right_bumper) {
                 robot.setIntakePower(-1.0);
+                robot.setBoxLeverPosition(V4Hardware.BOXLEVER_INTAKE_POSITION);
             } else {
                 robot.setIntakePower(0.0);
             }
