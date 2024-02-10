@@ -47,7 +47,7 @@ public class RedFarV4 extends LinearOpMode {
     // SPIKE Locations
     Pose2d RED_FAR_CENTER_SPIKE = new Pose2d(-36, -(24.5+HALF_ROBO_LEN), -Math.PI/2.0);
     Pose2d RED_FAR_LEFT_SPIKE = new Pose2d(-(46 -HALF_ROBO_LEN), -30, Math.PI);
-    Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(-(23.5+HALF_ROBO_LEN), -(30), 0);
+    Pose2d RED_FAR_RIGHT_SPIKE = new Pose2d(-(21.5+HALF_ROBO_LEN), -(33), 0);
 
     // TAG locations
     public static double TAG_BOT_X_OFFSET = 19.75;
@@ -105,10 +105,11 @@ public class RedFarV4 extends LinearOpMode {
                 .build();
 
         Action v4RedfarGeRightScore = drive.actionBuilder(RED_FAR_START_POSE)
+                .strafeTo(new Vector2d(RED_FAR_START_POSE.position.x - 6, RED_FAR_START_POSE.position.y+3))
                 .splineToLinearHeading(RED_FAR_RIGHT_SPIKE, 0)
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, RED_FAR_RIGHT_SPIKE.position.y))
-                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, -8))
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 5, -10))
                 .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_RIGHT_TAG.position.x, -12), 0 )
                 .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0 )
                 .build();

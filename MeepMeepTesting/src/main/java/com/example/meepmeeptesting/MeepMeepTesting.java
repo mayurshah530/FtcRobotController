@@ -430,10 +430,22 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(new Vector2d(20, -12), 0 )
                 .strafeToLinearHeading(RED_ALLIANCE_LEFT_TAG.position, 0 )
                 .build();
+
+
+        Action v4RedfarGeRightScore2 = myBot.getDrive().actionBuilder(RED_FAR_START_POSE)
+                .strafeTo(new Vector2d(RED_FAR_START_POSE.position.x - 6, RED_FAR_START_POSE.position.y+3))
+                .splineToLinearHeading(RED_FAR_RIGHT_SPIKE, 0)
+                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 8, RED_FAR_RIGHT_SPIKE.position.y))
+                .strafeTo(new Vector2d(RED_FAR_RIGHT_SPIKE.position.x - 8, -10))
+                .strafeToLinearHeading(new Vector2d(RED_ALLIANCE_RIGHT_TAG.position.x, -12), 0 )
+                .strafeToLinearHeading(RED_ALLIANCE_RIGHT_TAG.position, 0 )
+                .build();
+
         // ==================================
         // This is what gets shown on the UI
         // ==================================
-        myBot.runAction(v4RedFarGeLeftScore0);
+        myBot.runAction(v4RedfarGeRightScore2);
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
