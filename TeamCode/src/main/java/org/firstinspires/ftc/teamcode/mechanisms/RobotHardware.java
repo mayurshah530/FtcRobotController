@@ -67,6 +67,14 @@ public class RobotHardware {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    private DcMotor viper_slide = null;
+
+    private DcMotor intake_front = null;
+    private DcMotor intake_back = null;
+    private Servo forearm = null;
+    private Servo wrist = null;
+    private Servo plane_launcher= null;
+
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double MID_SERVO       =  0.5 ;
@@ -110,11 +118,22 @@ public class RobotHardware {
         rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
 
+        viper_slide = myOpMode.hardwareMap.get(DcMotor.class, "viper_slide");
+        intake_front = myOpMode.hardwareMap.get(DcMotor.class,"intake_front");
+        intake_back = myOpMode.hardwareMap.get(DcMotor.class,"intake_back");
+        plane_launcher = myOpMode.hardwareMap.get(Servo.class,"plane_launcher");
+        forearm = myOpMode.hardwareMap.get(Servo.class,"forearm");
+        wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
+
         // Set directions for drive motors
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        viper_slide.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
