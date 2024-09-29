@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 public class Utils {
 
     public static int GetDesiredTagId(Alliance alliance, ScoringElementLocation selectedSide){
-        if (alliance == Alliance.UNKNOWN || selectedSide == ScoringElementLocation.UNKNOWN){
+        if (alliance == Alliance.UNKNOWN){
             return -1;
         }
         if (alliance == Alliance.BLUE) {
@@ -15,6 +15,8 @@ public class Utils {
                 return 2;
             } else if (selectedSide == ScoringElementLocation.RIGHT) {
                 return 3;
+            } else {
+                return 2;
             }
         }
         if (alliance == Alliance.RED){
@@ -24,6 +26,8 @@ public class Utils {
                 return 5;
             } else if (selectedSide == ScoringElementLocation.RIGHT){
                 return 6;
+            } else {
+                return 5;
             }
         }
 

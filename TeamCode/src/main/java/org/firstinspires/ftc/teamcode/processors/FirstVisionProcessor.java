@@ -17,7 +17,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 public class FirstVisionProcessor implements VisionProcessor {
-    ScoringElementLocation selection = ScoringElementLocation.UNKNOWN;
+    ScoringElementLocation selection = ScoringElementLocation.CENTER;
 
     // Define lower and upper HSV values for the red and blue color ranges
     public Scalar lowerRed = new Scalar(0, 100, 100);

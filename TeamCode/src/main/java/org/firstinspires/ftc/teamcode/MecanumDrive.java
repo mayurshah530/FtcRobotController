@@ -38,12 +38,14 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumEncodersMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -69,13 +71,13 @@ public final class MecanumDrive {
         public double trackWidthTicks = 4998.652434955384;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.0; // was 0.8192872057872895 without excluding some points
+        public double kS = 1.007; // 0.85974 w/o excluding points
 
-        public double kV = 0.0005752432014530612; // was 0.0005835750640180775 without excluding some points
+        public double kV = 0.0005742922783166555 ; // was 0.0005835750640180775 without excluding some points
 
         public double kA = 0.00001;
 
-        public double SCALE_FACTOR_TO_MAX = 0.5;
+        public double SCALE_FACTOR_TO_MAX = 1.0;
         // path profile parameters (in inches)
         public double maxWheelVel = 40 * SCALE_FACTOR_TO_MAX;
         public double minProfileAccel = -15 * SCALE_FACTOR_TO_MAX;
@@ -87,7 +89,7 @@ public final class MecanumDrive {
 
         // path controller gains
         public double axialGain = 4;
-        public double lateralGain = 2;
+        public double lateralGain = 6;
         public double headingGain = 4; // shared with turn
 
         public double axialVelGain = 0.0;
@@ -95,7 +97,33 @@ public final class MecanumDrive {
         public double headingVelGain = 0.0; // shared with turn
     }
 
+    public static class AprilTagParams {
+        // Adjust these numbers to suit your robot.
+        public double DESIRED_DISTANCE = 15.0; //  this is how close the camera should get to the target (inches)
+        public double HEADING_CALIBRATION = 0.0;
+        public double YAW_CALIBRATION = 0.0;
+
+        //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
+        //  applied to the drive motors to correct the error.
+        //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
+        public double SPEED_GAIN  =  0.03; //0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        public double STRAFE_GAIN =  0.0; //0.015 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+        public double TURN_GAIN   =  0.0; // 0.01  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+
+        public double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+        public double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+        public double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    }
+
+    public static class CalibrationParams {
+        public double CHASSIS_FROM_CAMERA_X = 8;
+        public double CHASSIS_FROM_CAMERA_Y = -1;
+    }
+
+
     public static Params PARAMS = new Params();
+    public static AprilTagParams AT_PARAMS = new AprilTagParams();
+    public static CalibrationParams CALIBRATION = new CalibrationParams();
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             PARAMS.inPerTick * PARAMS.trackWidthTicks, PARAMS.inPerTick / PARAMS.lateralInPerTick);
@@ -111,10 +139,6 @@ public final class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
-
-
-//    private DcMotor intake_front = null;
-//    private DcMotor intake_back = null;
 
     public final VoltageSensor voltageSensor;
 
@@ -196,6 +220,10 @@ public final class MecanumDrive {
         }
     }
 
+    // Set the pose with new information (e.g. AprilTag ID)
+    public void setPose(Pose2d pose){
+        this.pose = pose;
+    }
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
         this.pose = pose;
 
@@ -210,14 +238,10 @@ public final class MecanumDrive {
         rightBack = hardwareMap.get(DcMotorEx.class, "right_back_drive");
         rightFront = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
-      //  intake_front = hardwareMap.get(DcMotor.class,"intake_front");
-        //intake_back = hardwareMap.get(DcMotor.class,"intake_back");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
-//        intake_front.setDirection(DcMotorSimple.Direction.FORWARD);
-//        intake_back.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -287,7 +311,7 @@ public final class MecanumDrive {
             PoseVelocity2d robotVelRobot = updatePoseEstimate();
             Pose2d error = txWorldTarget.value().minusExp(pose);
 
-            if ((t >= timeTrajectory.duration && error.position.norm() < 2
+            if ((t >= timeTrajectory.duration && error.position.norm() < 1
                     && robotVelRobot.linearVel.norm() < 0.5)
                     || t + 1 >= timeTrajectory.duration) {
                 leftFront.setPower(0);
@@ -488,4 +512,76 @@ public final class MecanumDrive {
                 0.25, 0.1
         );
     }
+
+    public boolean alignToAprilTagV0(AprilTagDetection desiredTag){
+
+        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+        double  rangeError      = (desiredTag.ftcPose.range - AT_PARAMS.DESIRED_DISTANCE);
+        double  headingError    = (desiredTag.ftcPose.bearing - AT_PARAMS.HEADING_CALIBRATION);
+        double  yawError        = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
+
+        // Use the speed and turn "gains" to calculate how we want the robot to move.
+        double drive  = Range.clip(rangeError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
+        double turn   = Range.clip(headingError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
+        double strafe = Range.clip(-yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
+
+        moveRobot(drive, strafe, turn);
+
+        return rangeError < 0.6;
+    }
+
+    public boolean alignToAprilTag(AprilTagDetection desiredTag){
+
+        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+        // ftcPose.y
+        double  axialError = (desiredTag.ftcPose.y - AT_PARAMS.DESIRED_DISTANCE);
+        double  strafeError = (-desiredTag.ftcPose.x - AT_PARAMS.HEADING_CALIBRATION);
+        double  yawError = (desiredTag.ftcPose.yaw - AT_PARAMS.YAW_CALIBRATION);
+
+        // Use the speed and turn "gains" to calculate how we want the robot to move.
+        double drive = Range.clip(axialError * AT_PARAMS.SPEED_GAIN, - AT_PARAMS.MAX_AUTO_SPEED, AT_PARAMS.MAX_AUTO_SPEED);
+        double strafe = Range.clip(strafeError * AT_PARAMS.TURN_GAIN, - AT_PARAMS.MAX_AUTO_TURN, AT_PARAMS.MAX_AUTO_TURN) ;
+        double turn = Range.clip(yawError * AT_PARAMS.STRAFE_GAIN, - AT_PARAMS.MAX_AUTO_STRAFE, AT_PARAMS.MAX_AUTO_STRAFE);
+
+        moveRobot(drive, strafe, turn);
+
+        return axialError < 0.6 && strafeError < 0.6;
+    }
+
+    /**
+     * Move robot according to desired axes motions
+     * <p>
+     * Positive X is forward
+     * <p>
+     * Positive Y is strafe left
+     * <p>
+     * Positive Yaw is counter-clockwise
+     */
+    public void moveRobot(double axial, double lateral, double yaw) {
+        // Calculate wheel powers. The formula is correct for X forward, +lateral => left, +yaw => counter-clockwise.
+        // Note: This is different from usual basic omni opmode.
+        double leftFrontPower    =  axial -lateral -yaw;
+        double rightFrontPower   =  axial +lateral +yaw;
+        double leftBackPower     =  axial +lateral -yaw;
+        double rightBackPower    =  axial -lateral +yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            rightFrontPower /= max;
+            leftBackPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Send powers to the wheels.
+        leftFront.setPower(leftFrontPower);
+        rightFront.setPower(rightFrontPower);
+        leftBack.setPower(leftBackPower);
+        rightBack.setPower(rightBackPower);
+    }
+
 }
